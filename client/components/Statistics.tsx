@@ -80,7 +80,7 @@ export default function Statistics() {
         </h2>
 
         {/* Category Leaderboards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12 blur-sm">
           {statCategories.map((category) => (
             <div key={category.id} className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
               <div className="flex items-center mb-4">
