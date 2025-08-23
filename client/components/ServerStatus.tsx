@@ -31,6 +31,36 @@ let servers: Server[] = [
     gameMode: "Checking...",
     status: "maintenance",
   },
+  {
+    id: 2,
+    name: "RSGS #1",
+    players: 0,
+    maxPlayers: 80,
+    queue: 0,
+    map: "Offline",
+    gameMode: "Offline",
+    status: "offline",
+  },
+  {
+    id: 3,
+    name: "RSGS Invasion",
+    players: 0,
+    maxPlayers: 80,
+    queue: 0,
+    map: "Offline",
+    gameMode: "Offline",
+    status: "offline",
+  },
+  {
+    id: 4,
+    name: "RSGS International",
+    players: 0,
+    maxPlayers: 80,
+    queue: 0,
+    map: "Offline",
+    gameMode: "Offline",
+    status: "offline",
+  },
 ];
 
 function getStatusColor(status: Server["status"]) {
@@ -135,7 +165,7 @@ export default function ServerStatus() {
     if (server.status !== "online") {
       toast({
         title: "Сервер недоступен",
-        description: "Сервер находится в оффлайне или на техническо�� обслуживании",
+        description: "Сервер находится в оффлайне или на техническом обслуживании",
         variant: "destructive",
       });
       return;

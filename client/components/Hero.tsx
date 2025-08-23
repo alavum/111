@@ -1,198 +1,133 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Star, Shield, Zap, Users, Play, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const features = [
+const heroSlides = [
   {
     id: 1,
-    icon: <Star className="w-8 h-8" />,
-    title: "VIP привилегии",
-    description: "Приоритетная очередь и эксклюзивные возможности для лучшего игрового опыта",
-    color: "bg-gradient-to-br from-gaming-accent/20 to-gaming-accent/5",
-    iconColor: "text-gaming-accent",
+    title: "Выгодный VIP",
+    subtitle: "Проходка для себя или клана",
+    description: "Получите доступ к эксклюзивным возможностям и преимуществам",
+    background: "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900",
   },
   {
     id: 2,
-    icon: <Shield className="w-8 h-8" />,
-    title: "Честная игра",
-    description: "Строгая модерация и защита от читеров для справедливой конкуренции",
-    color: "bg-gradient-to-br from-blue-500/20 to-blue-500/5",
-    iconColor: "text-blue-400",
+    title: "Премиум доступ",
+    subtitle: "Расширенные возможности",
+    description: "Доступ к закрытым серверам и дополнительным функциям",
+    background: "bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900",
   },
   {
     id: 3,
-    icon: <Zap className="w-8 h-8" />,
-    title: "Высокая производительность",
-    description: "Мощные серверы с низким пингом и стабильным соединением 24/7",
-    color: "bg-gradient-to-br from-green-500/20 to-green-500/5",
-    iconColor: "text-green-400",
+    title: "Командная игра",
+    subtitle: "Тактические преимущества",
+    description:
+      "Инструменты для координации команды и страте��ического планирования",
+    background: "bg-gradient-to-r from-green-900 via-green-800 to-green-900",
   },
-  {
-    id: 4,
-    icon: <Users className="w-8 h-8" />,
-    title: "Активное сообщество",
-    description: "Тысячи игроков ежедневно, турниры и события для всех участников",
-    color: "bg-gradient-to-br from-purple-500/20 to-purple-500/5",
-    iconColor: "text-purple-400",
-  },
-];
-
-const stats = [
-  { label: "Игроков онлайн", value: "292+" },
-  { label: "Активных серверов", value: "4" },
-  { label: "Участников сообщества", value: "15K+" },
-  { label: "Матчей сыграно", value: "50K+" },
 ];
 
 export default function Hero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
+    );
+  };
+
+  const currentHero = heroSlides[currentSlide];
+
   return (
-    <section className="relative overflow-hidden">
-      {/* Main Hero Section */}
-      <div className="relative bg-gradient-to-br from-gaming-bg via-gaming-card to-gaming-bg border-b border-gaming-border">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"}></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-bold text-gaming-text mb-6">
-              Добро пожаловать на
-              <span className="block text-gaming-accent">RSGS Servers</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gaming-text-muted max-w-3xl mx-auto mb-8">
-              Лучшие серверы для Squad с активным русскоязычным сообществом.
-              Честная игра, профессиональная модерация и незабываемые сражения.
-            </p>
-
-            {/* Call to Action */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Link to="/vip">
-                <Button
-                  size="lg"
-                  className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8 py-3 text-lg"
-                >
-                  <Star className="w-5 h-5 mr-2" />
-                  Получить VIP
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gaming-border text-gaming-text hover:bg-gaming-card px-8 py-3 text-lg"
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Как начать играть
-              </Button>
-            </div>
-
-            {/* Statistics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-gaming-accent mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-gaming-text-muted text-sm">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => (
-              <Card
-                key={feature.id}
-                className={`${feature.color} border border-gaming-border/50 hover:border-gaming-accent/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm`}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className={`${feature.iconColor} mb-4 flex justify-center`}>
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-lg font-bold text-gaming-text mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gaming-text-muted text-sm leading-relaxed">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+    <section className="relative h-96 md:h-[500px] overflow-hidden">
+      {/* Background with overlay */}
+      <div className={`absolute inset-0 ${currentHero.background}`}>
+        {/* Soldier silhouette overlay */}
+        <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-black/30 to-transparent">
+          <div className="absolute right-8 top-8 w-64 h-64 md:w-80 md:h-80 opacity-20">
+            <svg viewBox="0 0 100 100" className="w-full h-full fill-white">
+              <path d="M50 10 L60 25 L50 30 L55 45 L65 50 L55 65 L50 70 L45 65 L35 50 L45 45 L50 30 L40 25 Z" />
+            </svg>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions Section */}
-      <div className="bg-gaming-card border-b border-gaming-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Join Server */}
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gaming-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-gaming-accent/30 transition-colors">
-                <Play className="w-8 h-8 text-gaming-accent" />
-              </div>
-              <h3 className="text-xl font-bold text-gaming-text mb-2">
-                Подключиться к серверу
-              </h3>
-              <p className="text-gaming-text-muted mb-4">
-                Выберите сервер и начинайте играть прямо сейчас
-              </p>
-              <Link
-                to="/#servers"
-                className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium"
-              >
-                Выбрать сервер
-                <ArrowRight className="w-4 h-4 ml-1" />
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              {currentHero.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-gaming-accent mb-4">
+              {currentHero.subtitle}
+            </p>
+            <p className="text-lg text-gray-300 mb-8 max-w-lg">
+              {currentHero.description}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/vip">
+                <Button
+                  size="lg"
+                  className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
+                >
+                  Получить VIP
+                </Button>
               </Link>
-            </div>
-
-            {/* Rules */}
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500/30 transition-colors">
-                <Shield className="w-8 h-8 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gaming-text mb-2">
-                Изучить правила
-              </h3>
-              <p className="text-gaming-text-muted mb-4">
-                Ознакомьтесь с правилами для честной игры
-              </p>
-              <Link
-                to="/rules"
-                className="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium"
-              >
-                Читать правила
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-
-            {/* Community */}
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-500/30 transition-colors">
-                <Users className="w-8 h-8 text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gaming-text mb-2">
-                Присоединиться к Discord
-              </h3>
-              <p className="text-gaming-text-muted mb-4">
-                Общайтесь с игроками и участвуйте в событиях
-              </p>
               <a
                 href="https://discord.gg/HXne8JVJ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium"
               >
-                Открыть Discord
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black"
+                >
+                  Присоединиться к Discord
+                </Button>
               </a>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Navigation arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gaming-accent transition-colors z-20"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-8 h-8" />
+      </button>
+
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gaming-accent transition-colors z-20"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-8 h-8" />
+      </button>
+
+      {/* Slide indicators */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        {heroSlides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full transition-colors ${
+              index === currentSlide
+                ? "bg-gaming-accent"
+                : "bg-white/40 hover:bg-white/60"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );
