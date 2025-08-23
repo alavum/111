@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, User } from "lucide-react";
+import { User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,8 +21,14 @@ export default function Header() {
           {/* Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link
+              to="/"
+              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+            >
+              Главная
+            </Link>
+            <Link
               to="/news"
-              className="text-gaming-accent font-medium border-b-2 border-gaming-accent"
+              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
               Новости
             </Link>
@@ -33,17 +38,19 @@ export default function Header() {
             >
               Гайды
             </Link>
-            <Link
-              to="/squad-calc"
+            <a
+              href="https://squadcalc.rgs-squad.ru"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
               Squad Calc
-            </Link>
+            </a>
             <Link
-              to="/equipment-ban"
+              to="/rules"
               className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
-              Оборудование бан
+              Правила
             </Link>
             <a
               href="https://discord.gg/HXne8JVJ"
@@ -57,15 +64,6 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Search */}
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gaming-text-muted w-4 h-4" />
-              <Input
-                type="search"
-                placeholder="Поиск"
-                className="pl-10 w-40 bg-gaming-card border-gaming-border text-gaming-text placeholder:text-gaming-text-muted"
-              />
-            </div>
 
             {/* VIP Button */}
             <Link to="/vip">
