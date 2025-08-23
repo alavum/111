@@ -135,7 +135,7 @@ export default function ServerStatus() {
     if (server.status !== "online") {
       toast({
         title: "Сервер недоступен",
-        description: "Сервер находится в оффлайне или на техническом обслуживании",
+        description: "Сервер находится в оффлайне или на техническо�� обслуживании",
         variant: "destructive",
       });
       return;
@@ -203,7 +203,7 @@ export default function ServerStatus() {
   };
 
   return (
-    <section className="py-12 bg-gaming-bg">
+    <section id="servers" className="py-12 bg-gaming-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl md:text-3xl font-bold text-gaming-text mb-8">
           Статус серверов
