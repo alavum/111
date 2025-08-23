@@ -73,7 +73,7 @@ const topPlayers = generatePlayers(10, 3000);
 
 export default function Statistics() {
   return (
-    <section className="py-12 bg-gaming-card">
+    <section className="py-12 bg-gaming-card relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl md:text-3xl font-bold text-gaming-text mb-8">
           Статистика за неделю
