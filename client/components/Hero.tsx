@@ -21,7 +21,8 @@ const heroSlides = [
     id: 3,
     title: "Командная игра",
     subtitle: "Тактические преимущества",
-    description: "Инструменты для координации команды и стратегического планирования",
+    description:
+      "Инструменты для координации команды и стратегического планирования",
     background: "bg-gradient-to-r from-green-900 via-green-800 to-green-900",
   },
 ];
@@ -34,7 +35,9 @@ export default function Hero() {
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    setCurrentSlide(
+      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
+    );
   };
 
   const currentHero = heroSlides[currentSlide];
@@ -67,13 +70,13 @@ export default function Hero() {
               {currentHero.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
+              <Button
                 size="lg"
                 className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
               >
                 Получить VIP
               </Button>
-              <Button 
+              <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-black"
@@ -93,7 +96,7 @@ export default function Hero() {
       >
         <ChevronLeft className="w-8 h-8" />
       </button>
-      
+
       <button
         onClick={nextSlide}
         className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gaming-accent transition-colors z-20"
@@ -109,9 +112,9 @@ export default function Hero() {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-colors ${
-              index === currentSlide 
-                ? 'bg-gaming-accent' 
-                : 'bg-white/40 hover:bg-white/60'
+              index === currentSlide
+                ? "bg-gaming-accent"
+                : "bg-white/40 hover:bg-white/60"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

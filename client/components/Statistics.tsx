@@ -19,15 +19,31 @@ interface StatCategory {
 
 const generatePlayers = (count: number, baseScore: number = 1000): Player[] => {
   const names = [
-    "Volkov", "Petrov", "Smirnov", "Kuznetsov", "Popov", "Lebedev", "Kozlov", "Novikov",
-    "Morozov", "Petrov", "Volkov", "Sokolov", "Zaytsev", "Pavlov", "Semenov", "Golubev"
+    "Volkov",
+    "Petrov",
+    "Smirnov",
+    "Kuznetsov",
+    "Popov",
+    "Lebedev",
+    "Kozlov",
+    "Novikov",
+    "Morozov",
+    "Petrov",
+    "Volkov",
+    "Sokolov",
+    "Zaytsev",
+    "Pavlov",
+    "Semenov",
+    "Golubev",
   ];
-  
+
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
-    name: names[i % names.length] + (i > names.length - 1 ? ` ${Math.floor(i / names.length) + 1}` : ''),
+    name:
+      names[i % names.length] +
+      (i > names.length - 1 ? ` ${Math.floor(i / names.length) + 1}` : ""),
     score: baseScore - i * 50 + Math.floor(Math.random() * 100),
-    rank: i + 1
+    rank: i + 1,
   }));
 };
 
@@ -37,36 +53,36 @@ const statCategories: StatCategory[] = [
     title: "Командиры",
     icon: <Trophy className="w-5 h-5" />,
     players: generatePlayers(5, 2500),
-    color: "text-gaming-warning"
+    color: "text-gaming-warning",
   },
   {
-    id: "snipers", 
+    id: "snipers",
     title: "Снайперы",
     icon: <Target className="w-5 h-5" />,
     players: generatePlayers(5, 2200),
-    color: "text-red-400"
+    color: "text-red-400",
   },
   {
     id: "medics",
-    title: "Медики", 
+    title: "Медики",
     icon: <Heart className="w-5 h-5" />,
     players: generatePlayers(5, 2000),
-    color: "text-green-400"
+    color: "text-green-400",
   },
   {
     id: "riflemen",
     title: "Стрелки",
     icon: <Crosshair className="w-5 h-5" />,
     players: generatePlayers(5, 1800),
-    color: "text-blue-400"
+    color: "text-blue-400",
   },
   {
     id: "gunners",
     title: "Пулеметчики",
     icon: <Zap className="w-5 h-5" />,
     players: generatePlayers(5, 1600),
-    color: "text-purple-400"
-  }
+    color: "text-purple-400",
+  },
 ];
 
 const topPlayers = generatePlayers(10, 3000);
@@ -82,17 +98,23 @@ export default function Statistics() {
         {/* Category Leaderboards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12 blur-sm">
           {statCategories.map((category) => (
-            <div key={category.id} className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
+            <div
+              key={category.id}
+              className="bg-gaming-bg border border-gaming-border rounded-lg p-4"
+            >
               <div className="flex items-center mb-4">
-                <div className={`${category.color} mr-2`}>
-                  {category.icon}
-                </div>
-                <h3 className="font-semibold text-gaming-text">{category.title}</h3>
+                <div className={`${category.color} mr-2`}>{category.icon}</div>
+                <h3 className="font-semibold text-gaming-text">
+                  {category.title}
+                </h3>
               </div>
-              
+
               <div className="space-y-3">
                 {category.players.map((player) => (
-                  <div key={player.id} className="flex items-center justify-between">
+                  <div
+                    key={player.id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center space-x-2">
                       <span className="text-gaming-accent font-semibold text-sm w-4">
                         {player.rank}
@@ -128,13 +150,22 @@ export default function Statistics() {
             <div className="bg-gaming-bg border border-gaming-border rounded-lg">
               <div className="divide-y divide-gaming-border">
                 {topPlayers.map((player, index) => (
-                  <div key={player.id} className="p-4 flex items-center justify-between hover:bg-gaming-card-hover transition-colors">
+                  <div
+                    key={player.id}
+                    className="p-4 flex items-center justify-between hover:bg-gaming-card-hover transition-colors"
+                  >
                     <div className="flex items-center space-x-3">
-                      <span className={`font-bold text-lg w-6 ${
-                        index === 0 ? 'text-gaming-warning' : 
-                        index === 1 ? 'text-gray-400' : 
-                        index === 2 ? 'text-orange-400' : 'text-gaming-text-muted'
-                      }`}>
+                      <span
+                        className={`font-bold text-lg w-6 ${
+                          index === 0
+                            ? "text-gaming-warning"
+                            : index === 1
+                              ? "text-gray-400"
+                              : index === 2
+                                ? "text-orange-400"
+                                : "text-gaming-text-muted"
+                        }`}
+                      >
                         {index + 1}
                       </span>
                       <Avatar>
@@ -144,12 +175,18 @@ export default function Statistics() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-semibold text-gaming-text">{player.name}</p>
-                        <p className="text-gaming-text-muted text-sm">Игрок RSGS</p>
+                        <p className="font-semibold text-gaming-text">
+                          {player.name}
+                        </p>
+                        <p className="text-gaming-text-muted text-sm">
+                          Игрок RSGS
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gaming-accent">{player.score.toLocaleString()}</p>
+                      <p className="font-bold text-gaming-accent">
+                        {player.score.toLocaleString()}
+                      </p>
                       <p className="text-gaming-text-muted text-sm">очков</p>
                     </div>
                   </div>
@@ -160,28 +197,42 @@ export default function Statistics() {
 
           {/* Additional Stats */}
           <div>
-            <h3 className="text-xl font-bold text-gaming-text mb-4">Общая статистика</h3>
+            <h3 className="text-xl font-bold text-gaming-text mb-4">
+              Общая статистика
+            </h3>
             <div className="space-y-4">
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
-                <h4 className="font-semibold text-gaming-text mb-2">Активность сегодня</h4>
+                <h4 className="font-semibold text-gaming-text mb-2">
+                  Активность сегодня
+                </h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Онлайн игроков</span>
-                    <span className="text-gaming-accent font-semibold">292</span>
+                    <span className="text-gaming-text-muted">
+                      Онлайн игроков
+                    </span>
+                    <span className="text-gaming-accent font-semibold">
+                      292
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gaming-text-muted">Всего матчей</span>
-                    <span className="text-gaming-accent font-semibold">156</span>
+                    <span className="text-gaming-accent font-semibold">
+                      156
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Новых игроков</span>
+                    <span className="text-gaming-text-muted">
+                      Новых игроков
+                    </span>
                     <span className="text-gaming-accent font-semibold">23</span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
-                <h4 className="font-semibold text-gaming-text mb-2">Популярные карты</h4>
+                <h4 className="font-semibold text-gaming-text mb-2">
+                  Популярные карты
+                </h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gaming-text-muted">Anvil RAAS</span>
@@ -205,7 +256,9 @@ export default function Statistics() {
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="text-center">
             <div className="bg-gaming-card border border-gaming-border rounded-lg px-8 py-6 shadow-2xl">
-              <h3 className="text-2xl font-bold text-gaming-accent mb-2">В разработке</h3>
+              <h3 className="text-2xl font-bold text-gaming-accent mb-2">
+                В разработке
+              </h3>
               <p className="text-gaming-text-muted">
                 Раздел статистики находится в разработке и скоро будет доступен
               </p>

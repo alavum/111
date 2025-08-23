@@ -6,7 +6,7 @@ interface Server {
   queue: number;
   map: string;
   gameMode: string;
-  status: 'online' | 'offline' | 'maintenance';
+  status: "online" | "offline" | "maintenance";
 }
 
 const servers: Server[] = [
@@ -18,7 +18,7 @@ const servers: Server[] = [
     queue: 3,
     map: "Anvil RAAS v2",
     gameMode: "Advance and Secure",
-    status: 'online'
+    status: "online",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const servers: Server[] = [
     queue: 5,
     map: "Yehorivka RAAS v2",
     gameMode: "Advance and Secure",
-    status: 'online'
+    status: "online",
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const servers: Server[] = [
     queue: 4,
     map: "Mutaha Invasion v1",
     gameMode: "Invasion",
-    status: 'online'
+    status: "online",
   },
   {
     id: 4,
@@ -48,33 +48,33 @@ const servers: Server[] = [
     queue: 0,
     map: "Sumari Seed v1",
     gameMode: "Random AAS",
-    status: 'offline'
-  }
+    status: "offline",
+  },
 ];
 
-function getStatusColor(status: Server['status']) {
+function getStatusColor(status: Server["status"]) {
   switch (status) {
-    case 'online':
-      return 'text-gaming-success';
-    case 'offline':
-      return 'text-gaming-error';
-    case 'maintenance':
-      return 'text-gaming-warning';
+    case "online":
+      return "text-gaming-success";
+    case "offline":
+      return "text-gaming-error";
+    case "maintenance":
+      return "text-gaming-warning";
     default:
-      return 'text-gaming-text-muted';
+      return "text-gaming-text-muted";
   }
 }
 
-function getStatusDot(status: Server['status']) {
+function getStatusDot(status: Server["status"]) {
   switch (status) {
-    case 'online':
-      return 'bg-gaming-success';
-    case 'offline':
-      return 'bg-gaming-error';
-    case 'maintenance':
-      return 'bg-gaming-warning';
+    case "online":
+      return "bg-gaming-success";
+    case "offline":
+      return "bg-gaming-error";
+    case "maintenance":
+      return "bg-gaming-warning";
     default:
-      return 'bg-gaming-text-muted';
+      return "bg-gaming-text-muted";
   }
 }
 
@@ -85,7 +85,7 @@ export default function ServerStatus() {
         <h2 className="text-2xl md:text-3xl font-bold text-gaming-text mb-8">
           Статус серверов
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {servers.map((server) => (
             <div
@@ -94,12 +94,19 @@ export default function ServerStatus() {
             >
               {/* Server Header */}
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gaming-text">{server.name}</h3>
+                <h3 className="font-semibold text-gaming-text">
+                  {server.name}
+                </h3>
                 <div className="flex items-center">
-                  <div className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`} />
+                  <div
+                    className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`}
+                  />
                   <span className={`text-sm ${getStatusColor(server.status)}`}>
-                    {server.status === 'online' ? 'Online' : 
-                     server.status === 'offline' ? 'Offline' : 'Maintenance'}
+                    {server.status === "online"
+                      ? "Online"
+                      : server.status === "offline"
+                        ? "Offline"
+                        : "Maintenance"}
                   </span>
                 </div>
               </div>
@@ -111,14 +118,18 @@ export default function ServerStatus() {
                   <span className="text-gaming-text font-semibold">
                     {server.players}/{server.maxPlayers}
                     {server.queue > 0 && (
-                      <span className="text-gaming-warning ml-1">(+{server.queue})</span>
+                      <span className="text-gaming-warning ml-1">
+                        (+{server.queue})
+                      </span>
                     )}
                   </span>
                 </div>
                 <div className="w-full bg-gaming-border rounded-full h-2 mt-2">
                   <div
                     className="h-2 rounded-full bg-gaming-accent"
-                    style={{ width: `${(server.players / server.maxPlayers) * 100}%` }}
+                    style={{
+                      width: `${(server.players / server.maxPlayers) * 100}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -137,14 +148,14 @@ export default function ServerStatus() {
 
               {/* Connect Button */}
               <button
-                disabled={server.status !== 'online'}
+                disabled={server.status !== "online"}
                 className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
-                  server.status === 'online'
-                    ? 'bg-gaming-accent hover:bg-gaming-accent-hover text-black'
-                    : 'bg-gaming-border text-gaming-text-muted cursor-not-allowed'
+                  server.status === "online"
+                    ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black"
+                    : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
                 }`}
               >
-                {server.status === 'online' ? 'Подключиться' : 'Недоступен'}
+                {server.status === "online" ? "Подключиться" : "Недоступен"}
               </button>
             </div>
           ))}

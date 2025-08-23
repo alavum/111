@@ -8,17 +8,17 @@ const footerSections = [
       { label: "Пользователи", href: "/users" },
       { label: "Статистика", href: "/statistics" },
       { label: "Новости", href: "/news" },
-      { label: "Стать VIP", href: "/vip" }
-    ]
+      { label: "Стать VIP", href: "/vip" },
+    ],
   },
   {
-    title: "Новинки", 
+    title: "Новинки",
     links: [
       { label: "Войны", href: "/wars" },
       { label: "Гайды", href: "/guides" },
       { label: "Командиры", href: "/commanders" },
-      { label: "Безопасность игр", href: "/security" }
-    ]
+      { label: "Безопасность игр", href: "/security" },
+    ],
   },
   {
     title: "Инструменты",
@@ -26,8 +26,8 @@ const footerSections = [
       { label: "Squad Calc", href: "/squad-calc" },
       { label: "Калькулятор", href: "/calculator" },
       { label: "Карты", href: "/maps" },
-      { label: "Оружие", href: "/weapons" }
-    ]
+      { label: "Оружие", href: "/weapons" },
+    ],
   },
   {
     title: "Игрения",
@@ -35,42 +35,42 @@ const footerSections = [
       { label: "Ютуберы", href: "/youtubers" },
       { label: "Командиры", href: "/commanders" },
       { label: "Модераторы", href: "/moderators" },
-      { label: "Анализаторы", href: "/analytics" }
-    ]
+      { label: "Анализаторы", href: "/analytics" },
+    ],
   },
   {
     title: "Ссылки",
     links: [
       { label: "YouTube", href: "https://youtube.com", external: true },
       { label: "Discord", href: "https://discord.com", external: true },
-      { label: "TikTok", href: "https://tiktok.com", external: true }
-    ]
-  }
+      { label: "TikTok", href: "https://tiktok.com", external: true },
+    ],
+  },
 ];
 
 const socialLinks = [
   {
     name: "YouTube",
     href: "https://youtube.com",
-    icon: <Youtube className="w-5 h-5" />
+    icon: <Youtube className="w-5 h-5" />,
   },
   {
-    name: "Discord", 
+    name: "Discord",
     href: "https://discord.com",
-    icon: <MessageCircle className="w-5 h-5" />
+    icon: <MessageCircle className="w-5 h-5" />,
   },
   {
     name: "TikTok",
-    href: "https://tiktok.com", 
-    icon: <Music className="w-5 h-5" />
-  }
+    href: "https://tiktok.com",
+    icon: <Music className="w-5 h-5" />,
+  },
 ];
 
 const bottomLinks = [
   { label: "Игровые правила", href: "/rules" },
   { label: "Политика конфиденциальности", href: "/privacy" },
   { label: "Офферта", href: "/terms" },
-  { label: "Сотрудничество", href: "/partnership" }
+  { label: "Сотрудничество", href: "/partnership" },
 ];
 
 export default function Footer() {
@@ -91,7 +91,7 @@ export default function Footer() {
               Лучшее игровое сообщество для тактических военных симуляторов.
               Присоединяйтесь к нашим серверам Squad.
             </p>
-            
+
             {/* Social Links */}
             <div className="flex space-x-3">
               {socialLinks.map((social) => (
@@ -112,7 +112,9 @@ export default function Footer() {
           {/* Footer Sections */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className="font-semibold text-gaming-text mb-4">{section.title}</h3>
+              <h3 className="font-semibold text-gaming-text mb-4">
+                {section.title}
+              </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.label}>
