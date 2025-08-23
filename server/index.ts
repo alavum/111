@@ -2,6 +2,19 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import {
+  getNews,
+  getNewsById,
+  createNews,
+  updateNews,
+  deleteNews,
+  getRules,
+  updateRules,
+  getPrivacyPolicy,
+  updatePrivacyPolicy,
+  getTerms,
+  updateTerms,
+} from "./routes/content";
 
 export function createServer() {
   const app = express();
@@ -18,6 +31,26 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Content Management API routes
+  // News routes
+  app.get("/api/news", getNews);
+  app.get("/api/news/:id", getNewsById);
+  app.post("/api/news", createNews);
+  app.put("/api/news/:id", updateNews);
+  app.delete("/api/news/:id", deleteNews);
+
+  // Rules routes
+  app.get("/api/rules", getRules);
+  app.put("/api/rules", updateRules);
+
+  // Privacy policy routes
+  app.get("/api/privacy", getPrivacyPolicy);
+  app.put("/api/privacy", updatePrivacyPolicy);
+
+  // Terms routes
+  app.get("/api/terms", getTerms);
+  app.put("/api/terms", updateTerms);
 
   return app;
 }
