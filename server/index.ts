@@ -19,6 +19,11 @@ import {
   checkServerStatus,
   checkMultipleServers,
 } from "./routes/serverStatus";
+import {
+  checkRconServerStatus,
+  checkAllRconServers,
+  getServerList,
+} from "./routes/rconStatus";
 
 export function createServer() {
   const app = express();
@@ -59,6 +64,11 @@ export function createServer() {
   // Server status routes
   app.get("/api/server-status/:serverId", checkServerStatus);
   app.post("/api/server-status/batch", checkMultipleServers);
+
+  // RCON status routes
+  app.get("/api/rcon-status/:serverId", checkRconServerStatus);
+  app.get("/api/rcon-status", checkAllRconServers);
+  app.get("/api/servers", getServerList);
 
   return app;
 }

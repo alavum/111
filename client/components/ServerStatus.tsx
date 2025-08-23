@@ -19,46 +19,17 @@ interface ServerConnectionStatus {
   error?: string;
 }
 
-const servers: Server[] = [
+// Initial static servers data - will be updated with RCON data
+let servers: Server[] = [
   {
     id: 1,
     name: "RSGS Free",
-    players: 98,
-    maxPlayers: 100,
-    queue: 3,
-    map: "Anvil RAAS v2",
-    gameMode: "Advance and Secure",
-    status: "online",
-  },
-  {
-    id: 2,
-    name: "RSGS #1",
-    players: 98,
-    maxPlayers: 100,
-    queue: 5,
-    map: "Yehorivka RAAS v2",
-    gameMode: "Advance and Secure",
-    status: "online",
-  },
-  {
-    id: 3,
-    name: "RSGS Invasion",
-    players: 96,
-    maxPlayers: 100,
-    queue: 4,
-    map: "Mutaha Invasion v1",
-    gameMode: "Invasion",
-    status: "online",
-  },
-  {
-    id: 4,
-    name: "RSGS International",
     players: 0,
-    maxPlayers: 100,
+    maxPlayers: 80,
     queue: 0,
-    map: "Sumari Seed v1",
-    gameMode: "Random AAS",
-    status: "offline",
+    map: "Loading...",
+    gameMode: "Checking...",
+    status: "maintenance",
   },
 ];
 
@@ -89,14 +60,40 @@ function getStatusDot(status: Server["status"]) {
 }
 
 export default function ServerStatus() {
+  const [serverData, setServerData] = useState<Server[]>(servers);
   const [connectionStatuses, setConnectionStatuses] = useState<Record<number, ServerConnectionStatus>>({});
   const [loadingConnections, setLoadingConnections] = useState<Record<number, boolean>>({});
 
-  // Check server connection statuses on component mount
+  // Fetch RCON server data
   useEffect(() => {
+    const fetchRconData = async () => {
+      try {
+        const response = await fetch('/api/rcon-status');
+        if (response.ok) {
+          const rconData = await response.json();
+
+          // Update servers with RCON data
+          const updatedServers = rconData.map((rconServer: any) => ({
+            id: rconServer.serverId,
+            name: `RSGS Server ${rconServer.serverId}`,
+            players: rconServer.players || 0,
+            maxPlayers: rconServer.maxPlayers || 80,
+            queue: Math.max(0, (rconServer.players || 0) - (rconServer.maxPlayers || 80)),
+            map: rconServer.map || "Unknown",
+            gameMode: rconServer.gameMode || "Unknown",
+            status: rconServer.status as Server["status"],
+          }));
+
+          setServerData(updatedServers);
+        }
+      } catch (error) {
+        console.error('Failed to fetch RCON data:', error);
+      }
+    };
+
     const checkAllServers = async () => {
       try {
-        const serverIds = servers.map(s => s.id);
+        const serverIds = serverData.map(s => s.id);
         const response = await fetch('/api/server-status/batch', {
           method: 'POST',
           headers: {
@@ -104,14 +101,14 @@ export default function ServerStatus() {
           },
           body: JSON.stringify({ serverIds }),
         });
-        
+
         if (response.ok) {
           const statuses: ServerConnectionStatus[] = await response.json();
           const statusMap = statuses.reduce((acc, status) => {
             acc[status.serverId] = status;
             return acc;
           }, {} as Record<number, ServerConnectionStatus>);
-          
+
           setConnectionStatuses(statusMap);
         }
       } catch (error) {
@@ -119,10 +116,16 @@ export default function ServerStatus() {
       }
     };
 
+    // Initial data fetch
+    fetchRconData();
     checkAllServers();
-    
-    // Refresh server statuses every 30 seconds
-    const interval = setInterval(checkAllServers, 30000);
+
+    // Refresh server data every 30 seconds
+    const interval = setInterval(() => {
+      fetchRconData();
+      checkAllServers();
+    }, 30000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -191,7 +194,7 @@ export default function ServerStatus() {
   const getConnectButtonText = (server: Server) => {
     if (server.status !== "online") return "Недоступен";
     
-    if (loadingConnections[server.id]) return "Про��ерка...";
+    if (loadingConnections[server.id]) return "Проверка...";
     
     const connectionStatus = connectionStatuses[server.id];
     if (!connectionStatus) return "Подключиться";
@@ -207,7 +210,7 @@ export default function ServerStatus() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {servers.map((server) => (
+          {serverData.map((server) => (
             <div
               key={server.id}
               className="bg-gaming-card border border-gaming-border rounded-lg p-6 hover:bg-gaming-card-hover transition-colors"
