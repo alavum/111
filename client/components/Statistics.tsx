@@ -118,7 +118,7 @@ export default function Statistics() {
         </div>
 
         {/* Main Leaderboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 blur-sm">
           {/* Top Players */}
           <div className="lg:col-span-2">
             <h3 className="text-xl font-bold text-gaming-text mb-4 flex items-center">
