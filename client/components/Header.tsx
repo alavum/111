@@ -20,48 +20,38 @@ export default function Header() {
 
           {/* Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
-            >
-              Статистика
-            </Link>
-            <Link 
-              to="/news" 
+            <Link
+              to="/news"
               className="text-gaming-accent font-medium border-b-2 border-gaming-accent"
             >
               Новости
             </Link>
-            <Link 
-              to="/guides" 
+            <Link
+              to="/guides"
               className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
               Гайды
             </Link>
-            <Link 
-              to="/squad-calc" 
+            <Link
+              to="/squad-calc"
               className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
               Squad Calc
             </Link>
-            <Link 
-              to="/wars" 
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
-            >
-              Войны
-            </Link>
-            <Link 
-              to="/commanders" 
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
-            >
-              Командиры
-            </Link>
-            <Link 
-              to="/equipment-ban" 
+            <Link
+              to="/equipment-ban"
               className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
             >
               Оборудование бан
             </Link>
+            <a
+              href="https://discord.gg/HXne8JVJ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+            >
+              Обжаловать бан
+            </a>
           </nav>
 
           {/* Right Side Actions */}
