@@ -200,6 +200,18 @@ export default function Statistics() {
             </div>
           </div>
         </div>
+
+        {/* Development Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="text-center">
+            <div className="bg-gaming-card border border-gaming-border rounded-lg px-8 py-6 shadow-2xl">
+              <h3 className="text-2xl font-bold text-gaming-accent mb-2">В разработке</h3>
+              <p className="text-gaming-text-muted">
+                Раздел статистики находится в разработке и скоро будет доступен
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
