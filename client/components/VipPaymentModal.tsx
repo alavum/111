@@ -30,6 +30,14 @@ const paymentMethods = [
     cardHolder: "RSGS PAYMENTS",
     description: "Переводы на карту Т-Банк",
   },
+  {
+    id: "sbp",
+    name: "СБП",
+    icon: "💳",
+    cardNumber: "+7 932 257 80 92",
+    cardHolder: "Система быстрых платежей",
+    description: "Перевод через СБП по номер�� телефона",
+  },
 ];
 
 export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPaymentModalProps) {
@@ -37,7 +45,6 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
   const [playerData, setPlayerData] = useState({
     steamId: "",
     discordId: "",
-    email: "",
     screenshot: null as File | null,
     comment: "",
   });
@@ -112,7 +119,6 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     setPlayerData({
       steamId: "",
       discordId: "",
-      email: "",
       screenshot: null,
       comment: "",
     });
@@ -123,7 +129,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
   return (
     <Dialog open={isOpen} onOpenChange={resetModal}>
-      <DialogContent className="max-w-2xl bg-gaming-card border-gaming-border text-gaming-text">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-gaming-card border-gaming-border text-gaming-text">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gaming-accent">
             Оплата VIP статуса
@@ -198,7 +204,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
               <h4 className="font-semibold text-gaming-accent mb-2">Инструкции по оплате:</h4>
               <ol className="text-gaming-text-muted text-sm space-y-2">
                 <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
-                <li>2. Сделайте скриншот подт��ерждения перевода</li>
+                <li>2. Сделайте скриншот подтверждения перевода</li>
                 <li>3. Заполните форму ниже и загрузите скриншот</li>
                 <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
               </ol>
@@ -231,18 +237,6 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   value={playerData.discordId}
                   onChange={(e) => setPlayerData(prev => ({ ...prev, discordId: e.target.value }))}
                   placeholder="123456789012345678"
-                  className="bg-gaming-bg border-gaming-border text-gaming-text"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="email" className="text-gaming-text">Email (необязательно)</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={playerData.email}
-                  onChange={(e) => setPlayerData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="example@email.com"
                   className="bg-gaming-bg border-gaming-border text-gaming-text"
                 />
               </div>
@@ -321,7 +315,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
               <h4 className="font-semibold text-gaming-text mb-2">Что дальше?</h4>
               <ul className="text-gaming-text-muted text-sm space-y-1 text-left">
                 <li>• Администратор проверит ваш перевод</li>
-                <li>• При подтверждении VIP статус будет активирован</li>
+                <li>• При подтверждении VIP статус будет акти��ирован</li>
                 <li>• Вы получите уведомление в Discord</li>
                 <li>• При возникновении вопросов свяжемся с вами</li>
               </ul>
