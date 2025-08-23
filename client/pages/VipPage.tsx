@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Check, Star, Shield, Zap, Users } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const vipFeatures = [
   {
@@ -171,6 +172,11 @@ export default function VipPage() {
                           : "bg-gaming-border hover:bg-gaming-accent hover:text-black text-gaming-text"
                       }`}
                       size="lg"
+                      onClick={() => toast({
+                        title: "В разработке",
+                        description: `Оплата VIP статуса "${plan.name}" скоро будет доступна`,
+                        duration: 3000,
+                      })}
                     >
                       Купить VIP
                     </Button>
