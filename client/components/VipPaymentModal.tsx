@@ -36,7 +36,7 @@ const paymentMethods = [
     icon: "💳",
     cardNumber: "+7 932 257 80 92",
     cardHolder: "Система быстрых платежей",
-    description: "Перевод через СБП по номер�� телефона",
+    description: "Перевод через СБП по номеру телефона",
   },
 ];
 
@@ -95,14 +95,29 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
     setUploading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setStep(2);
-      toast({
-        title: "Заявка отправлена!",
-        description: "Ваша заявка на VIP статус принята к рассмотрению",
+      // Create FormData to send file
+      const formData = new FormData();
+      formData.append('steamId', playerData.steamId);
+      formData.append('discordId', playerData.discordId || '');
+      formData.append('comment', playerData.comment || '');
+      formData.append('screenshot', playerData.screenshot);
+      formData.append('plan', JSON.stringify(selectedPlan));
+      formData.append('paymentMethod', selectedMethod);
+
+      const response = await fetch('/api/vip-applications', {
+        method: 'POST',
+        body: formData,
       });
+
+      if (response.ok) {
+        setStep(2);
+        toast({
+          title: "Заявка отправлена!",
+          description: "Ваша заявка на VIP статус принята к рассмотрению",
+        });
+      } else {
+        throw new Error('Server error');
+      }
     } catch (error) {
       toast({
         title: "Ошибка",
@@ -204,7 +219,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
               <h4 className="font-semibold text-gaming-accent mb-2">Инструкции по оплате:</h4>
               <ol className="text-gaming-text-muted text-sm space-y-2">
                 <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
-                <li>2. Сделайте скриншот подтверждения перевода</li>
+                <li>2. Сделайте скриншот подтвер��дения перевода</li>
                 <li>3. Заполните форму ниже и загрузите скриншот</li>
                 <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
               </ol>
@@ -265,7 +280,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   id="comment"
                   value={playerData.comment}
                   onChange={(e) => setPlayerData(prev => ({ ...prev, comment: e.target.value }))}
-                  placeholder="Дополнительная информация (необязательно)"
+                  placeholder="Дополнительная информа��ия (необязательно)"
                   className="bg-gaming-bg border-gaming-border text-gaming-text"
                   rows={3}
                 />
@@ -315,7 +330,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
               <h4 className="font-semibold text-gaming-text mb-2">Что дальше?</h4>
               <ul className="text-gaming-text-muted text-sm space-y-1 text-left">
                 <li>• Администратор проверит ваш перевод</li>
-                <li>• При подтверждении VIP статус будет акти��ирован</li>
+                <li>• При подтверждении VIP статус будет активирован</li>
                 <li>• Вы получите уведомление в Discord</li>
                 <li>• При возникновении вопросов свяжемся с вами</li>
               </ul>

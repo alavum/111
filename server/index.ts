@@ -24,6 +24,12 @@ import {
   checkAllRconServers,
   getServerList,
 } from "./routes/rconStatus";
+import {
+  handleVipApplication,
+  getVipApplications,
+  updateVipApplicationStatus,
+  uploadMiddleware,
+} from "./routes/vipApplications";
 
 export function createServer() {
   const app = express();
@@ -69,6 +75,11 @@ export function createServer() {
   app.get("/api/rcon-status/:serverId", checkRconServerStatus);
   app.get("/api/rcon-status", checkAllRconServers);
   app.get("/api/servers", getServerList);
+
+  // VIP applications routes
+  app.post("/api/vip-applications", uploadMiddleware, handleVipApplication);
+  app.get("/api/vip-applications", getVipApplications);
+  app.put("/api/vip-applications/:applicationId", updateVipApplicationStatus);
 
   return app;
 }
