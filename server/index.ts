@@ -15,6 +15,10 @@ import {
   getTerms,
   updateTerms,
 } from "./routes/content";
+import {
+  checkServerStatus,
+  checkMultipleServers,
+} from "./routes/serverStatus";
 
 export function createServer() {
   const app = express();
@@ -51,6 +55,10 @@ export function createServer() {
   // Terms routes
   app.get("/api/terms", getTerms);
   app.put("/api/terms", updateTerms);
+
+  // Server status routes
+  app.get("/api/server-status/:serverId", checkServerStatus);
+  app.post("/api/server-status/batch", checkMultipleServers);
 
   return app;
 }
