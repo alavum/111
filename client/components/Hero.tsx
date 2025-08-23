@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const heroSlides = [
   {
@@ -70,19 +71,23 @@ export default function Hero() {
               {currentHero.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
-              >
-                Получить VIP
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black"
-              >
-                Узнать больше
-              </Button>
+              <Link to="/vip">
+                <Button
+                  size="lg"
+                  className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
+                >
+                  Получить VIP
+                </Button>
+              </Link>
+              <Link to="/vip">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black"
+                >
+                  Узнать больше
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

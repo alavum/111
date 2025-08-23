@@ -1,6 +1,7 @@
 import { Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 interface NewsItem {
   id: number;
@@ -67,7 +68,7 @@ const newsItems: NewsItem[] = [
     id: 6,
     title: "Обновление Squad v8.0",
     excerpt:
-      "Мажорное обновление с революционными изменениями в механике игры и новыми возможностями.",
+      "Мажорное обновление с революц��онными изменениями в механике игры и новыми возможностями.",
     date: "28.04.2024 18:30",
     image: "/api/placeholder/400/250",
     category: "Обновления",
@@ -166,9 +167,16 @@ export default function News() {
             </h3>
             <p className="text-gaming-text-muted mb-6">
               Подпишитесь на наши уведомления, чтобы первыми узнавать о новых
-              обновлениях, турнирах и событиях в сообществе RSGS.
+              обновлениях, т��рнирах и событиях в сообществе RSGS.
             </p>
-            <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">
+            <Button
+              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
+              onClick={() => toast({
+                title: "В разработке",
+                description: "Функция подписки на новости скоро будет доступна",
+                duration: 3000,
+              })}
+            >
               Подписаться на новости
             </Button>
           </div>
