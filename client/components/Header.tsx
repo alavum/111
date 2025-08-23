@@ -67,29 +67,26 @@ export default function Header() {
               />
             </div>
 
-            {/* Language Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-gaming-text hover:text-gaming-accent hover:bg-gaming-card"
-            >
-              <Globe className="w-4 h-4 mr-1" />
-              English
-            </Button>
-
             {/* VIP Button */}
-            <Button
-              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
-              size="sm"
-            >
-              Стать VIP
-            </Button>
+            <Link to="/vip">
+              <Button
+                className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
+                size="sm"
+              >
+                Стать VIP
+              </Button>
+            </Link>
 
             {/* User Profile */}
             <Button
               variant="ghost"
               size="sm"
               className="text-gaming-text hover:text-gaming-accent hover:bg-gaming-card"
+              onClick={() => toast({
+                title: "В разработке",
+                description: "Функция авторизации находится в разработке",
+                duration: 3000,
+              })}
             >
               <User className="w-4 h-4 mr-1" />
               Войти
