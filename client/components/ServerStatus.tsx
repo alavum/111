@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
+
 interface Server {
   id: number;
   name: string;
@@ -7,6 +10,13 @@ interface Server {
   map: string;
   gameMode: string;
   status: "online" | "offline" | "maintenance";
+}
+
+interface ServerConnectionStatus {
+  serverId: number;
+  ok: boolean;
+  connectUrl?: string;
+  error?: string;
 }
 
 const servers: Server[] = [
@@ -79,6 +89,116 @@ function getStatusDot(status: Server["status"]) {
 }
 
 export default function ServerStatus() {
+  const [connectionStatuses, setConnectionStatuses] = useState<Record<number, ServerConnectionStatus>>({});
+  const [loadingConnections, setLoadingConnections] = useState<Record<number, boolean>>({});
+
+  // Check server connection statuses on component mount
+  useEffect(() => {
+    const checkAllServers = async () => {
+      try {
+        const serverIds = servers.map(s => s.id);
+        const response = await fetch('/api/server-status/batch', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ serverIds }),
+        });
+        
+        if (response.ok) {
+          const statuses: ServerConnectionStatus[] = await response.json();
+          const statusMap = statuses.reduce((acc, status) => {
+            acc[status.serverId] = status;
+            return acc;
+          }, {} as Record<number, ServerConnectionStatus>);
+          
+          setConnectionStatuses(statusMap);
+        }
+      } catch (error) {
+        console.error('Failed to check server statuses:', error);
+      }
+    };
+
+    checkAllServers();
+    
+    // Refresh server statuses every 30 seconds
+    const interval = setInterval(checkAllServers, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleConnect = async (server: Server) => {
+    const connectionStatus = connectionStatuses[server.id];
+    
+    if (server.status !== "online") {
+      toast({
+        title: "Сервер недоступен",
+        description: "Сервер находится в оффлайне или на техническом обслуживании",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // If we don't have connection status yet, check it
+    if (!connectionStatus) {
+      setLoadingConnections(prev => ({ ...prev, [server.id]: true }));
+      
+      try {
+        const response = await fetch(`/api/server-status/${server.id}`);
+        const status: ServerConnectionStatus = await response.json();
+        
+        setConnectionStatuses(prev => ({ ...prev, [server.id]: status }));
+        
+        if (status.ok && status.connectUrl) {
+          window.open(status.connectUrl, '_blank');
+        } else {
+          toast({
+            title: "Подключение недоступно",
+            description: "Сервер временно недоступен для подключения",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Ошибка подключения",
+          description: "Не удалось проверить статус подключения к серверу",
+          variant: "destructive",
+        });
+      } finally {
+        setLoadingConnections(prev => ({ ...prev, [server.id]: false }));
+      }
+      return;
+    }
+
+    // If we have connection status, use it
+    if (connectionStatus.ok && connectionStatus.connectUrl) {
+      window.open(connectionStatus.connectUrl, '_blank');
+    } else {
+      toast({
+        title: "Подключение недоступно", 
+        description: connectionStatus.error || "Сервер временно недоступен для подключения",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const isConnectionAvailable = (server: Server) => {
+    if (server.status !== "online") return false;
+    
+    const connectionStatus = connectionStatuses[server.id];
+    return connectionStatus?.ok === true;
+  };
+
+  const getConnectButtonText = (server: Server) => {
+    if (server.status !== "online") return "Недоступен";
+    
+    if (loadingConnections[server.id]) return "Про��ерка...";
+    
+    const connectionStatus = connectionStatuses[server.id];
+    if (!connectionStatus) return "Подключиться";
+    
+    return connectionStatus.ok ? "Подключиться" : "Недоступен";
+  };
+
   return (
     <section className="py-12 bg-gaming-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -148,14 +268,21 @@ export default function ServerStatus() {
 
               {/* Connect Button */}
               <button
-                disabled={server.status !== "online"}
+                onClick={() => handleConnect(server)}
+                disabled={
+                  !isConnectionAvailable(server) && 
+                  server.status === "online" && 
+                  connectionStatuses[server.id]?.ok === false
+                }
                 className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
-                  server.status === "online"
-                    ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black"
-                    : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
+                  isConnectionAvailable(server)
+                    ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black cursor-pointer"
+                    : server.status === "online" && !connectionStatuses[server.id]
+                      ? "bg-gaming-accent/70 hover:bg-gaming-accent text-black cursor-pointer"
+                      : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
                 }`}
               >
-                {server.status === "online" ? "Подключиться" : "Недоступен"}
+                {getConnectButtonText(server)}
               </button>
             </div>
           ))}
