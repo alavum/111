@@ -36,7 +36,7 @@ const newsItems: NewsItem[] = [
   },
   {
     id: 3,
-    title: "Битва CMD — каждому летчику на полок сообществе RSGS!",
+    title: "Битва CMD — каждому летчику на ��олок сообществе RSGS!",
     excerpt:
       "Новый турнир для пилотов с ценными призами и эксклюзивными наградами.",
     date: "05.05.2024 16:45",
@@ -68,7 +68,7 @@ const newsItems: NewsItem[] = [
     id: 6,
     title: "Обновление Squad v8.0",
     excerpt:
-      "Мажорное обновление с революц��онными изменениями в механике игры и новыми возможностями.",
+      "Мажорное обновление с революционными изменениями в механике игры и но��ыми возможностями.",
     date: "28.04.2024 18:30",
     image: "/api/placeholder/400/250",
     category: "Обновления",
@@ -140,7 +140,7 @@ export default function News() {
                 </div>
 
                 <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
-                  <Link to={`/news/${item.slug}`}>{item.title}</Link>
+                  <Link to={`/news/${item.id}`}>{item.title}</Link>
                 </h3>
 
                 <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
@@ -148,7 +148,7 @@ export default function News() {
                 </p>
 
                 <Link
-                  to={`/news/${item.slug}`}
+                  to={`/news/${item.id}`}
                   className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
                 >
                   Читать далее
@@ -167,7 +167,7 @@ export default function News() {
             </h3>
             <p className="text-gaming-text-muted mb-6">
               Подпишитесь на наши уведомления, чтобы первыми узнавать о новых
-              обновлениях, т��рнирах и событиях в сообществе RSGS.
+              обновлениях, турнирах и событиях в сообществе RSGS.
             </p>
             <Button
               className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
