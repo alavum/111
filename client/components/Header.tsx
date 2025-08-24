@@ -4,6 +4,22 @@ import { Link, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 export default function Header() {
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  const getLinkClassName = (path: string) => {
+    const baseClasses = "transition-colors font-medium";
+    return isActive(path)
+      ? `${baseClasses} text-gaming-accent`
+      : `${baseClasses} text-gaming-text hover:text-gaming-accent`;
+  };
+
   return (
     <header className="bg-gaming-bg border-b border-gaming-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,7 +99,7 @@ export default function Header() {
               onClick={() =>
                 toast({
                   title: "В разработке",
-                  description: "Функция авторизации находится в разработке",
+                  description: "Функция авторизации находитс�� в разработке",
                   duration: 3000,
                 })
               }
