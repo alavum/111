@@ -86,7 +86,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
   const handleSubmitPayment = async () => {
     if (!playerData.steamId || !playerData.screenshot) {
       toast({
-        title: "Заполните обязательные поля",
+        title: "Заполните ��бязательные поля",
         description: "Steam ID и скриншот перевода обязательны",
         variant: "destructive",
       });
@@ -144,7 +144,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
   return (
     <Dialog open={isOpen} onOpenChange={resetModal}>
-      <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto bg-gaming-card border-gaming-border text-gaming-text">
+      <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] bg-gaming-card border-gaming-border text-gaming-text overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gaming-accent">
             Оплата VIP статуса
