@@ -25,18 +25,18 @@ const paymentMethods = [
   {
     id: "tbank",
     name: "Т-Банк",
-    icon: "🏛️",
+    icon: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iI0ZGREIwMCIvPgo8cGF0aCBkPSJNMTAgMTJIMzBWMTRIMjhWMjZIMjZWMjhIMTRWMjZIMTJWMTRIMTBWMTJaIiBmaWxsPSIjMDAwIi8+CjxwYXRoIGQ9Ik0xNiAxNkgyNFYxOEgyMlYyMkgyMFYyNEgxOFYyMkgxNlYxNloiIGZpbGw9IiMwMDAiLz4KPC9zdmc+",
     cardNumber: "2200 1234 5678 9012",
     cardHolder: "RSGS PAYMENTS",
     description: "Переводы на карту Т-Банк",
   },
   {
     id: "sbp",
-    name: "СБП",
-    icon: "💳",
+    name: "СБП (Т-Банк)",
+    icon: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN0FGRiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMTRIMjZWMjZIMjhWMjhIMTJWMjZIMTBWMTRIMTJWMTJaIiBmaWxsPSIjRkZGIi8+CjxwYXRoIGQ9Ik0xNiAxNkgyNFYyNEgxNlYxNloiIGZpbGw9IiNGRkYiLz4KPC9zdmc+",
     cardNumber: "+7 932 257 80 92",
-    cardHolder: "Система быстрых платежей",
-    description: "Перевод через СБП по номеру телефона",
+    cardHolder: "Система быстрых платежей (Т-Банк)",
+    description: "Перевод через СБП в Т-Банк по номеру телефона",
   },
 ];
 
@@ -144,7 +144,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
   return (
     <Dialog open={isOpen} onOpenChange={resetModal}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-gaming-card border-gaming-border text-gaming-text">
+      <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto bg-gaming-card border-gaming-border text-gaming-text">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gaming-accent">
             Оплата VIP статуса
@@ -152,7 +152,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
         </DialogHeader>
 
         {step === 1 ? (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Selected Plan */}
             <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
               <h3 className="font-semibold text-gaming-text mb-2">Выбранный план:</h3>
@@ -186,14 +186,23 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{method.icon}</span>
+                        <img
+                          src={method.icon}
+                          alt={method.name}
+                          className="w-10 h-10 rounded"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling!.style.display = 'block';
+                          }}
+                        />
+                        <span className="text-2xl hidden">💳</span>
                         <div>
                           <p className="font-semibold text-gaming-text">{method.name}</p>
                           <p className="text-gaming-text-muted text-sm">{method.description}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-mono text-gaming-text">{method.cardNumber}</p>
+                        <p className="font-mono text-gaming-text text-lg">{method.cardNumber}</p>
                         <p className="text-gaming-text-muted text-sm">{method.cardHolder}</p>
                         <Button
                           size="sm"
@@ -218,8 +227,8 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
             <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
               <h4 className="font-semibold text-gaming-accent mb-2">Инструкции по оплате:</h4>
               <ol className="text-gaming-text-muted text-sm space-y-2">
-                <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
-                <li>2. Сделайте скриншот подтвер��дения перевода</li>
+                <li>1. Переведите точную сумму {selectedPlan.price} на указанную карт��</li>
+                <li>2. Сделайте скриншот подтверждения перевода</li>
                 <li>3. Заполните форму ниже и загрузите скриншот</li>
                 <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
               </ol>
@@ -280,7 +289,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   id="comment"
                   value={playerData.comment}
                   onChange={(e) => setPlayerData(prev => ({ ...prev, comment: e.target.value }))}
-                  placeholder="Дополнительная информа��ия (необязательно)"
+                  placeholder="Дополнительная информация (необязательно)"
                   className="bg-gaming-bg border-gaming-border text-gaming-text"
                   rows={3}
                 />
