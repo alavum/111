@@ -57,24 +57,24 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Content Management API routes
-  // News routes
+  // News routes (public read, admin write)
   app.get("/api/news", getNews);
   app.get("/api/news/:id", getNewsById);
-  app.post("/api/news", createNews);
-  app.put("/api/news/:id", updateNews);
-  app.delete("/api/news/:id", deleteNews);
+  app.post("/api/news", requireAdmin, createNews);
+  app.put("/api/news/:id", requireAdmin, updateNews);
+  app.delete("/api/news/:id", requireAdmin, deleteNews);
 
-  // Rules routes
+  // Rules routes (public read, admin write)
   app.get("/api/rules", getRules);
-  app.put("/api/rules", updateRules);
+  app.put("/api/rules", requireAdmin, updateRules);
 
-  // Privacy policy routes
+  // Privacy policy routes (public read, admin write)
   app.get("/api/privacy", getPrivacyPolicy);
-  app.put("/api/privacy", updatePrivacyPolicy);
+  app.put("/api/privacy", requireAdmin, updatePrivacyPolicy);
 
-  // Terms routes
+  // Terms routes (public read, admin write)
   app.get("/api/terms", getTerms);
-  app.put("/api/terms", updateTerms);
+  app.put("/api/terms", requireAdmin, updateTerms);
 
   // Server status routes
   app.get("/api/server-status/:serverId", checkServerStatus);
