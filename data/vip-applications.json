@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1756040725368,
+    "steamId": "532",
+    "discordId": "",
+    "comment": "",
+    "plan": {
+      "name": "VIP 3 месяца",
+      "price": "799 ₽",
+      "duration": "90 дней",
+      "popular": true,
+      "discount": "Скидка 11%"
+    },
+    "paymentMethod": "sbp",
+    "screenshot": {
+      "filename": "vip-1756040725290.png",
+      "originalname": "logo 2.png",
+      "path": "uploads/vip-screenshots/vip-1756040725290.png",
+      "size": 97312
+    },
+    "status": "pending",
+    "createdAt": "2025-08-24T13:05:25.368Z"
+  }
+]
