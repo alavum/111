@@ -30,6 +30,12 @@ import {
   updateVipApplicationStatus,
   uploadMiddleware,
 } from "./routes/vipApplications";
+import {
+  adminLogin,
+  verifyAdmin,
+  requireAdmin,
+  getAdminInfo,
+} from "./routes/adminAuth";
 
 export function createServer() {
   const app = express();
@@ -78,8 +84,13 @@ export function createServer() {
 
   // VIP applications routes
   app.post("/api/vip-applications", uploadMiddleware, handleVipApplication);
-  app.get("/api/vip-applications", getVipApplications);
-  app.put("/api/vip-applications/:applicationId", updateVipApplicationStatus);
+  app.get("/api/vip-applications", requireAdmin, getVipApplications);
+  app.put("/api/vip-applications/:applicationId", requireAdmin, updateVipApplicationStatus);
+
+  // Admin authentication routes
+  app.post("/api/admin/login", adminLogin);
+  app.get("/api/admin/verify", verifyAdmin);
+  app.get("/api/admin/info", requireAdmin, getAdminInfo);
 
   return app;
 }
