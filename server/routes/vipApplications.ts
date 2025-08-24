@@ -39,6 +39,11 @@ const upload = multer({
 // Send Discord webhook notification
 async function sendDiscordWebhook(applicationData: any) {
   try {
+    // Prepare screenshot URL for webhook
+    const screenshotUrl = applicationData.screenshot
+      ? `${process.env.BASE_URL || 'http://localhost:8080'}/uploads/vip-screenshots/${applicationData.screenshot.filename}`
+      : null;
+
     const embed = {
       title: "🎯 Новая заявка на VIP статус",
       color: 16766720, // Gold color
@@ -55,7 +60,7 @@ async function sendDiscordWebhook(applicationData: any) {
         },
         {
           name: "💳 Способ оплаты",
-          value: applicationData.paymentMethod === 'tbank' ? '🏛️ Т-Банк' : '💳 СБП',
+          value: applicationData.paymentMethod === 'tbank' ? '🏛️ Т-Банк' : '💳 СБП (Т-Банк)',
           inline: true
         },
         {
@@ -75,6 +80,18 @@ async function sendDiscordWebhook(applicationData: any) {
       },
       timestamp: new Date().toISOString()
     };
+
+    // Add screenshot as image if available
+    if (screenshotUrl) {
+      embed.image = {
+        url: screenshotUrl
+      };
+      embed.fields.push({
+        name: "📸 Скриншот оплаты",
+        value: `[Посмотреть скриншот](${screenshotUrl})`,
+        inline: false
+      });
+    }
 
     const webhookPayload = {
       content: "👋 @here Новая заявка на VIP!",
@@ -236,7 +253,7 @@ export const updateVipApplicationStatus: RequestHandler = (req, res) => {
 
     res.json({
       success: true,
-      message: "Статус заявки обновлен",
+      message: "Статус зая��ки обновлен",
     });
 
   } catch (error) {
