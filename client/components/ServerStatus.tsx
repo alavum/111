@@ -150,11 +150,11 @@ export default function ServerStatus() {
     fetchRconData();
     checkAllServers();
 
-    // Refresh server data every 30 seconds
+    // Refresh server data every 60 seconds (reduced frequency to improve performance)
     const interval = setInterval(() => {
       fetchRconData();
       checkAllServers();
-    }, 30000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
