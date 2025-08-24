@@ -101,7 +101,7 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/news', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(newNews),
       });
 
@@ -127,7 +127,7 @@ export default function AdminPage() {
     try {
       const response = await fetch(`/api/news/${article.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(article),
       });
 
@@ -153,7 +153,10 @@ export default function AdminPage() {
     if (!confirm("Удалить эту новость?")) return;
 
     try {
-      const response = await fetch(`/api/news/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/news/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
       
       if (response.ok) {
         setNews(prev => prev.filter(n => n.id !== id));
@@ -176,7 +179,7 @@ export default function AdminPage() {
     try {
       const response = await fetch(`/api/${type}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(content),
       });
 
@@ -203,26 +206,23 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gaming-bg">
-        <Header />
+      <AdminAuth>
         <div className="flex items-center justify-center h-96">
           <div className="text-gaming-text">Загрузка...</div>
         </div>
-      </div>
+      </AdminAuth>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gaming-bg">
-      <Header />
-
+    <AdminAuth>
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex items-center mb-8">
             <Settings className="w-8 h-8 text-gaming-accent mr-3" />
             <h1 className="text-3xl font-bold text-gaming-text">
-              ��анель администратора
+              Панель администратора
             </h1>
           </div>
 
@@ -270,7 +270,7 @@ export default function AdminPage() {
                       value={newNews.content}
                       onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
                       className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
-                      placeholder="Введите содержимое нов��сти"
+                      placeholder="Введите содержимое новости"
                     />
                   </div>
                   <div>
@@ -457,7 +457,7 @@ export default function AdminPage() {
                   <CardHeader>
                     <CardTitle className="text-gaming-text flex items-center">
                       <FileText className="w-5 h-5 mr-2" />
-                      Пользовательское соглашение
+                      П��льзовательское соглашение
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -493,8 +493,6 @@ export default function AdminPage() {
           </Tabs>
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </AdminAuth>
   );
 }
