@@ -44,35 +44,50 @@ const servers: Record<number, Omit<RconServerInfo, "serverId" | "status">> = {
   },
 };
 
+// Cache for RCON responses (5 second cache)
+const rconCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5000; // 5 seconds
+
 // Real RCON query function for Squad
 async function querySquadRconServer(ip: string, port: number, password: string): Promise<any> {
+  // Check cache first
+  const cacheKey = `${ip}:${port}`;
+  const cached = rconCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(`Using cached RCON data for ${cacheKey}`);
+    return cached.data;
+  }
+
   let rcon: Rcon | null = null;
-  
+
   try {
     rcon = new Rcon({
       host: ip,
       port: port,
       password: password,
-      timeout: 15000,
+      timeout: 8000, // Reduced from 15000 to 8000ms
     });
     
     await rcon.connect();
-    
-    // Squad-specific RCON commands
-    const [listPlayersResponse, mapResponse, serverInfoResponse] = await Promise.all([
-      rcon.send('ListPlayers').catch((err) => {
-        console.error('ListPlayers command failed:', err.message);
-        return '';
-      }),
-      rcon.send('ShowCurrentMap').catch((err) => {
-        console.error('ShowCurrentMap command failed:', err.message);
-        return '';
-      }),
-      rcon.send('ServerInfo').catch((err) => {
-        console.error('ServerInfo command failed:', err.message);
-        return '';
-      }),
+
+    // Squad-specific RCON commands - use allSettled for better error handling
+    const results = await Promise.allSettled([
+      rcon.send('ListPlayers'),
+      rcon.send('ShowCurrentMap'),
+      rcon.send('ServerInfo'),
     ]);
+
+    const listPlayersResponse = results[0].status === 'fulfilled' ? results[0].value : '';
+    const mapResponse = results[1].status === 'fulfilled' ? results[1].value : '';
+    const serverInfoResponse = results[2].status === 'fulfilled' ? results[2].value : '';
+
+    // Log any failed commands
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        const commands = ['ListPlayers', 'ShowCurrentMap', 'ServerInfo'];
+        console.error(`${commands[index]} command failed:`, result.reason?.message);
+      }
+    });
 
     await rcon.disconnect();
 
@@ -86,14 +101,22 @@ async function querySquadRconServer(ip: string, port: number, password: string):
     const playerCount = parseSquadPlayerCount(listPlayersResponse);
     const mapInfo = parseSquadMapInfo(mapResponse);
     const serverInfo = parseSquadServerInfo(serverInfoResponse);
-    
-    return {
+
+    const resultData = {
       players: playerCount,
       maxPlayers: serverInfo.maxPlayers || 80,
       map: mapInfo.map || "Unknown",
       gameMode: mapInfo.gameMode || "Squad",
       playerList: parseSquadPlayerList(listPlayersResponse),
     };
+
+    // Cache the result
+    rconCache.set(cacheKey, {
+      data: resultData,
+      timestamp: Date.now()
+    });
+
+    return resultData;
     
   } catch (error) {
     if (rcon) {
@@ -271,11 +294,12 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
 // Check all servers status
 export const checkAllRconServers: RequestHandler = async (req, res) => {
   const serverIds = Object.keys(servers).map(Number);
-  
+
   try {
+    // Use Promise.allSettled for better parallel processing
     const statusPromises = serverIds.map(async (serverId) => {
       const serverConfig = servers[serverId];
-      
+
       // Only check server 1 via RCON, others are offline
       if (serverId !== 1) {
         return {
@@ -289,14 +313,14 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
           error: "Server is offline",
         };
       }
-      
+
       try {
         const serverInfo = await querySquadRconServer(
           serverConfig.ip,
           serverConfig.rconPort,
           serverConfig.rconPassword
         );
-        
+
         return {
           serverId,
           ...serverConfig,
@@ -316,8 +340,14 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
         };
       }
     });
-    
-    const results = await Promise.all(statusPromises);
+
+    const results = await Promise.allSettled(statusPromises);
+    const finalResults = results.map(result =>
+      result.status === 'fulfilled' ? result.value : {
+        status: 'error',
+        error: 'Failed to check server'
+      }
+    );
     res.json(results);
     
   } catch (error) {
