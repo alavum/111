@@ -348,7 +348,7 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
         error: 'Failed to check server'
       }
     );
-    res.json(results);
+    res.json(finalResults);
     
   } catch (error) {
     console.error("Failed to check all servers:", error);
