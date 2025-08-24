@@ -38,19 +38,19 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              className={getLinkClassName('/')}
             >
               Главная
             </Link>
             <Link
               to="/news"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              className={getLinkClassName('/news')}
             >
               Новости
             </Link>
             <Link
               to="/guides"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              className={getLinkClassName('/guides')}
             >
               Гайды
             </Link>
@@ -64,7 +64,7 @@ export default function Header() {
             </a>
             <Link
               to="/rules"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              className={getLinkClassName('/rules')}
             >
               Правила
             </Link>
@@ -99,7 +99,7 @@ export default function Header() {
               onClick={() =>
                 toast({
                   title: "В разработке",
-                  description: "Функция авторизации находитс�� в разработке",
+                  description: "Функция авторизации находится в разработке",
                   duration: 3000,
                 })
               }
