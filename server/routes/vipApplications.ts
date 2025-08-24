@@ -40,9 +40,12 @@ const upload = multer({
 async function sendDiscordWebhook(applicationData: any) {
   try {
     // Prepare screenshot URL for webhook
+    const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
     const screenshotUrl = applicationData.screenshot
-      ? `${process.env.BASE_URL || 'http://localhost:8080'}/uploads/vip-screenshots/${applicationData.screenshot.filename}`
+      ? `${baseUrl}/uploads/vip-screenshots/${applicationData.screenshot.filename}`
       : null;
+
+    console.log('Sending Discord webhook with screenshot URL:', screenshotUrl);
 
     const embed = {
       title: "🎯 Новая заявка на VIP статус",
