@@ -53,20 +53,35 @@ async function querySquadRconServer(ip: string, port: number, password: string):
       host: ip,
       port: port,
       password: password,
-      timeout: 10000,
+      timeout: 15000,
     });
     
     await rcon.connect();
     
     // Squad-specific RCON commands
     const [listPlayersResponse, mapResponse, serverInfoResponse] = await Promise.all([
-      rcon.send('ListPlayers').catch(() => ''),
-      rcon.send('ShowCurrentMap').catch(() => ''),
-      rcon.send('ServerInfo').catch(() => ''),
+      rcon.send('ListPlayers').catch((err) => {
+        console.error('ListPlayers command failed:', err.message);
+        return '';
+      }),
+      rcon.send('ShowCurrentMap').catch((err) => {
+        console.error('ShowCurrentMap command failed:', err.message);
+        return '';
+      }),
+      rcon.send('ServerInfo').catch((err) => {
+        console.error('ServerInfo command failed:', err.message);
+        return '';
+      }),
     ]);
-    
+
     await rcon.disconnect();
-    
+
+    // Debug logging
+    console.log('RCON Responses:');
+    console.log('ListPlayers:', listPlayersResponse.substring(0, 200) + '...');
+    console.log('ShowCurrentMap:', mapResponse);
+    console.log('ServerInfo:', serverInfoResponse.substring(0, 200) + '...');
+
     // Parse Squad responses
     const playerCount = parseSquadPlayerCount(listPlayersResponse);
     const mapInfo = parseSquadMapInfo(mapResponse);
@@ -95,40 +110,71 @@ async function querySquadRconServer(ip: string, port: number, password: string):
 // Parse Squad player count from ListPlayers response
 function parseSquadPlayerCount(response: string): number {
   if (!response) return 0;
-  
+
   // Squad ListPlayers format: ID: 0 | SteamID: 76561198000000000 | Name: PlayerName | Team ID: 0 | Squad ID: 0
-  const playerLines = response.split('\n').filter(line => 
-    line.includes('SteamID:') && line.includes('Name:')
+  // or sometimes just shows total player count at top
+
+  // Try to get total from summary line first
+  const summaryMatch = response.match(/(\d+) players online/i) ||
+                       response.match(/Total: (\d+)/i) ||
+                       response.match(/Players: (\d+)/i);
+
+  if (summaryMatch) {
+    return parseInt(summaryMatch[1]);
+  }
+
+  // Fallback: count individual player lines
+  const playerLines = response.split('\n').filter(line =>
+    (line.includes('SteamID:') && line.includes('Name:')) ||
+    (line.includes('ID:') && line.includes('Name:') && line.includes('Team'))
   );
-  
+
   return playerLines.length;
 }
 
 // Parse Squad map info
 function parseSquadMapInfo(response: string): { map: string; gameMode: string } {
-  if (!response) return { map: "Unknown", gameMode: "Squad" };
-  
-  // Squad ShowCurrentMap format varies, try to extract map name
-  const mapMatch = response.match(/Current map is (.+)/i) || 
-                   response.match(/Map: (.+)/i) ||
-                   response.match(/(.+)/);
-  
+  if (!response) return { map: "Unknown", gameMode: "Unknown" };
+
+  // Squad ShowCurrentMap format: "Current level is GE | Tallil, layer is GE_Tallil_SEED_CAS_LOACH_ONLY, factions GE_Blufor GE_Opfor"
   let map = "Unknown";
-  let gameMode = "Squad";
-  
-  if (mapMatch && mapMatch[1]) {
-    const fullMapName = mapMatch[1].trim();
-    
-    // Extract game mode from map name (e.g., "Anvil RAAS v2" -> "RAAS")
-    if (fullMapName.includes('RAAS')) gameMode = 'RAAS';
-    else if (fullMapName.includes('AAS')) gameMode = 'AAS';
-    else if (fullMapName.includes('Invasion')) gameMode = 'Invasion';
-    else if (fullMapName.includes('TC')) gameMode = 'Territory Control';
-    else if (fullMapName.includes('Skirmish')) gameMode = 'Skirmish';
-    
-    map = fullMapName;
+  let gameMode = "Unknown";
+
+  // Extract layer name from "layer is [NAME]"
+  const layerMatch = response.match(/layer is ([^,]+)/i);
+  if (layerMatch && layerMatch[1]) {
+    map = layerMatch[1].trim();
+
+    // Extract game mode from layer name
+    const layerName = map.toUpperCase();
+    if (layerName.includes('_RAAS_')) gameMode = 'RAAS';
+    else if (layerName.includes('_AAS_')) gameMode = 'AAS';
+    else if (layerName.includes('_INVASION_')) gameMode = 'Invasion';
+    else if (layerName.includes('_TC_')) gameMode = 'Territory Control';
+    else if (layerName.includes('_SKIRMISH_')) gameMode = 'Skirmish';
+    else if (layerName.includes('_SEED_')) gameMode = 'SEED';
+    else if (layerName.includes('RAAS')) gameMode = 'RAAS';
+    else if (layerName.includes('AAS')) gameMode = 'AAS';
+    else if (layerName.includes('INVASION')) gameMode = 'Invasion';
+    else if (layerName.includes('SKIRMISH')) gameMode = 'Skirmish';
+    else if (layerName.includes('SEED')) gameMode = 'SEED';
+    else gameMode = 'Squad';
+  } else {
+    // Fallback: try to extract from "Current level is" or other formats
+    const mapMatch = response.match(/Current level is (.+?)(?:,|$)/i) ||
+                     response.match(/Map: (.+?)(?:,|$)/i);
+
+    if (mapMatch && mapMatch[1]) {
+      map = mapMatch[1].trim();
+      // Try to extract gamemode from map name
+      if (map.includes('RAAS')) gameMode = 'RAAS';
+      else if (map.includes('AAS')) gameMode = 'AAS';
+      else if (map.includes('Invasion')) gameMode = 'Invasion';
+      else if (map.includes('SEED')) gameMode = 'SEED';
+      else gameMode = 'Squad';
+    }
   }
-  
+
   return { map, gameMode };
 }
 

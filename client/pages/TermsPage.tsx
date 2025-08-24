@@ -1,274 +1,199 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { FileText, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
-
-const serviceTerms = [
-  "Пользование серверами RSGS предоставляется на условиях данного соглашения",
-  "Администрация оставляет за собой право изменять условия обслуживания",
-  "Пользователь обязуется соблюдать правила сервера и игровой этикет",
-  "Запрещается использование читов, ботов и сторонних программ",
-  "Администрация не несет ответственности за потерю игрового прогресса",
-  "Возмещение средств возможно только в случаях, предусмотренных законом",
-];
-
-const userObligations = [
-  {
-    title: "Соблюдение правил",
-    description: "Пользователь обязан ��облюдать все установленные правила сервера",
-    icon: <CheckCircle className="w-5 h-5" />,
-  },
-  {
-    title: "Уважение к игрокам",
-    description: "Поддержание дружелюбной атмосферы и взаимного уважения",
-    icon: <CheckCircle className="w-5 h-5" />,
-  },
-  {
-    title: "Честная игра",
-    description: "Запрет на использование читов и эксплойтов",
-    icon: <CheckCircle className="w-5 h-5" />,
-  },
-  {
-    title: "Ответственность за аккаунт",
-    description: "Пользователь несет полную ответственность за свой игровой аккаунт",
-    icon: <CheckCircle className="w-5 h-5" />,
-  },
-];
-
-const prohibitedActivities = [
-  "Использование читов, ботов или модификаций игры",
-  "Намеренное нанесение вреда союзникам (Team Kill)",
-  "Оскорбления, угрозы и дискриминация других игроков",
-  "Спам в чате или голосовой связи",
-  "Попытки взлома или нарушения безопасности серверов",
-  "Продажа или передача игровых аккаунтов третьим лицам",
-  "Использование багов и эксплойтов для получения преимуществ",
-];
-
-const vipTerms = [
-  "VIP статус предоставляется на определенный срок согласно тарифному плану",
-  "VIP привилегии действуют только на серверах RSGS",
-  "Возврат средств за VIP статус возможен в течение 7 дней при отсутствии использования",
-  "Администрация может лишить VIP статуса за нарушение правил без возврата средств",
-  "VIP статус не защищает от наказаний за нарушение правил сервера",
-];
+import { FileText } from "lucide-react";
 
 export default function TermsPage() {
+  const [terms, setTerms] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTerms();
+  }, []);
+
+  const fetchTerms = async () => {
+    try {
+      const response = await fetch('/api/terms');
+      if (response.ok) {
+        const data = await response.json();
+        setTerms(data.content || getDefaultTerms());
+      } else {
+        setTerms(getDefaultTerms());
+      }
+    } catch (error) {
+      console.error('Error fetching terms:', error);
+      setTerms(getDefaultTerms());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDefaultTerms = () => {
+    return `# Пользовательское соглашение (Оферта)
+
+## Общие полож��ния
+
+Настоящее пользовательское соглашение (далее - "Соглашение") регулирует отношения между администрацией Russian Squad Game Servers (далее - "RSGS") и пользователями игровых серверов и связанных сервисов.
+
+Подключаясь к серверам или используя наши услуги, вы автоматически соглашаетесь со всеми условиями данного соглашения.
+
+## Условия предоставления услуг
+
+1. Пользование серверами RSGS предоставляется на условиях данного соглашения
+2. Администрация оставляет за собой право изменять условия обслуживания
+3. Пользователь обязуется соблюдать правила сервера и игровой этикет
+4. Запрещается использование читов, ботов и сторонних программ
+5. Администрация не несет ответственности за потерю игрового прогресса
+6. Возмещение средств возможно только в случаях, предусмотренных законом
+
+## Обязанности пользователей
+
+**Соблюдение правил** - Пользователь обязан соблюдать все установленные правила сервера
+
+**Уважение к игрокам** - Поддержание дружелюбной атмосферы и взаимного уважения
+
+**Честная игра** - Запрет на использование читов и эксплойтов
+
+**Ответственность за аккаунт** - Пользователь несет полную ответственность за свой игровой аккаунт
+
+## Запрещенные действия
+
+- Использование читов, ботов или модификаций игры
+- Намеренное нанесение вреда союзникам (Team Kill)
+- Оскорбления, угрозы и дискриминация других игроков
+- Спам в чате или голосовой связи
+- Попытки взлома или нарушения безопасности серверов
+- Продажа или передача игровых аккаунтов третьим лицам
+- Использование багов и эксплойтов для получения преимуществ
+
+## Условия VIP статуса
+
+**Предоставление VIP** - VIP статус предоставляется на определенный срок согласно тарифному плану
+
+**Область действия** - VIP привилегии действуют только на серверах RSGS
+
+**Возврат средств** - Возврат средств за VIP статус возможен в течение 7 дней при отсутствии использования
+
+**Лишение статуса** - Администрация может лишить VIP статуса за нарушение правил без возврата средств
+
+**Отсутствие иммунитета** - VIP статус не защищает от наказаний за нарушение правил сервера
+
+## Ответственность сторон
+
+### Ответственность администрации
+- Поддержание работоспособности серверов
+- Обеспечение базовой модерации
+- Защита персональных данных пользователей
+- Предоставление технической поддержки
+
+### Ответственность пользователя
+- Соблюдение всех правил сервера
+- Безопасность своего аккаунта
+- Действия, совершенные с аккаунта
+- Уважение к другим участникам
+
+## Заключительные положения
+
+Данное соглашение может быть изменено администрацией в одностороннем порядке. Уведомление об изменениях публикуется на сайте и в Discord сервере.
+
+Продолжение использования сервисов после внесения изменений означает согласие с новыми условиями.
+
+По вопросам соглашения обращайтесь: [Discord](https://discord.gg/HXne8JVJ)
+
+Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
+  };
+
+  const formatText = (text: string) => {
+    return text.split('\n').map((line, index) => {
+      if (line.startsWith('# ')) {
+        return (
+          <h1 key={index} className="text-3xl font-bold text-gaming-accent mb-6">
+            {line.substring(2)}
+          </h1>
+        );
+      } else if (line.startsWith('## ')) {
+        return (
+          <h2 key={index} className="text-2xl font-bold text-gaming-text mt-8 mb-4">
+            {line.substring(3)}
+          </h2>
+        );
+      } else if (line.startsWith('### ')) {
+        return (
+          <h3 key={index} className="text-xl font-semibold text-gaming-accent mt-6 mb-3">
+            {line.substring(4)}
+          </h3>
+        );
+      } else if (line.match(/^\d+\./)) {
+        return (
+          <p key={index} className="text-gaming-text mb-2 pl-4">
+            <span className="font-semibold text-gaming-accent">{line.match(/^\d+\./)?.[0]}</span>
+            {line.replace(/^\d+\./, '')}
+          </p>
+        );
+      } else if (line.startsWith('- ')) {
+        return (
+          <p key={index} className="text-gaming-text mb-2 pl-4">
+            <span className="text-gaming-accent mr-2">•</span>
+            {line.substring(2)}
+          </p>
+        );
+      } else if (line.startsWith('**') && line.endsWith('**')) {
+        return (
+          <p key={index} className="text-gaming-text mb-2">
+            <span className="font-bold text-gaming-accent">{line.replace(/\*\*/g, '')}</span>
+          </p>
+        );
+      } else if (line.trim()) {
+        return (
+          <p key={index} className="text-gaming-text mb-3 leading-relaxed">
+            {line}
+          </p>
+        );
+      } else {
+        return <br key={index} />;
+      }
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gaming-bg">
+        <Header />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-gaming-text">Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gaming-bg">
       <Header />
 
-      <main>
-        {/* Hero Section */}
-        <section className="py-20 bg-gaming-card">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <main className="py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 bg-gaming-accent/20 rounded-full flex items-center justify-center">
                 <FileText className="w-8 h-8 text-gaming-accent" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gaming-text mb-6">
-              Пользовательское <span className="text-gaming-accent">соглашение</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gaming-text mb-4">
+              Пользовательское соглашение
             </h1>
-            <p className="text-xl text-gaming-text-muted max-w-3xl mx-auto">
-              Условия использования серверов RSGS и предоставляемых услуг.
-              Использование наших сервисов означает согласие с данными условиями.
+            <p className="text-xl text-gaming-text-muted">
+              Условия использования серверов и услуг RSGS
             </p>
           </div>
-        </section>
 
-        {/* Introduction */}
-        <section className="py-16 bg-gaming-bg">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-gaming-card border border-gaming-border rounded-lg p-8 mb-12">
-              <h2 className="text-2xl font-bold text-gaming-text mb-4">
-                Общие положения
-              </h2>
-              <p className="text-gaming-text-muted mb-4">
-                Настоящее пользовательское соглашение (далее - "Соглашение") регулирует отношения 
-                между администрацией Russian Squad Game Servers (далее - "RSGS") и пользователями 
-                игровых серверов и связанных сервисов.
-              </p>
-              <p className="text-gaming-text-muted">
-                Подключаясь к серверам или используя наши услуги, вы автоматически соглашаетесь 
-                со всеми условиями данного соглашения.
-              </p>
+          {/* Content */}
+          <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
+            <div className="prose prose-invert max-w-none">
+              {formatText(terms)}
             </div>
           </div>
-        </section>
-
-        {/* Service Terms */}
-        <section className="py-16 bg-gaming-card">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gaming-text mb-8 text-center">
-              Условия предоставления услуг
-            </h2>
-
-            <div className="bg-gaming-bg border border-gaming-border rounded-lg p-8">
-              <ul className="space-y-4">
-                {serviceTerms.map((term, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="flex-shrink-0 w-8 h-8 bg-gaming-accent/20 rounded-full flex items-center justify-center text-gaming-accent font-bold text-sm mr-4">
-                      {index + 1}
-                    </span>
-                    <span className="text-gaming-text">{term}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* User Obligations */}
-        <section className="py-16 bg-gaming-bg">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gaming-text mb-8 text-center">
-              Обязанности пользователей
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {userObligations.map((obligation, index) => (
-                <div
-                  key={index}
-                  className="bg-gaming-card border border-gaming-border rounded-lg p-6"
-                >
-                  <div className="flex items-center mb-3">
-                    <div className="text-green-400 mr-3">
-                      {obligation.icon}
-                    </div>
-                    <h3 className="text-lg font-bold text-gaming-text">
-                      {obligation.title}
-                    </h3>
-                  </div>
-                  <p className="text-gaming-text-muted">
-                    {obligation.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Prohibited Activities */}
-        <section className="py-16 bg-gaming-card">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center mb-8">
-              <XCircle className="w-8 h-8 text-red-400 mr-3" />
-              <h2 className="text-3xl font-bold text-gaming-text">
-                Запрещенные действия
-              </h2>
-            </div>
-
-            <div className="bg-gaming-bg border border-red-500/30 rounded-lg p-8">
-              <p className="text-gaming-text-muted mb-6">
-                Следующие действия строго запрещены и могут привести к немедленному бану:
-              </p>
-              <ul className="space-y-3">
-                {prohibitedActivities.map((activity, index) => (
-                  <li key={index} className="flex items-start">
-                    <XCircle className="w-5 h-5 text-red-400 mr-3 mt-1 flex-shrink-0" />
-                    <span className="text-gaming-text">{activity}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* VIP Terms */}
-        <section className="py-16 bg-gaming-bg">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gaming-text mb-8 text-center">
-              Условия VIP статуса
-            </h2>
-
-            <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-              <div className="flex items-center mb-6">
-                <AlertTriangle className="w-6 h-6 text-gaming-warning mr-3" />
-                <h3 className="text-xl font-bold text-gaming-text">
-                  Важная информация о VIP
-                </h3>
-              </div>
-              <ul className="space-y-4">
-                {vipTerms.map((term, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="flex-shrink-0 w-6 h-6 bg-gaming-accent/20 rounded-full flex items-center justify-center text-gaming-accent font-bold text-xs mr-3 mt-1">
-                      {index + 1}
-                    </span>
-                    <span className="text-gaming-text">{term}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Liability and Responsibility */}
-        <section className="py-16 bg-gaming-card">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gaming-text mb-8 text-center">
-              Ответственность сторон
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-6">
-                <h3 className="text-xl font-bold text-gaming-text mb-4">
-                  Ответственность администрации
-                </h3>
-                <ul className="text-gaming-text-muted space-y-2 text-sm">
-                  <li>• Поддержание работоспособности серверов</li>
-                  <li>• Обеспечение базовой модерации</li>
-                  <li>• Защита персональных данных пользователей</li>
-                  <li>• Предоставление технической поддержки</li>
-                </ul>
-              </div>
-
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-6">
-                <h3 className="text-xl font-bold text-gaming-text mb-4">
-                  Ответств��нность пользователя
-                </h3>
-                <ul className="text-gaming-text-muted space-y-2 text-sm">
-                  <li>• Соблюдение всех правил сервера</li>
-                  <li>• Безопасность своего аккаунта</li>
-                  <li>• Действия, совершенные с аккаунта</li>
-                  <li>• Уважение к другим участникам</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Final Provisions */}
-        <section className="py-16 bg-gaming-bg">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-gaming-text mb-8">
-              Заключительные положения
-            </h2>
-            <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-              <p className="text-gaming-text-muted mb-6">
-                Данное соглашение может быть изменено администрацией в одностороннем порядке. 
-                Уведомление об изменениях публикуется на сайте и в Discord сервере.
-              </p>
-              <p className="text-gaming-text-muted mb-6">
-                Продолжение использования сервисов после внесения изменений означает 
-                согласие с новыми условиями.
-              </p>
-              <div className="text-sm text-gaming-text-muted">
-                <p>Последнее обновление: {new Date().toLocaleDateString('ru-RU')}</p>
-                <p className="mt-2">
-                  По вопросам соглашения обращайтесь: 
-                  <a 
-                    href="https://discord.gg/HXne8JVJ" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gaming-accent hover:text-gaming-accent-hover ml-1"
-                  >
-                    Discord
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>
       </main>
 
       <Footer />
