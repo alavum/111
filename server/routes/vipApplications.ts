@@ -84,19 +84,60 @@ async function sendDiscordWebhook(applicationData: any) {
       timestamp: new Date().toISOString()
     };
 
-    // Add screenshot as image if available
+    // Add screenshot field if available
     if (screenshotUrl) {
-      embed.image = {
-        url: screenshotUrl
-      };
       embed.fields.push({
         name: "📸 Скриншот оплаты",
-        value: `[Посмотреть скриншот](${screenshotUrl})`,
+        value: `✅ Скриншот приложен`,
         inline: false
       });
+
+      // Set as thumbnail
+      embed.thumbnail = {
+        url: screenshotUrl
+      };
     }
 
-    const webhookPayload = {
+    let webhookPayload;
+    let headers;
+    let body;
+
+    // Try to send with file attachment if screenshot exists
+    if (applicationData.screenshot && fs.existsSync(applicationData.screenshot.path)) {
+      try {
+        const FormData = require('form-data');
+        const form = new FormData();
+
+        form.append('payload_json', JSON.stringify({
+          content: "👋 @here Новая заявка на VIP!",
+          embeds: [embed]
+        }));
+
+        form.append('file', fs.createReadStream(applicationData.screenshot.path), {
+          filename: applicationData.screenshot.filename,
+          contentType: 'image/png'
+        });
+
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          body: form,
+          headers: form.getHeaders()
+        });
+
+        if (!response.ok) {
+          console.error('Discord webhook with file failed:', response.status, response.statusText);
+          throw new Error('File upload failed');
+        } else {
+          console.log('Discord webhook with file sent successfully');
+          return;
+        }
+      } catch (fileError) {
+        console.error('File attachment failed, falling back to embed:', fileError);
+      }
+    }
+
+    // Fallback to regular webhook without file
+    webhookPayload = {
       content: "👋 @here Новая заявка на VIP!",
       embeds: [embed]
     };
