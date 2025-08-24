@@ -45,6 +45,15 @@ export default function AdminPage() {
   const [editingNews, setEditingNews] = useState<NewsArticle | null>(null);
   const [newNews, setNewNews] = useState({ title: "", content: "", author: "Admin" });
 
+  // Helper function to get auth headers
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('admin_auth');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    };
+  };
+
   // Fetch data on component mount
   useEffect(() => {
     fetchAllData();
@@ -213,7 +222,7 @@ export default function AdminPage() {
           <div className="flex items-center mb-8">
             <Settings className="w-8 h-8 text-gaming-accent mr-3" />
             <h1 className="text-3xl font-bold text-gaming-text">
-              Панель администратора
+              ��анель администратора
             </h1>
           </div>
 
@@ -261,7 +270,7 @@ export default function AdminPage() {
                       value={newNews.content}
                       onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
                       className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
-                      placeholder="Введите содержимое новости"
+                      placeholder="Введите содержимое нов��сти"
                     />
                   </div>
                   <div>
