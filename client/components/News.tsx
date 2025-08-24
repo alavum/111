@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -6,14 +7,15 @@ import { toast } from "@/hooks/use-toast";
 interface NewsItem {
   id: number;
   title: string;
-  excerpt: string;
+  content: string; // Changed from excerpt to content
   date: string;
-  image: string;
-  category: string;
-  slug: string;
+  image?: string; // Made optional
+  author?: string; // Added author field
+  published?: boolean; // Added published field
 }
 
-const newsItems: NewsItem[] = [
+// Remove static data, will be fetched from API
+const fallbackNewsItems: NewsItem[] = [
   {
     id: 1,
     title: "Пожнем Горжанка. Поздравляем с Днём Победы!",
@@ -173,7 +175,7 @@ export default function News() {
               className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
               onClick={() => toast({
                 title: "В разработке",
-                description: "Функция подписки на новости скоро будет доступна",
+                description: "Функция подписки на новости скор�� будет доступна",
                 duration: 3000,
               })}
             >
