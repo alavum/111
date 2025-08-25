@@ -174,10 +174,17 @@ async function sendDiscordWebhook(applicationData: any) {
       }
     }
 
-    // Fallback to regular webhook without file
+    // Fallback to regular webhook with image URL if available
+    let fallbackEmbed = { ...embed };
+    if (screenshotUrl) {
+      fallbackEmbed.image = {
+        url: screenshotUrl,
+      };
+    }
+
     webhookPayload = {
       content: "👋 @here Новая заявка на VIP!",
-      embeds: [embed],
+      embeds: [fallbackEmbed],
     };
 
     const response = await fetch(DISCORD_WEBHOOK_URL, {
