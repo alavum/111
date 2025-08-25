@@ -27,6 +27,10 @@ interface NewsArticle {
   author: string;
   date: string;
   published: boolean;
+  excerpt?: string;
+  category?: string;
+  image?: string;
+  slug?: string;
 }
 
 interface ContentItem {
