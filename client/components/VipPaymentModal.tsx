@@ -128,7 +128,12 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
       formData.append('discordId', playerData.discordId || '');
       formData.append('comment', playerData.comment || '');
       formData.append('screenshot', playerData.screenshot);
-      formData.append('plan', JSON.stringify(selectedPlan));
+      formData.append('plan', JSON.stringify({
+        ...selectedPlan,
+        months: selectedMonths,
+        totalPrice: calculatePrice(),
+        discount: getDiscountText()
+      }));
       formData.append('paymentMethod', selectedMethod);
 
       const response = await fetch('/api/vip-applications', {
@@ -148,7 +153,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось отправить заявку. Попробуйте позже.",
+        description: "Не удалось отправить ��аявку. Попробуйте позже.",
         variant: "destructive",
       });
     } finally {
@@ -281,7 +286,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   <li>1. Переведите точную сумму {calculatePrice()} ₽ на указанную карту</li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
                   <li>3. Заполните форму ниже и загрузите скриншот</li>
-                  <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
+                  <li>4. Дождитесь подтверждения (обычн�� в течение 1-24 часов)</li>
                 </ol>
               </div>
 
