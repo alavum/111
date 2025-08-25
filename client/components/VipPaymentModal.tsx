@@ -278,7 +278,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3">
                 <h4 className="font-semibold text-gaming-accent mb-2 text-sm">Инструкции по оплате:</h4>
                 <ol className="text-gaming-text-muted text-xs space-y-1">
-                  <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
+                  <li>1. Переведите точную сумму {calculatePrice()} ₽ на указанную карту</li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
                   <li>3. Заполните форму ниже и загрузите скриншот</li>
                   <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
