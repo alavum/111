@@ -47,7 +47,14 @@ async function sendDiscordWebhook(applicationData: any) {
       ? `${baseUrl}/uploads/vip-screenshots/${applicationData.screenshot.filename}`
       : null;
 
-    console.log("Sending Discord webhook with screenshot URL:", screenshotUrl);
+    console.log("Sending Discord webhook...");
+    console.log("Screenshot data:", applicationData.screenshot);
+    console.log("Screenshot URL:", screenshotUrl);
+
+    // Check if screenshot file actually exists
+    if (applicationData.screenshot && !fs.existsSync(applicationData.screenshot.path)) {
+      console.error("Screenshot file not found at path:", applicationData.screenshot.path);
+    }
 
     const embed = {
       title: "🎯 Новая заявка на VIP статус",
@@ -213,7 +220,7 @@ export const handleVipApplication: RequestHandler = async (req, res) => {
       planData = JSON.parse(plan);
     } catch (error) {
       return res.status(400).json({
-        error: "Не��ерный формат данных плана",
+        error: "Неверный формат данных плана",
       });
     }
 
