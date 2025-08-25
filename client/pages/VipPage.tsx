@@ -58,7 +58,7 @@ const vipPlans = [
   {
     id: "clan",
     name: "Клановый",
-    description: "30 VIP слотов с возможностью расши��ения",
+    description: "30 VIP слотов с возможностью расширения",
     basePrice: 1200,
     popular: false,
     features: [
@@ -143,7 +143,7 @@ export default function VipPage() {
               Выберите подходящий план
             </h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
               {vipPlans.map((plan, index) => (
                 <div
                   key={index}
