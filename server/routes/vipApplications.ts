@@ -106,7 +106,6 @@ async function sendDiscordWebhook(applicationData: any) {
     // Try to send with file attachment if screenshot exists
     if (applicationData.screenshot && fs.existsSync(applicationData.screenshot.path)) {
       try {
-        const FormData = require('form-data');
         const form = new FormData();
 
         form.append('payload_json', JSON.stringify({
