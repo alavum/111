@@ -89,10 +89,21 @@ function getStatusDot(status: Server["status"]) {
   }
 }
 
+// Cache interface
+interface CacheData {
+  data: Server[];
+  timestamp: number;
+}
+
+// Cache duration: 30 seconds
+const CACHE_DURATION = 30 * 1000;
+
 export default function ServerStatus() {
   const [serverData, setServerData] = useState<Server[]>(servers);
   const [connectionStatuses, setConnectionStatuses] = useState<Record<number, ServerConnectionStatus>>({});
   const [loadingConnections, setLoadingConnections] = useState<Record<number, boolean>>({});
+  const [isLoadingRcon, setIsLoadingRcon] = useState(true);
+  const [lastFetchTime, setLastFetchTime] = useState<number>(0);
 
   // Fetch RCON server data
   useEffect(() => {
