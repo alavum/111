@@ -88,7 +88,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось ск��пировать номер карты",
+        description: "Не удалось скопировать номер карты",
         variant: "destructive",
       });
     }
@@ -157,6 +157,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
   const resetModal = () => {
     setStep(1);
+    setSelectedMonths(1);
     setPlayerData({
       steamId: "",
       discordId: "",
