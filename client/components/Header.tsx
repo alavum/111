@@ -14,10 +14,10 @@ export default function Header() {
   };
 
   const getLinkClassName = (path: string) => {
-    const baseClasses = "transition-colors font-medium";
+    const baseClasses = "transition-all duration-200 font-medium px-3 py-2 rounded-md relative";
     return isActive(path)
-      ? `${baseClasses} text-gaming-accent`
-      : `${baseClasses} text-gaming-text hover:text-gaming-accent`;
+      ? `${baseClasses} text-gaming-accent bg-gaming-accent/10 border-b-2 border-gaming-accent`
+      : `${baseClasses} text-gaming-text hover:text-gaming-accent hover:bg-gaming-card`;
   };
 
   return (
