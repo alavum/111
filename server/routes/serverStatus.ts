@@ -70,7 +70,7 @@ export const checkMultipleServers: RequestHandler = async (req, res) => {
         return {
           serverId,
           ok: data.ok || false,
-          connectUrl: data.ok ? `https://rgs-squad.ru/c/s=${serverId}` : undefined,
+          connectUrl: data.ok ? `https://rgs-squad.ru/c/?s=${serverId}` : undefined,
         } as ServerStatusResponse;
       } catch (error) {
         return {
