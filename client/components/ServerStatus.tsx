@@ -157,6 +157,29 @@ export default function ServerStatus() {
       }
     };
 
+    // Load cached data on mount
+    const loadCachedData = () => {
+      try {
+        const cached = localStorage.getItem('rcon_cache');
+        if (cached) {
+          const cacheData: CacheData = JSON.parse(cached);
+          const now = Date.now();
+
+          // Check if cached data is still valid
+          if ((now - cacheData.timestamp) < CACHE_DURATION) {
+            console.log('Loading cached server data');
+            setServerData(cacheData.data);
+            setLastFetchTime(cacheData.timestamp);
+            setIsLoadingRcon(false);
+            return true; // Data loaded from cache
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load cached data:', error);
+      }
+      return false; // No valid cache found
+    };
+
     const checkAllServers = async () => {
       try {
         const serverIds = serverData.map(s => s.id);
