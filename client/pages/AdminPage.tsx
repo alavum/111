@@ -6,17 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Settings, 
-  FileText, 
-  Users, 
-  Shield, 
-  Eye, 
+import {
+  Settings,
+  FileText,
+  Users,
+  Shield,
+  Eye,
   Edit,
   Save,
   Plus,
   Trash2,
-  Server
+  Server,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -43,14 +43,18 @@ export default function AdminPage() {
   const [terms, setTerms] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [editingNews, setEditingNews] = useState<NewsArticle | null>(null);
-  const [newNews, setNewNews] = useState({ title: "", content: "", author: "Admin" });
+  const [newNews, setNewNews] = useState({
+    title: "",
+    content: "",
+    author: "Admin",
+  });
 
   // Helper function to get auth headers
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('admin_auth');
+    const token = localStorage.getItem("admin_auth");
     return {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   };
 
@@ -62,20 +66,19 @@ export default function AdminPage() {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch all content
       const [newsRes, rulesRes, privacyRes, termsRes] = await Promise.all([
-        fetch('/api/news'),
-        fetch('/api/rules'),
-        fetch('/api/privacy'),
-        fetch('/api/terms'),
+        fetch("/api/news"),
+        fetch("/api/rules"),
+        fetch("/api/privacy"),
+        fetch("/api/terms"),
       ]);
 
       if (newsRes.ok) setNews(await newsRes.json());
       if (rulesRes.ok) setRules(await rulesRes.json());
       if (privacyRes.ok) setPrivacy(await privacyRes.json());
       if (termsRes.ok) setTerms(await termsRes.json());
-      
     } catch (error) {
       toast({
         title: "Ошибка загрузки",
@@ -99,15 +102,15 @@ export default function AdminPage() {
     }
 
     try {
-      const response = await fetch('/api/news', {
-        method: 'POST',
+      const response = await fetch("/api/news", {
+        method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newNews),
       });
 
       if (response.ok) {
         const article = await response.json();
-        setNews(prev => [article, ...prev]);
+        setNews((prev) => [article, ...prev]);
         setNewNews({ title: "", content: "", author: "Admin" });
         toast({
           title: "Новость создана",
@@ -126,14 +129,14 @@ export default function AdminPage() {
   const handleUpdateNews = async (article: NewsArticle) => {
     try {
       const response = await fetch(`/api/news/${article.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: getAuthHeaders(),
         body: JSON.stringify(article),
       });
 
       if (response.ok) {
         const updated = await response.json();
-        setNews(prev => prev.map(n => n.id === updated.id ? updated : n));
+        setNews((prev) => prev.map((n) => (n.id === updated.id ? updated : n)));
         setEditingNews(null);
         toast({
           title: "Новость обновлена",
@@ -154,12 +157,12 @@ export default function AdminPage() {
 
     try {
       const response = await fetch(`/api/news/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
+        method: "DELETE",
+        headers: getAuthHeaders(),
       });
-      
+
       if (response.ok) {
-        setNews(prev => prev.filter(n => n.id !== id));
+        setNews((prev) => prev.filter((n) => n.id !== id));
         toast({
           title: "Новость удалена",
           description: "Новость успешно удалена",
@@ -175,24 +178,27 @@ export default function AdminPage() {
   };
 
   // Content management
-  const handleUpdateContent = async (type: 'rules' | 'privacy' | 'terms', content: ContentItem) => {
+  const handleUpdateContent = async (
+    type: "rules" | "privacy" | "terms",
+    content: ContentItem,
+  ) => {
     try {
       const response = await fetch(`/api/${type}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: getAuthHeaders(),
         body: JSON.stringify(content),
       });
 
       if (response.ok) {
         const updated = await response.json();
-        
-        if (type === 'rules') setRules(updated);
-        else if (type === 'privacy') setPrivacy(updated);
-        else if (type === 'terms') setTerms(updated);
-        
+
+        if (type === "rules") setRules(updated);
+        else if (type === "privacy") setPrivacy(updated);
+        else if (type === "terms") setTerms(updated);
+
         toast({
           title: "Контент обновлен",
-          description: `${type === 'rules' ? 'Правила' : type === 'privacy' ? 'Политика' : 'Условия'} успешно обновлены`,
+          description: `${type === "rules" ? "Правила" : type === "privacy" ? "Политика" : "Условия"} успешно обновлены`,
         });
       }
     } catch (error) {
@@ -228,16 +234,28 @@ export default function AdminPage() {
 
           <Tabs defaultValue="news" className="space-y-6">
             <TabsList className="grid grid-cols-4 w-full max-w-md bg-gaming-card border-gaming-border">
-              <TabsTrigger value="news" className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black">
+              <TabsTrigger
+                value="news"
+                className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black"
+              >
                 Новости
               </TabsTrigger>
-              <TabsTrigger value="rules" className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black">
+              <TabsTrigger
+                value="rules"
+                className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black"
+              >
                 Правила
               </TabsTrigger>
-              <TabsTrigger value="privacy" className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black">
+              <TabsTrigger
+                value="privacy"
+                className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black"
+              >
                 Политика
               </TabsTrigger>
-              <TabsTrigger value="terms" className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black">
+              <TabsTrigger
+                value="terms"
+                className="data-[state=active]:bg-gaming-accent data-[state=active]:text-black"
+              >
                 Условия
               </TabsTrigger>
             </TabsList>
@@ -254,31 +272,52 @@ export default function AdminPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="newsTitle" className="text-gaming-text">Заголовок</Label>
+                    <Label htmlFor="newsTitle" className="text-gaming-text">
+                      Заголовок
+                    </Label>
                     <Input
                       id="newsTitle"
                       value={newNews.title}
-                      onChange={(e) => setNewNews(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                       className="bg-gaming-bg border-gaming-border text-gaming-text"
                       placeholder="Введите заголовок новости"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="newsContent" className="text-gaming-text">Содержимое</Label>
+                    <Label htmlFor="newsContent" className="text-gaming-text">
+                      Содержимое
+                    </Label>
                     <Textarea
                       id="newsContent"
                       value={newNews.content}
-                      onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          content: e.target.value,
+                        }))
+                      }
                       className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
                       placeholder="Введите содержимое новости"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="newsAuthor" className="text-gaming-text">Автор</Label>
+                    <Label htmlFor="newsAuthor" className="text-gaming-text">
+                      Автор
+                    </Label>
                     <Input
                       id="newsAuthor"
                       value={newNews.author}
-                      onChange={(e) => setNewNews(prev => ({ ...prev, author: e.target.value }))}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          author: e.target.value,
+                        }))
+                      }
                       className="bg-gaming-bg border-gaming-border text-gaming-text"
                     />
                   </div>
@@ -295,17 +334,24 @@ export default function AdminPage() {
               {/* News List */}
               <div className="space-y-4">
                 {news.map((article) => (
-                  <Card key={article.id} className="bg-gaming-card border-gaming-border">
+                  <Card
+                    key={article.id}
+                    className="bg-gaming-card border-gaming-border"
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-gaming-text">{article.title}</CardTitle>
+                        <CardTitle className="text-gaming-text">
+                          {article.title}
+                        </CardTitle>
                         <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            article.published 
-                              ? 'bg-green-500/20 text-green-400' 
-                              : 'bg-red-500/20 text-red-400'
-                          }`}>
-                            {article.published ? 'Опубликовано' : 'Черновик'}
+                          <span
+                            className={`px-2 py-1 rounded text-xs ${
+                              article.published
+                                ? "bg-green-500/20 text-green-400"
+                                : "bg-red-500/20 text-red-400"
+                            }`}
+                          >
+                            {article.published ? "Опубликовано" : "Черновик"}
                           </span>
                           <Button
                             size="sm"
@@ -326,19 +372,30 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <p className="text-gaming-text-muted text-sm">
-                        {article.author} • {new Date(article.date).toLocaleDateString('ru-RU')}
+                        {article.author} •{" "}
+                        {new Date(article.date).toLocaleDateString("ru-RU")}
                       </p>
                     </CardHeader>
                     {editingNews?.id === article.id ? (
                       <CardContent className="space-y-4">
                         <Input
                           value={editingNews.title}
-                          onChange={(e) => setEditingNews({ ...editingNews, title: e.target.value })}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              title: e.target.value,
+                            })
+                          }
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
                         <Textarea
                           value={editingNews.content}
-                          onChange={(e) => setEditingNews({ ...editingNews, content: e.target.value })}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              content: e.target.value,
+                            })
+                          }
                           className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
                         />
                         <div className="flex space-x-2">
@@ -360,7 +417,9 @@ export default function AdminPage() {
                       </CardContent>
                     ) : (
                       <CardContent>
-                        <p className="text-gaming-text-muted">{article.content.substring(0, 200)}...</p>
+                        <p className="text-gaming-text-muted">
+                          {article.content.substring(0, 200)}...
+                        </p>
                       </CardContent>
                     )}
                   </Card>
@@ -380,25 +439,36 @@ export default function AdminPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="rulesTitle" className="text-gaming-text">Заголовок</Label>
+                      <Label htmlFor="rulesTitle" className="text-gaming-text">
+                        Заголовок
+                      </Label>
                       <Input
                         id="rulesTitle"
                         value={rules.title}
-                        onChange={(e) => setRules({ ...rules, title: e.target.value })}
+                        onChange={(e) =>
+                          setRules({ ...rules, title: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="rulesContent" className="text-gaming-text">Содержимое</Label>
+                      <Label
+                        htmlFor="rulesContent"
+                        className="text-gaming-text"
+                      >
+                        Содержимое
+                      </Label>
                       <Textarea
                         id="rulesContent"
                         value={rules.content}
-                        onChange={(e) => setRules({ ...rules, content: e.target.value })}
+                        onChange={(e) =>
+                          setRules({ ...rules, content: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
                       />
                     </div>
                     <Button
-                      onClick={() => handleUpdateContent('rules', rules)}
+                      onClick={() => handleUpdateContent("rules", rules)}
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
@@ -421,25 +491,39 @@ export default function AdminPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="privacyTitle" className="text-gaming-text">Заголовок</Label>
+                      <Label
+                        htmlFor="privacyTitle"
+                        className="text-gaming-text"
+                      >
+                        Заголовок
+                      </Label>
                       <Input
                         id="privacyTitle"
                         value={privacy.title}
-                        onChange={(e) => setPrivacy({ ...privacy, title: e.target.value })}
+                        onChange={(e) =>
+                          setPrivacy({ ...privacy, title: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="privacyContent" className="text-gaming-text">Содержимое</Label>
+                      <Label
+                        htmlFor="privacyContent"
+                        className="text-gaming-text"
+                      >
+                        Содержимое
+                      </Label>
                       <Textarea
                         id="privacyContent"
                         value={privacy.content}
-                        onChange={(e) => setPrivacy({ ...privacy, content: e.target.value })}
+                        onChange={(e) =>
+                          setPrivacy({ ...privacy, content: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
                       />
                     </div>
                     <Button
-                      onClick={() => handleUpdateContent('privacy', privacy)}
+                      onClick={() => handleUpdateContent("privacy", privacy)}
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
@@ -462,25 +546,36 @@ export default function AdminPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="termsTitle" className="text-gaming-text">Заголовок</Label>
+                      <Label htmlFor="termsTitle" className="text-gaming-text">
+                        Заголовок
+                      </Label>
                       <Input
                         id="termsTitle"
                         value={terms.title}
-                        onChange={(e) => setTerms({ ...terms, title: e.target.value })}
+                        onChange={(e) =>
+                          setTerms({ ...terms, title: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="termsContent" className="text-gaming-text">Содержимое</Label>
+                      <Label
+                        htmlFor="termsContent"
+                        className="text-gaming-text"
+                      >
+                        Содержимое
+                      </Label>
                       <Textarea
                         id="termsContent"
                         value={terms.content}
-                        onChange={(e) => setTerms({ ...terms, content: e.target.value })}
+                        onChange={(e) =>
+                          setTerms({ ...terms, content: e.target.value })
+                        }
                         className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
                       />
                     </div>
                     <Button
-                      onClick={() => handleUpdateContent('terms', terms)}
+                      onClick={() => handleUpdateContent("terms", terms)}
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />

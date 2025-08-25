@@ -7,14 +7,15 @@ export default function Header() {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === "/") {
+      return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
 
   const getLinkClassName = (path: string) => {
-    const baseClasses = "transition-all duration-200 font-medium px-3 py-2 rounded-md relative";
+    const baseClasses =
+      "transition-all duration-200 font-medium px-3 py-2 rounded-md relative";
     return isActive(path)
       ? `${baseClasses} text-gaming-accent bg-gaming-accent/10 border-b-2 border-gaming-accent`
       : `${baseClasses} text-gaming-text hover:text-gaming-accent hover:bg-gaming-card`;
@@ -36,22 +37,13 @@ export default function Header() {
 
           {/* Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className={getLinkClassName('/')}
-            >
+            <Link to="/" className={getLinkClassName("/")}>
               Главная
             </Link>
-            <Link
-              to="/news"
-              className={getLinkClassName('/news')}
-            >
+            <Link to="/news" className={getLinkClassName("/news")}>
               Новости
             </Link>
-            <Link
-              to="/guides"
-              className={getLinkClassName('/guides')}
-            >
+            <Link to="/guides" className={getLinkClassName("/guides")}>
               Гайды
             </Link>
             <a
@@ -62,10 +54,7 @@ export default function Header() {
             >
               Squad Calc
             </a>
-            <Link
-              to="/rules"
-              className={getLinkClassName('/rules')}
-            >
+            <Link to="/rules" className={getLinkClassName("/rules")}>
               Правила
             </Link>
             <a
@@ -80,7 +69,6 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-
             {/* VIP Button */}
             <Link to="/vip">
               <Button

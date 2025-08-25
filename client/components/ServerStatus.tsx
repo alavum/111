@@ -100,8 +100,12 @@ const CACHE_DURATION = 30 * 1000;
 
 export default function ServerStatus() {
   const [serverData, setServerData] = useState<Server[]>(servers);
-  const [connectionStatuses, setConnectionStatuses] = useState<Record<number, ServerConnectionStatus>>({});
-  const [loadingConnections, setLoadingConnections] = useState<Record<number, boolean>>({});
+  const [connectionStatuses, setConnectionStatuses] = useState<
+    Record<number, ServerConnectionStatus>
+  >({});
+  const [loadingConnections, setLoadingConnections] = useState<
+    Record<number, boolean>
+  >({});
   const [isLoadingRcon, setIsLoadingRcon] = useState(true);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
 
@@ -111,15 +115,19 @@ export default function ServerStatus() {
       const now = Date.now();
 
       // Check if we have cached data and it's still valid
-      if (!forceRefresh && lastFetchTime && (now - lastFetchTime) < CACHE_DURATION) {
-        console.log('Using cached server data');
+      if (
+        !forceRefresh &&
+        lastFetchTime &&
+        now - lastFetchTime < CACHE_DURATION
+      ) {
+        console.log("Using cached server data");
         return;
       }
 
       setIsLoadingRcon(true);
 
       try {
-        const response = await fetch('/api/rcon-status');
+        const response = await fetch("/api/rcon-status");
         if (response.ok) {
           const rconData = await response.json();
 
@@ -129,7 +137,10 @@ export default function ServerStatus() {
             name: `RSGS Server ${rconServer.serverId}`,
             players: rconServer.players || 0,
             maxPlayers: rconServer.maxPlayers || 80,
-            queue: Math.max(0, (rconServer.players || 0) - (rconServer.maxPlayers || 80)),
+            queue: Math.max(
+              0,
+              (rconServer.players || 0) - (rconServer.maxPlayers || 80),
+            ),
             map: rconServer.map || "Unknown",
             gameMode: rconServer.gameMode || "Unknown",
             status: rconServer.status as Server["status"],
@@ -141,12 +152,12 @@ export default function ServerStatus() {
           // Cache to localStorage
           const cacheData: CacheData = {
             data: updatedServers,
-            timestamp: now
+            timestamp: now,
           };
-          localStorage.setItem('rcon_cache', JSON.stringify(cacheData));
+          localStorage.setItem("rcon_cache", JSON.stringify(cacheData));
         }
       } catch (error) {
-        console.error('Failed to fetch RCON data:', error);
+        console.error("Failed to fetch RCON data:", error);
         toast({
           title: "Ошибка загрузки",
           description: "Не удалось загрузить данные серверов",
@@ -160,14 +171,14 @@ export default function ServerStatus() {
     // Load cached data on mount
     const loadCachedData = () => {
       try {
-        const cached = localStorage.getItem('rcon_cache');
+        const cached = localStorage.getItem("rcon_cache");
         if (cached) {
           const cacheData: CacheData = JSON.parse(cached);
           const now = Date.now();
 
           // Check if cached data is still valid
-          if ((now - cacheData.timestamp) < CACHE_DURATION) {
-            console.log('Loading cached server data');
+          if (now - cacheData.timestamp < CACHE_DURATION) {
+            console.log("Loading cached server data");
             setServerData(cacheData.data);
             setLastFetchTime(cacheData.timestamp);
             setIsLoadingRcon(false);
@@ -175,33 +186,36 @@ export default function ServerStatus() {
           }
         }
       } catch (error) {
-        console.error('Failed to load cached data:', error);
+        console.error("Failed to load cached data:", error);
       }
       return false; // No valid cache found
     };
 
     const checkAllServers = async () => {
       try {
-        const serverIds = serverData.map(s => s.id);
-        const response = await fetch('/api/server-status/batch', {
-          method: 'POST',
+        const serverIds = serverData.map((s) => s.id);
+        const response = await fetch("/api/server-status/batch", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ serverIds }),
         });
 
         if (response.ok) {
           const statuses: ServerConnectionStatus[] = await response.json();
-          const statusMap = statuses.reduce((acc, status) => {
-            acc[status.serverId] = status;
-            return acc;
-          }, {} as Record<number, ServerConnectionStatus>);
+          const statusMap = statuses.reduce(
+            (acc, status) => {
+              acc[status.serverId] = status;
+              return acc;
+            },
+            {} as Record<number, ServerConnectionStatus>,
+          );
 
           setConnectionStatuses(statusMap);
         }
       } catch (error) {
-        console.error('Failed to check server statuses:', error);
+        console.error("Failed to check server statuses:", error);
       }
     };
 
@@ -226,11 +240,12 @@ export default function ServerStatus() {
 
   const handleConnect = async (server: Server) => {
     const connectionStatus = connectionStatuses[server.id];
-    
+
     if (server.status !== "online") {
       toast({
         title: "Сервер недоступен",
-        description: "Сервер находится в оффлайне или на техническом обслуживании",
+        description:
+          "Сервер находится в оффлайне или на техническом обслуживании",
         variant: "destructive",
       });
       return;
@@ -238,16 +253,16 @@ export default function ServerStatus() {
 
     // If we don't have connection status yet, check it
     if (!connectionStatus) {
-      setLoadingConnections(prev => ({ ...prev, [server.id]: true }));
-      
+      setLoadingConnections((prev) => ({ ...prev, [server.id]: true }));
+
       try {
         const response = await fetch(`/api/server-status/${server.id}`);
         const status: ServerConnectionStatus = await response.json();
-        
-        setConnectionStatuses(prev => ({ ...prev, [server.id]: status }));
-        
+
+        setConnectionStatuses((prev) => ({ ...prev, [server.id]: status }));
+
         if (status.ok && status.connectUrl) {
-          window.open(status.connectUrl, '_blank');
+          window.open(status.connectUrl, "_blank");
         } else {
           toast({
             title: "Подключение недоступно",
@@ -262,18 +277,20 @@ export default function ServerStatus() {
           variant: "destructive",
         });
       } finally {
-        setLoadingConnections(prev => ({ ...prev, [server.id]: false }));
+        setLoadingConnections((prev) => ({ ...prev, [server.id]: false }));
       }
       return;
     }
 
     // If we have connection status, use it
     if (connectionStatus.ok && connectionStatus.connectUrl) {
-      window.open(connectionStatus.connectUrl, '_blank');
+      window.open(connectionStatus.connectUrl, "_blank");
     } else {
       toast({
-        title: "Подключение недоступно", 
-        description: connectionStatus.error || "Сервер временно недоступен для подключения",
+        title: "Подключение недоступно",
+        description:
+          connectionStatus.error ||
+          "Сервер временно недоступен для подключения",
         variant: "destructive",
       });
     }
@@ -281,19 +298,19 @@ export default function ServerStatus() {
 
   const isConnectionAvailable = (server: Server) => {
     if (server.status !== "online") return false;
-    
+
     const connectionStatus = connectionStatuses[server.id];
     return connectionStatus?.ok === true;
   };
 
   const getConnectButtonText = (server: Server) => {
     if (server.status !== "online") return "Недоступен";
-    
+
     if (loadingConnections[server.id]) return "Проверка...";
-    
+
     const connectionStatus = connectionStatuses[server.id];
     if (!connectionStatus) return "Подключиться";
-    
+
     return connectionStatus.ok ? "Подключиться" : "Недоступен";
   };
 
@@ -363,7 +380,9 @@ export default function ServerStatus() {
               {/* Map and Game Mode */}
               <div className="space-y-2">
                 <div>
-                  <span className="text-gaming-text-muted text-sm">Карт��:</span>
+                  <span className="text-gaming-text-muted text-sm">
+                    Карт��:
+                  </span>
                   <p className="text-gaming-text text-sm">{server.map}</p>
                 </div>
                 <div>
@@ -376,14 +395,15 @@ export default function ServerStatus() {
               <button
                 onClick={() => handleConnect(server)}
                 disabled={
-                  !isConnectionAvailable(server) && 
-                  server.status === "online" && 
+                  !isConnectionAvailable(server) &&
+                  server.status === "online" &&
                   connectionStatuses[server.id]?.ok === false
                 }
                 className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
                   isConnectionAvailable(server)
                     ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black cursor-pointer"
-                    : server.status === "online" && !connectionStatuses[server.id]
+                    : server.status === "online" &&
+                        !connectionStatuses[server.id]
                       ? "bg-gaming-accent/70 hover:bg-gaming-accent text-black cursor-pointer"
                       : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
                 }`}
