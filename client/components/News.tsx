@@ -58,20 +58,33 @@ export default function News() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
+        console.log('Fetching news from API...');
         const response = await fetch('/api/news');
         if (response.ok) {
           const apiNews = await response.json();
+          console.log('Received news data:', apiNews);
+
           // Filter only published news and limit to 6 items
           const publishedNews = apiNews
             .filter((news: NewsItem) => news.published !== false)
             .slice(0, 6);
-          setNewsItems(publishedNews.length > 0 ? publishedNews : fallbackNewsItems);
+
+          console.log('Filtered published news:', publishedNews);
+
+          if (publishedNews.length > 0) {
+            setNewsItems(publishedNews);
+            console.log('Set news items to:', publishedNews);
+          } else {
+            console.log('No published news found, using fallback');
+            setNewsItems(fallbackNewsItems);
+          }
         } else {
           console.error('Failed to fetch news:', response.status);
+          setNewsItems(fallbackNewsItems);
         }
       } catch (error) {
         console.error('Error fetching news:', error);
-        // Keep fallback data on error
+        setNewsItems(fallbackNewsItems);
       } finally {
         setLoading(false);
       }
