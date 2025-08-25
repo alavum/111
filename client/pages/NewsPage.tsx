@@ -24,7 +24,7 @@ const allNewsItems: NewsItem[] = [
     id: 1,
     title: "Пожнем Горжанка. Поздравляем с Днём Победы!",
     excerpt:
-      "Торжественное мероприятие в чес��ь 79-й годовщины П��беды в Великой Отечественной войне.",
+      "Торжественное мероприятие в честь 79-й годовщины П��беды в Великой Отечественной войне.",
     date: "09.05.2024 03:00",
     image: "/api/placeholder/600/350",
     category: "События",
@@ -57,7 +57,7 @@ const allNewsItems: NewsItem[] = [
     id: 4,
     title: "Обновление Squad v8.2",
     excerpt:
-      "Крупное обновление игры Squad с новыми картами, оруж��ем и улучшениями геймплея.",
+      "Крупное обновление игры Squad с новыми картами, оружием и улучшениями геймплея.",
     date: "03.05.2024 12:00",
     image: "/api/placeholder/400/250",
     category: "Обновления",
@@ -146,17 +146,66 @@ export default function NewsPage() {
                   <Input
                     type="search"
                     placeholder="Поиск новостей..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-4 pr-10 w-64 bg-gaming-bg border-gaming-border text-gaming-text"
                   />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gaming-text-muted hover:text-gaming-text"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Фильтр
-                </Button>
+
+                <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`border-gaming-border text-gaming-text hover:bg-gaming-bg ${
+                        selectedCategory !== "Все" ? "bg-gaming-accent text-black" : ""
+                      }`}
+                    >
+                      <Filter className="w-4 h-4 mr-2" />
+                      {selectedCategory !== "Все" ? selectedCategory : "Фильтр"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-gaming-card border-gaming-border p-4">
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold text-gaming-text">Категория</h4>
+                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger className="bg-gaming-bg border-gaming-border text-gaming-text">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gaming-card border-gaming-border">
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {(selectedCategory !== "Все" || searchQuery) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedCategory("Все");
+                            setSearchQuery("");
+                            setIsFilterOpen(false);
+                          }}
+                          className="w-full border-gaming-border text-gaming-text hover:bg-gaming-bg"
+                        >
+                          Сбросить фильтры
+                        </Button>
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>
