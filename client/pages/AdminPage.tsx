@@ -151,12 +151,27 @@ export default function AdminPage() {
     }
   };
 
-  const handleUpdateNews = async (article: NewsArticle) => {
+  const handleUpdateNews = async (article: NewsArticle & { newImage?: File }) => {
     try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('title', article.title);
+      formData.append('content', article.content);
+      formData.append('published', article.published.toString());
+      formData.append('excerpt', article.excerpt || '');
+      formData.append('category', article.category || 'Общее');
+
+      if (article.newImage) {
+        formData.append('image', article.newImage);
+      }
+
+      const token = localStorage.getItem("admin_auth");
       const response = await fetch(`/api/news/${article.id}`, {
         method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(article),
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
       });
 
       if (response.ok) {
@@ -566,7 +581,7 @@ export default function AdminPage() {
                   <CardHeader>
                     <CardTitle className="text-gaming-text flex items-center">
                       <FileText className="w-5 h-5 mr-2" />
-                      П��льзов��тельское соглашение
+                      П��льзовательское соглашение
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
