@@ -99,8 +99,26 @@ function getCategoryColor(category: string) {
 }
 
 export default function NewsPage() {
-  const featuredNews = allNewsItems.filter((item) => item.featured);
-  const regularNews = allNewsItems.filter((item) => !item.featured);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Все");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Get unique categories
+  const categories = ["Все", ...Array.from(new Set(allNewsItems.map(item => item.category)))];
+
+  // Filter news based on search and category
+  const filteredNews = allNewsItems.filter((item) => {
+    const matchesSearch = searchQuery === "" ||
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory = selectedCategory === "Все" || item.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const featuredNews = filteredNews.filter((item) => item.featured);
+  const regularNews = filteredNews.filter((item) => !item.featured);
 
   return (
     <div className="min-h-screen bg-gaming-bg">
