@@ -14,7 +14,7 @@ const vipFeatures = [
   {
     icon: <Shield className="w-6 h-6" />,
     title: "Защита от кика",
-    description: "Защит�� от автоматического отключения",
+    description: "Защита от автоматического отключения",
   },
   {
     icon: <Zap className="w-6 h-6" />,
@@ -53,7 +53,7 @@ const vipPlans = [
       "Приоритетная очередь",
       "Возможность расширения",
       "Управление кланом",
-      "Дополни��ельные привилегии"
+      "Дополнительные привилегии"
     ]
   }
 ];
@@ -72,9 +72,9 @@ const sponsorPlan = {
 
 export default function VipPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<typeof vipPlans[0] | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
-  const handleBuyVip = (plan: typeof vipPlans[0]) => {
+  const handleBuyVip = (plan: any) => {
     setSelectedPlan(plan);
     setIsPaymentModalOpen(true);
   };
@@ -102,7 +102,7 @@ export default function VipPage() {
         <section className="py-16 bg-gaming-card">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-gaming-text text-center mb-12">
-              Преимущества VIP ��татуса
+              Преимущества VIP статуса
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -123,18 +123,18 @@ export default function VipPage() {
           </div>
         </section>
 
-        {/* Pricing Section */}
+        {/* VIP Plans Section */}
         <section className="py-16 bg-gaming-bg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-gaming-text text-center mb-12">
               Выберите подходящий план
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
               {vipPlans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`relative bg-gaming-card border-2 rounded-lg p-6 ${
+                  className={`relative bg-gaming-card border-2 rounded-lg p-8 ${
                     plan.popular
                       ? "border-gaming-accent"
                       : "border-gaming-border hover:border-gaming-accent/50"
@@ -143,63 +143,100 @@ export default function VipPage() {
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <span className="bg-gaming-accent text-black px-4 py-1 rounded-full text-sm font-semibold">
-                        Популяр��ый
+                        Рекомендуемый
                       </span>
                     </div>
                   )}
 
-                  {plan.discount && (
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                        {plan.discount}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="text-center">
-                    <h3 className="text-xl font-bold text-gaming-text mb-2">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold text-gaming-text mb-2">
                       {plan.name}
                     </h3>
-                    <div className="text-3xl font-bold text-gaming-accent mb-1">
-                      {plan.price}
-                    </div>
-                    <p className="text-gaming-text-muted mb-6">
-                      {plan.duration}
+                    <p className="text-gaming-text-muted mb-4">
+                      {plan.description}
                     </p>
-
-                    <ul className="space-y-3 mb-8">
-                      <li className="flex items-center text-gaming-text">
-                        <Check className="w-5 h-5 text-gaming-accent mr-2" />
-                        Приоритетная очередь
-                      </li>
-                      <li className="flex items-center text-gaming-text">
-                        <Check className="w-5 h-5 text-gaming-accent mr-2" />
-                        За��ита от кика
-                      </li>
-                      <li className="flex items-center text-gaming-text">
-                        <Check className="w-5 h-5 text-gaming-accent mr-2" />
-                        VIP сообщество
-                      </li>
-                      <li className="flex items-center text-gaming-text">
-                        <Check className="w-5 h-5 text-gaming-accent mr-2" />
-                        Поддержка 24/7
-                      </li>
-                    </ul>
-
-                    <Button
-                      className={`w-full ${
-                        plan.popular
-                          ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black"
-                          : "bg-gaming-border hover:bg-gaming-accent hover:text-black text-gaming-text"
-                      }`}
-                      size="lg"
-                      onClick={() => handleBuyVip(plan)}
-                    >
-                      Купить VIP
-                    </Button>
+                    <div className="text-lg font-bold text-gaming-accent">
+                      от {plan.basePrice} ₽/месяц
+                    </div>
                   </div>
+
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start text-gaming-text">
+                        <Check className="w-5 h-5 text-gaming-accent mr-3 mt-0.5 flex-shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    className={`w-full ${
+                      plan.popular
+                        ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black"
+                        : "bg-gaming-border hover:bg-gaming-accent hover:text-black text-gaming-text"
+                    }`}
+                    size="lg"
+                    onClick={() => handleBuyVip(plan)}
+                  >
+                    Выбрать план
+                  </Button>
                 </div>
               ))}
+            </div>
+
+            {/* Sponsor Section */}
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gaming-text mb-4">
+                  Для потенциальных спонсоров
+                </h3>
+                <p className="text-gaming-text-muted">
+                  Поддержите проект RSGS и получите эксклюзивные привилегии
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-r from-gaming-card via-purple-900/20 to-gaming-card border-2 border-purple-500 rounded-lg p-8">
+                <div className="text-center mb-6">
+                  <h4 className="text-2xl font-bold mb-2">
+                    <span className="bg-gradient-to-r from-yellow-400 via-purple-400 to-yellow-400 bg-clip-text text-transparent">
+                      {sponsorPlan.name}
+                    </span>
+                  </h4>
+                  <p className="text-xl text-gaming-accent font-semibold">
+                    {sponsorPlan.description}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  {sponsorPlan.features.map((feature, idx) => (
+                    <div key={idx} className="flex items-start text-gaming-text">
+                      <Star className="w-5 h-5 text-yellow-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-center space-y-4">
+                  <Button
+                    className="bg-gradient-to-r from-yellow-500 to-purple-500 hover:from-yellow-600 hover:to-purple-600 text-black font-semibold px-8"
+                    size="lg"
+                    onClick={() => handleBuyVip(sponsorPlan)}
+                  >
+                    Стать спонсором
+                  </Button>
+                  <div className="flex justify-center">
+                    <a
+                      href="https://discord.gg/HXne8JVJ"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover transition-colors"
+                    >
+                      <Users className="w-4 h-4 mr-2" />
+                      Перейти в Discord для связи
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -218,7 +255,7 @@ export default function VipPage() {
                 </h3>
                 <p className="text-gaming-text-muted">
                   VIP статус активируется автоматически после оплаты в течение
-                  5-10 минут. Вы получите у��едомление в Discord о активации.
+                  5-10 минут. Вы получите уведомление в Discord о активации.
                 </p>
               </div>
 
@@ -228,7 +265,7 @@ export default function VipPage() {
                 </h3>
                 <p className="text-gaming-text-muted">
                   VIP статус действует на всех серверах RSGS: Free, #1, Invasion
-                  �� International.
+                  и International.
                 </p>
               </div>
 
