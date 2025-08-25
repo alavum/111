@@ -300,9 +300,17 @@ export default function ServerStatus() {
   return (
     <section id="servers" className="py-12 bg-gaming-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-gaming-text mb-8">
-          Статус серверов
-        </h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gaming-text">
+            Статус серверов
+          </h2>
+          {isLoadingRcon && (
+            <div className="flex items-center text-gaming-accent">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gaming-accent mr-2"></div>
+              <span className="text-sm">Обновление данных...</span>
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {serverData.map((server) => (
