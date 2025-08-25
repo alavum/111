@@ -1,8 +1,11 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Calendar, ArrowRight, Filter } from "lucide-react";
+import { Calendar, ArrowRight, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Link } from "react-router-dom";
 
 interface NewsItem {
@@ -21,7 +24,7 @@ const allNewsItems: NewsItem[] = [
     id: 1,
     title: "Пожнем Горжанка. Поздравляем с Днём Победы!",
     excerpt:
-      "Торжественное мероприятие в честь 79-й годовщины П��беды в Великой Отечественной войне.",
+      "Торжественное мероприятие в чес��ь 79-й годовщины П��беды в Великой Отечественной войне.",
     date: "09.05.2024 03:00",
     image: "/api/placeholder/600/350",
     category: "События",
@@ -54,7 +57,7 @@ const allNewsItems: NewsItem[] = [
     id: 4,
     title: "Обновление Squad v8.2",
     excerpt:
-      "Крупное обновление игры Squad с новыми картами, оружием и улучшениями геймплея.",
+      "Крупное обновление игры Squad с новыми картами, оруж��ем и улучшениями геймплея.",
     date: "03.05.2024 12:00",
     image: "/api/placeholder/400/250",
     category: "Обновления",
