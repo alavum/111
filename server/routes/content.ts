@@ -1,4 +1,37 @@
 import { RequestHandler } from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+// Setup multer for news image uploads
+const newsImageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = "uploads/news-images";
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    cb(null, `news-${timestamp}${ext}`);
+  },
+});
+
+const newsImageUpload = multer({
+  storage: newsImageStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Только изображения разрешены!"));
+    }
+  },
+});
 
 // Temporary in-memory storage - in production, use a database
 let newsArticles = [
@@ -9,6 +42,10 @@ let newsArticles = [
     author: "Admin",
     date: new Date().toISOString(),
     published: true,
+    image: "/api/placeholder/600/350",
+    excerpt: "Новый игровой режим с уникальными механиками",
+    category: "Обновления",
+    slug: "new-invasion-server"
   },
   {
     id: 2,
@@ -17,6 +54,10 @@ let newsArticles = [
     author: "Moderator",
     date: new Date(Date.now() - 86400000).toISOString(),
     published: true,
+    image: "/api/placeholder/600/350",
+    excerpt: "Важные изменения в правилах сервера",
+    category: "Правила",
+    slug: "rules-update"
   },
 ];
 
@@ -152,7 +193,7 @@ export const deleteNews: RequestHandler = (req, res) => {
   const articleIndex = newsArticles.findIndex(a => a.id === id);
   
   if (articleIndex === -1) {
-    return res.status(404).json({ error: "Новость не найдена" });
+    return res.status(404).json({ error: "Новость не ��айдена" });
   }
   
   newsArticles.splice(articleIndex, 1);
