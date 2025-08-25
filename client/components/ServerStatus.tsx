@@ -105,9 +105,19 @@ export default function ServerStatus() {
   const [isLoadingRcon, setIsLoadingRcon] = useState(true);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
 
-  // Fetch RCON server data
+  // Fetch RCON server data with caching
   useEffect(() => {
-    const fetchRconData = async () => {
+    const fetchRconData = async (forceRefresh = false) => {
+      const now = Date.now();
+
+      // Check if we have cached data and it's still valid
+      if (!forceRefresh && lastFetchTime && (now - lastFetchTime) < CACHE_DURATION) {
+        console.log('Using cached server data');
+        return;
+      }
+
+      setIsLoadingRcon(true);
+
       try {
         const response = await fetch('/api/rcon-status');
         if (response.ok) {
@@ -126,9 +136,24 @@ export default function ServerStatus() {
           }));
 
           setServerData(updatedServers);
+          setLastFetchTime(now);
+
+          // Cache to localStorage
+          const cacheData: CacheData = {
+            data: updatedServers,
+            timestamp: now
+          };
+          localStorage.setItem('rcon_cache', JSON.stringify(cacheData));
         }
       } catch (error) {
         console.error('Failed to fetch RCON data:', error);
+        toast({
+          title: "Ошибка загрузки",
+          description: "Не удалось загрузить данные серверов",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoadingRcon(false);
       }
     };
 
