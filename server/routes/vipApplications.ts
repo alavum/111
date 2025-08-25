@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import FormData from "form-data";
 
 // Discord webhook URL
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1408854118579310666/kOnjEKa5Ikq6xuPTmuNOqbzeWjia6Ti6VLPENfJcDkTIpWzzhISLh5EYI9vq1DV_mOkZ";
