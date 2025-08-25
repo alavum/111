@@ -55,7 +55,7 @@ async function sendDiscordWebhook(applicationData: any) {
       fields: [
         {
           name: "📋 План VIP",
-          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.price}\n⏰ ${applicationData.plan.duration}`,
+          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.totalPrice || applicationData.plan.price || applicationData.plan.basePrice} ₽\n⏰ ${applicationData.plan.months ? `${applicationData.plan.months} мес.` : (applicationData.plan.duration || 'Не указано')}\n${applicationData.plan.discount ? `🎁 ${applicationData.plan.discount}` : ''}`,
           inline: true,
         },
         {
