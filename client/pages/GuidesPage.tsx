@@ -23,13 +23,14 @@ export default function GuidesPage() {
               <div className="w-16 h-16 mx-auto mb-6 bg-gaming-accent/20 rounded-full flex items-center justify-center">
                 <Book className="w-8 h-8 text-gaming-accent" />
               </div>
-              
+
               <h2 className="text-2xl font-bold text-gaming-text mb-4">
                 <span className="text-gaming-accent">Совсем скоро</span>
               </h2>
-              
+
               <p className="text-gaming-text-muted mb-8 max-w-md mx-auto">
-                Мы работаем над созданием качественных гайдов. Следите за обновлениями!
+                Мы работаем над созданием качественных гайдов. Следите за
+                обновлениями!
               </p>
 
               <a

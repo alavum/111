@@ -111,14 +111,14 @@ export default function AdminPage() {
     try {
       // Create FormData for file upload
       const formData = new FormData();
-      formData.append('title', newNews.title);
-      formData.append('content', newNews.content);
-      formData.append('author', newNews.author);
-      formData.append('excerpt', newNews.excerpt);
-      formData.append('category', newNews.category);
+      formData.append("title", newNews.title);
+      formData.append("content", newNews.content);
+      formData.append("author", newNews.author);
+      formData.append("excerpt", newNews.excerpt);
+      formData.append("category", newNews.category);
 
       if (newNews.image) {
-        formData.append('image', newNews.image);
+        formData.append("image", newNews.image);
       }
 
       const token = localStorage.getItem("admin_auth");
@@ -139,7 +139,7 @@ export default function AdminPage() {
           author: "Admin",
           excerpt: "",
           category: "Общее",
-          image: null
+          image: null,
         });
         toast({
           title: "Новость создана",
@@ -155,18 +155,20 @@ export default function AdminPage() {
     }
   };
 
-  const handleUpdateNews = async (article: NewsArticle & { newImage?: File }) => {
+  const handleUpdateNews = async (
+    article: NewsArticle & { newImage?: File },
+  ) => {
     try {
       // Create FormData for file upload
       const formData = new FormData();
-      formData.append('title', article.title);
-      formData.append('content', article.content);
-      formData.append('published', article.published.toString());
-      formData.append('excerpt', article.excerpt || '');
-      formData.append('category', article.category || 'Общее');
+      formData.append("title", article.title);
+      formData.append("content", article.content);
+      formData.append("published", article.published.toString());
+      formData.append("excerpt", article.excerpt || "");
+      formData.append("category", article.category || "Общее");
 
       if (article.newImage) {
-        formData.append('image', article.newImage);
+        formData.append("image", article.newImage);
       }
 
       const token = localStorage.getItem("admin_auth");
@@ -491,7 +493,7 @@ export default function AdminPage() {
                         />
                         <Input
                           placeholder="Краткое описание"
-                          value={editingNews.excerpt || ''}
+                          value={editingNews.excerpt || ""}
                           onChange={(e) =>
                             setEditingNews({
                               ...editingNews,
@@ -502,7 +504,7 @@ export default function AdminPage() {
                         />
                         <Input
                           placeholder="Категория"
-                          value={editingNews.category || ''}
+                          value={editingNews.category || ""}
                           onChange={(e) =>
                             setEditingNews({
                               ...editingNews,
@@ -512,7 +514,9 @@ export default function AdminPage() {
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
                         <div>
-                          <Label className="text-gaming-text text-sm">Новое изображение</Label>
+                          <Label className="text-gaming-text text-sm">
+                            Новое изображение
+                          </Label>
                           <Input
                             type="file"
                             accept="image/*"

@@ -1,10 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Copy, CreditCard, Upload, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -41,7 +52,11 @@ const paymentMethods = [
   },
 ];
 
-export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPaymentModalProps) {
+export default function VipPaymentModal({
+  isOpen,
+  onClose,
+  selectedPlan,
+}: VipPaymentModalProps) {
   const [selectedMethod, setSelectedMethod] = useState("tbank");
   const [selectedMonths, setSelectedMonths] = useState(1);
   const [playerData, setPlayerData] = useState({
@@ -95,10 +110,13 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     }
   };
 
-  const handleScreenshotUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleScreenshotUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
         toast({
           title: "Файл слишком большой",
           description: "Максимальный размер файла: 5MB",
@@ -106,7 +124,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
         });
         return;
       }
-      setPlayerData(prev => ({ ...prev, screenshot: file }));
+      setPlayerData((prev) => ({ ...prev, screenshot: file }));
     }
   };
 
@@ -124,20 +142,23 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     try {
       // Create FormData to send file
       const formData = new FormData();
-      formData.append('steamId', playerData.steamId);
-      formData.append('discordId', playerData.discordId || '');
-      formData.append('comment', playerData.comment || '');
-      formData.append('screenshot', playerData.screenshot);
-      formData.append('plan', JSON.stringify({
-        ...selectedPlan,
-        months: selectedMonths,
-        totalPrice: calculatePrice(),
-        discount: getDiscountText()
-      }));
-      formData.append('paymentMethod', selectedMethod);
+      formData.append("steamId", playerData.steamId);
+      formData.append("discordId", playerData.discordId || "");
+      formData.append("comment", playerData.comment || "");
+      formData.append("screenshot", playerData.screenshot);
+      formData.append(
+        "plan",
+        JSON.stringify({
+          ...selectedPlan,
+          months: selectedMonths,
+          totalPrice: calculatePrice(),
+          discount: getDiscountText(),
+        }),
+      );
+      formData.append("paymentMethod", selectedMethod);
 
-      const response = await fetch('/api/vip-applications', {
-        method: 'POST',
+      const response = await fetch("/api/vip-applications", {
+        method: "POST",
         body: formData,
       });
 
@@ -148,7 +169,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
           description: "Ваша заявка на VIP статус принята к рассмотрению",
         });
       } else {
-        throw new Error('Server error');
+        throw new Error("Server error");
       }
     } catch (error) {
       toast({
@@ -189,18 +210,31 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Selected Plan */}
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4 space-y-3">
-                <h3 className="font-semibold text-gaming-text mb-2 text-sm">Выбранный план:</h3>
+                <h3 className="font-semibold text-gaming-text mb-2 text-sm">
+                  Выбранный план:
+                </h3>
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gaming-accent font-bold text-sm">{selectedPlan.name}</p>
-                    <p className="text-gaming-text-muted text-xs">{selectedPlan.description}</p>
+                    <p className="text-gaming-accent font-bold text-sm">
+                      {selectedPlan.name}
+                    </p>
+                    <p className="text-gaming-text-muted text-xs">
+                      {selectedPlan.description}
+                    </p>
                   </div>
                 </div>
 
                 {/* Duration Selection */}
                 <div>
-                  <Label className="text-gaming-text text-xs">Срок действия:</Label>
-                  <Select value={selectedMonths.toString()} onValueChange={(value) => setSelectedMonths(parseInt(value))}>
+                  <Label className="text-gaming-text text-xs">
+                    Срок действия:
+                  </Label>
+                  <Select
+                    value={selectedMonths.toString()}
+                    onValueChange={(value) =>
+                      setSelectedMonths(parseInt(value))
+                    }
+                  >
                     <SelectTrigger className="bg-gaming-card border-gaming-border text-gaming-text text-sm">
                       <SelectValue />
                     </SelectTrigger>
@@ -215,9 +249,13 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
                 <div className="flex justify-between items-center pt-2 border-t border-gaming-border">
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gaming-accent">{calculatePrice()} ₽</p>
+                    <p className="text-lg font-bold text-gaming-accent">
+                      {calculatePrice()} ₽
+                    </p>
                     {getDiscountText() && (
-                      <p className="text-green-400 text-xs">{getDiscountText()}</p>
+                      <p className="text-green-400 text-xs">
+                        {getDiscountText()}
+                      </p>
                     )}
                   </div>
                   <div className="text-xs text-gaming-text-muted">
@@ -228,7 +266,9 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
               {/* Payment Method */}
               <div>
-                <h3 className="font-semibold text-gaming-text mb-3 text-sm">Способ оплаты:</h3>
+                <h3 className="font-semibold text-gaming-text mb-3 text-sm">
+                  Способ оплаты:
+                </h3>
                 <div className="space-y-2">
                   {paymentMethods.map((method) => (
                     <div
@@ -247,19 +287,28 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                             alt={method.name}
                             className="w-8 h-8 rounded"
                             onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                              e.currentTarget.nextElementSibling!.style.display = 'block';
+                              e.currentTarget.style.display = "none";
+                              e.currentTarget.nextElementSibling!.style.display =
+                                "block";
                             }}
                           />
                           <span className="text-xl hidden">💳</span>
                           <div>
-                            <p className="font-semibold text-gaming-text text-sm">{method.name}</p>
-                            <p className="text-gaming-text-muted text-xs">{method.description}</p>
+                            <p className="font-semibold text-gaming-text text-sm">
+                              {method.name}
+                            </p>
+                            <p className="text-gaming-text-muted text-xs">
+                              {method.description}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-mono text-gaming-text text-sm">{method.cardNumber}</p>
-                          <p className="text-gaming-text-muted text-xs">{method.cardHolder}</p>
+                          <p className="font-mono text-gaming-text text-sm">
+                            {method.cardNumber}
+                          </p>
+                          <p className="text-gaming-text-muted text-xs">
+                            {method.cardHolder}
+                          </p>
                           <Button
                             size="sm"
                             variant="outline"
@@ -281,19 +330,28 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
 
               {/* Payment Instructions */}
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3">
-                <h4 className="font-semibold text-gaming-accent mb-2 text-sm">Инструкции по оплате:</h4>
+                <h4 className="font-semibold text-gaming-accent mb-2 text-sm">
+                  Инструкции по оплате:
+                </h4>
                 <ol className="text-gaming-text-muted text-xs space-y-1">
-                  <li>1. Переведите точную сумму {calculatePrice()} ₽ на указанную карту</li>
+                  <li>
+                    1. Переведите точную сумму {calculatePrice()} ₽ на указанную
+                    карту
+                  </li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
                   <li>3. Заполните форму ниже и загрузите скриншот</li>
-                  <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
+                  <li>
+                    4. Дождитесь подтверждения (обычно в течение 1-24 часов)
+                  </li>
                 </ol>
               </div>
 
               {/* Player Data Form */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gaming-text text-sm">Данные игрока:</h3>
-                
+                <h3 className="font-semibold text-gaming-text text-sm">
+                  Данные игрока:
+                </h3>
+
                 <div>
                   <Label htmlFor="steamId" className="text-gaming-text text-sm">
                     Steam ID <span className="text-red-400">*</span>
@@ -301,7 +359,12 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   <Input
                     id="steamId"
                     value={playerData.steamId}
-                    onChange={(e) => setPlayerData(prev => ({ ...prev, steamId: e.target.value }))}
+                    onChange={(e) =>
+                      setPlayerData((prev) => ({
+                        ...prev,
+                        steamId: e.target.value,
+                      }))
+                    }
                     placeholder="76561198000000000"
                     className="bg-gaming-bg border-gaming-border text-gaming-text"
                   />
@@ -311,18 +374,31 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 </div>
 
                 <div>
-                  <Label htmlFor="discordId" className="text-gaming-text text-sm">Discord ID</Label>
+                  <Label
+                    htmlFor="discordId"
+                    className="text-gaming-text text-sm"
+                  >
+                    Discord ID
+                  </Label>
                   <Input
                     id="discordId"
                     value={playerData.discordId}
-                    onChange={(e) => setPlayerData(prev => ({ ...prev, discordId: e.target.value }))}
+                    onChange={(e) =>
+                      setPlayerData((prev) => ({
+                        ...prev,
+                        discordId: e.target.value,
+                      }))
+                    }
                     placeholder="123456789012345678"
                     className="bg-gaming-bg border-gaming-border text-gaming-text"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="screenshot" className="text-gaming-text text-sm">
+                  <Label
+                    htmlFor="screenshot"
+                    className="text-gaming-text text-sm"
+                  >
                     Скриншот перевода <span className="text-red-400">*</span>
                   </Label>
                   <Input
@@ -340,11 +416,18 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 </div>
 
                 <div>
-                  <Label htmlFor="comment" className="text-gaming-text text-sm">Комментарий</Label>
+                  <Label htmlFor="comment" className="text-gaming-text text-sm">
+                    Комментарий
+                  </Label>
                   <Textarea
                     id="comment"
                     value={playerData.comment}
-                    onChange={(e) => setPlayerData(prev => ({ ...prev, comment: e.target.value }))}
+                    onChange={(e) =>
+                      setPlayerData((prev) => ({
+                        ...prev,
+                        comment: e.target.value,
+                      }))
+                    }
                     placeholder="Дополнительная информация (необязательно)"
                     className="bg-gaming-bg border-gaming-border text-gaming-text"
                     rows={2}
@@ -388,11 +471,20 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 Заявка успешно отправлена!
               </h3>
               <p className="text-gaming-text-muted mb-4 text-sm">
-                Ваша заявка на получение VIP статуса "{selectedPlan.name}" на {selectedMonths} {selectedMonths === 1 ? 'месяц' : selectedMonths < 5 ? 'месяца' : 'месяцев'} принята к рассмотрению.
-                Сумма: {calculatePrice()} ₽. Обычно обработка занимает от 1 до 24 часов.
+                Ваша заявка на получение VIP статуса "{selectedPlan.name}" на{" "}
+                {selectedMonths}{" "}
+                {selectedMonths === 1
+                  ? "месяц"
+                  : selectedMonths < 5
+                    ? "месяца"
+                    : "месяцев"}{" "}
+                принята к рассмотрению. Сумма: {calculatePrice()} ₽. Обычно
+                обработка занимает от 1 до 24 часов.
               </p>
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3 mb-4">
-                <h4 className="font-semibold text-gaming-text mb-2 text-sm">Чт�� дальше?</h4>
+                <h4 className="font-semibold text-gaming-text mb-2 text-sm">
+                  Чт�� дальше?
+                </h4>
                 <ul className="text-gaming-text-muted text-xs space-y-1 text-left">
                   <li>• Администратор проверит ваш перевод</li>
                   <li>• При подтверждении VIP статус будет активирован</li>

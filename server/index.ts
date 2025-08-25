@@ -16,10 +16,7 @@ import {
   updateTerms,
   uploadNewsImage,
 } from "./routes/content";
-import {
-  checkServerStatus,
-  checkMultipleServers,
-} from "./routes/serverStatus";
+import { checkServerStatus, checkMultipleServers } from "./routes/serverStatus";
 import {
   checkRconServerStatus,
   checkAllRconServers,
@@ -47,7 +44,7 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Serve uploaded files
-  app.use('/uploads', express.static('uploads'));
+  app.use("/uploads", express.static("uploads"));
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
@@ -89,7 +86,11 @@ export function createServer() {
   // VIP applications routes
   app.post("/api/vip-applications", uploadMiddleware, handleVipApplication);
   app.get("/api/vip-applications", requireAdmin, getVipApplications);
-  app.put("/api/vip-applications/:applicationId", requireAdmin, updateVipApplicationStatus);
+  app.put(
+    "/api/vip-applications/:applicationId",
+    requireAdmin,
+    updateVipApplicationStatus,
+  );
 
   // Admin authentication routes
   app.post("/api/admin/login", adminLogin);

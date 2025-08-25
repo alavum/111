@@ -39,8 +39,8 @@ const vipPlans = [
       "10 VIP слотов",
       "Приоритетная очередь",
       "Возможность расширения",
-      "Управление группой"
-    ]
+      "Управление группой",
+    ],
   },
   {
     id: "clan",
@@ -53,9 +53,9 @@ const vipPlans = [
       "Приоритетная очередь",
       "Возможность расширения",
       "Управление кланом",
-      "Дополнительные привилегии"
-    ]
-  }
+      "Дополнительные привилегии",
+    ],
+  },
 ];
 
 const sponsorPlan = {
@@ -66,8 +66,8 @@ const sponsorPlan = {
     "Эксклюзивная роль @Спонсор в Discord",
     "Любая уникальная роль на ваш выбор",
     "Прямая связь с администрацией проекта",
-    "Персональная поддержка"
-  ]
+    "Персональная поддержка",
+  ],
 };
 
 export default function VipPage() {
@@ -162,7 +162,10 @@ export default function VipPage() {
 
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-gaming-text">
+                      <li
+                        key={idx}
+                        className="flex items-start text-gaming-text"
+                      >
                         <Check className="w-5 h-5 text-gaming-accent mr-3 mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
@@ -209,7 +212,10 @@ export default function VipPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   {sponsorPlan.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start text-gaming-text">
+                    <div
+                      key={idx}
+                      className="flex items-start text-gaming-text"
+                    >
                       <Star className="w-5 h-5 text-yellow-400 mr-3 mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>
                     </div>

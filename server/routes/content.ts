@@ -45,7 +45,7 @@ let newsArticles = [
     image: "/api/placeholder/600/350",
     excerpt: "Новый игровой режим с уникальными механиками",
     category: "Обновления",
-    slug: "new-invasion-server"
+    slug: "new-invasion-server",
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ let newsArticles = [
     image: "/api/placeholder/600/350",
     excerpt: "Важные изменения в правилах сервера",
     category: "Правила",
-    slug: "rules-update"
+    slug: "rules-update",
   },
 ];
 
@@ -137,18 +137,18 @@ let terms = {
 
 // News endpoints
 export const getNews: RequestHandler = (req, res) => {
-  const published = newsArticles.filter(article => article.published);
+  const published = newsArticles.filter((article) => article.published);
   res.json(published);
 };
 
 export const getNewsById: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
-  const article = newsArticles.find(a => a.id === id && a.published);
-  
+  const article = newsArticles.find((a) => a.id === id && a.published);
+
   if (!article) {
     return res.status(404).json({ error: "Новость не найдена" });
   }
-  
+
   res.json(article);
 };
 
@@ -157,14 +157,16 @@ export const createNews: RequestHandler = (req, res) => {
   const image = req.file;
 
   if (!title || !content) {
-    return res.status(400).json({ error: "Заголовок и содержимое обязательны" });
+    return res
+      .status(400)
+      .json({ error: "Заголовок и содержимое обязательны" });
   }
 
   // Generate slug from title
   const slug = title
     .toLowerCase()
-    .replace(/[^а-яa-z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/[^а-яa-z0-9\s]/g, "")
+    .replace(/\s+/g, "-")
     .substring(0, 50);
 
   const imageUrl = image
@@ -172,7 +174,7 @@ export const createNews: RequestHandler = (req, res) => {
     : "/api/placeholder/600/350";
 
   const newArticle = {
-    id: Math.max(...newsArticles.map(a => a.id)) + 1,
+    id: Math.max(...newsArticles.map((a) => a.id)) + 1,
     title,
     content,
     author: author || "Admin",
@@ -181,7 +183,7 @@ export const createNews: RequestHandler = (req, res) => {
     image: imageUrl,
     excerpt: excerpt || content.substring(0, 150) + "...",
     category: category || "Общее",
-    slug: `${slug}-${Date.now()}`
+    slug: `${slug}-${Date.now()}`,
   };
 
   newsArticles.push(newArticle);
@@ -189,14 +191,14 @@ export const createNews: RequestHandler = (req, res) => {
 };
 
 // Upload middleware for news images
-export const uploadNewsImage = newsImageUpload.single('image');
+export const uploadNewsImage = newsImageUpload.single("image");
 
 export const updateNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
   const { title, content, published, excerpt, category } = req.body;
   const image = req.file;
 
-  const articleIndex = newsArticles.findIndex(a => a.id === id);
+  const articleIndex = newsArticles.findIndex((a) => a.id === id);
   if (articleIndex === -1) {
     return res.status(404).json({ error: "Новость не найдена" });
   }
@@ -206,13 +208,15 @@ export const updateNews: RequestHandler = (req, res) => {
     // Update slug if title changed
     const slug = title
       .toLowerCase()
-      .replace(/[^а-яa-z0-9\s]/g, '')
-      .replace(/\s+/g, '-')
+      .replace(/[^а-яa-z0-9\s]/g, "")
+      .replace(/\s+/g, "-")
       .substring(0, 50);
-    newsArticles[articleIndex].slug = `${slug}-${newsArticles[articleIndex].id}`;
+    newsArticles[articleIndex].slug =
+      `${slug}-${newsArticles[articleIndex].id}`;
   }
   if (content) newsArticles[articleIndex].content = content;
-  if (typeof published === 'boolean') newsArticles[articleIndex].published = published;
+  if (typeof published === "boolean")
+    newsArticles[articleIndex].published = published;
   if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
   if (category) newsArticles[articleIndex].category = category;
 
@@ -220,8 +224,12 @@ export const updateNews: RequestHandler = (req, res) => {
   if (image) {
     // Delete old image file if it exists and is not a placeholder
     const oldImage = newsArticles[articleIndex].image;
-    if (oldImage && !oldImage.includes('placeholder') && oldImage.startsWith('/uploads/')) {
-      const oldImagePath = `uploads${oldImage.substring('/uploads'.length)}`;
+    if (
+      oldImage &&
+      !oldImage.includes("placeholder") &&
+      oldImage.startsWith("/uploads/")
+    ) {
+      const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
@@ -234,12 +242,12 @@ export const updateNews: RequestHandler = (req, res) => {
 
 export const deleteNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
-  const articleIndex = newsArticles.findIndex(a => a.id === id);
-  
+  const articleIndex = newsArticles.findIndex((a) => a.id === id);
+
   if (articleIndex === -1) {
     return res.status(404).json({ error: "Новость не найдена" });
   }
-  
+
   newsArticles.splice(articleIndex, 1);
   res.json({ message: "Новость удалена" });
 };
@@ -251,11 +259,11 @@ export const getRules: RequestHandler = (req, res) => {
 
 export const updateRules: RequestHandler = (req, res) => {
   const { title, content } = req.body;
-  
+
   if (title) rules.title = title;
   if (content) rules.content = content;
   rules.lastUpdated = new Date().toISOString();
-  
+
   res.json(rules);
 };
 
@@ -266,11 +274,11 @@ export const getPrivacyPolicy: RequestHandler = (req, res) => {
 
 export const updatePrivacyPolicy: RequestHandler = (req, res) => {
   const { title, content } = req.body;
-  
+
   if (title) privacyPolicy.title = title;
   if (content) privacyPolicy.content = content;
   privacyPolicy.lastUpdated = new Date().toISOString();
-  
+
   res.json(privacyPolicy);
 };
 
@@ -281,10 +289,10 @@ export const getTerms: RequestHandler = (req, res) => {
 
 export const updateTerms: RequestHandler = (req, res) => {
   const { title, content } = req.body;
-  
+
   if (title) terms.title = title;
   if (content) terms.content = content;
   terms.lastUpdated = new Date().toISOString();
-  
+
   res.json(terms);
 };

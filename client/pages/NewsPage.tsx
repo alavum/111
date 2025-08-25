@@ -4,8 +4,18 @@ import Footer from "@/components/Footer";
 import { Calendar, ArrowRight, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Link } from "react-router-dom";
 
 interface NewsItem {
@@ -53,17 +63,18 @@ export default function NewsPage() {
         const response = await fetch("/api/news");
         if (response.ok) {
           const apiNews = await response.json();
-          
+
           // Transform API data to match expected format
           const transformedNews = apiNews.map((item: any) => ({
             ...item,
-            excerpt: item.excerpt || item.content?.substring(0, 150) + "..." || "",
+            excerpt:
+              item.excerpt || item.content?.substring(0, 150) + "..." || "",
             image: item.image || "/api/placeholder/600/350",
             slug: item.slug || item.id.toString(),
             category: item.category || "Общее",
-            featured: item.id <= 4 // First 4 items are featured
+            featured: item.id <= 4, // First 4 items are featured
           }));
-          
+
           setAllNewsItems(transformedNews);
         } else {
           console.error("Failed to fetch news");
@@ -79,16 +90,21 @@ export default function NewsPage() {
   }, []);
 
   // Get unique categories
-  const categories = ["Все", ...Array.from(new Set(allNewsItems.map(item => item.category)))];
+  const categories = [
+    "Все",
+    ...Array.from(new Set(allNewsItems.map((item) => item.category))),
+  ];
 
   // Filter news based on search and category
   const filteredNews = allNewsItems.filter((item) => {
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch =
+      searchQuery === "" ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = selectedCategory === "Все" || item.category === selectedCategory;
-    
+
+    const matchesCategory =
+      selectedCategory === "Все" || item.category === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -150,14 +166,16 @@ export default function NewsPage() {
                     </button>
                   )}
                 </div>
-                
+
                 <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       size="sm"
                       className={`border-gaming-border text-gaming-text hover:bg-gaming-bg ${
-                        selectedCategory !== "Все" ? "bg-gaming-accent text-black" : ""
+                        selectedCategory !== "Все"
+                          ? "bg-gaming-accent text-black"
+                          : ""
                       }`}
                     >
                       <Filter className="w-4 h-4 mr-2" />
@@ -166,8 +184,13 @@ export default function NewsPage() {
                   </PopoverTrigger>
                   <PopoverContent className="w-64 bg-gaming-card border-gaming-border p-4">
                     <div className="space-y-4">
-                      <h4 className="text-sm font-semibold text-gaming-text">Категория</h4>
-                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <h4 className="text-sm font-semibold text-gaming-text">
+                        Категория
+                      </h4>
+                      <Select
+                        value={selectedCategory}
+                        onValueChange={setSelectedCategory}
+                      >
                         <SelectTrigger className="bg-gaming-bg border-gaming-border text-gaming-text">
                           <SelectValue />
                         </SelectTrigger>
@@ -179,7 +202,7 @@ export default function NewsPage() {
                           ))}
                         </SelectContent>
                       </Select>
-                      
+
                       {(selectedCategory !== "Все" || searchQuery) && (
                         <Button
                           variant="outline"
@@ -211,7 +234,10 @@ export default function NewsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gaming-text text-sm">
-                      Найдено новостей: <span className="font-semibold text-gaming-accent">{filteredNews.length}</span>
+                      Найдено новостей:{" "}
+                      <span className="font-semibold text-gaming-accent">
+                        {filteredNews.length}
+                      </span>
                     </p>
                     {searchQuery && (
                       <p className="text-gaming-text-muted text-xs">

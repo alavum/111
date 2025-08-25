@@ -52,8 +52,14 @@ async function sendDiscordWebhook(applicationData: any) {
     console.log("Screenshot URL:", screenshotUrl);
 
     // Check if screenshot file actually exists
-    if (applicationData.screenshot && !fs.existsSync(applicationData.screenshot.path)) {
-      console.error("Screenshot file not found at path:", applicationData.screenshot.path);
+    if (
+      applicationData.screenshot &&
+      !fs.existsSync(applicationData.screenshot.path)
+    ) {
+      console.error(
+        "Screenshot file not found at path:",
+        applicationData.screenshot.path,
+      );
     }
 
     const embed = {
@@ -62,7 +68,7 @@ async function sendDiscordWebhook(applicationData: any) {
       fields: [
         {
           name: "📋 План VIP",
-          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.totalPrice || applicationData.plan.price || applicationData.plan.basePrice} ₽\n⏰ ${applicationData.plan.months ? `${applicationData.plan.months} мес.` : (applicationData.plan.duration || 'Не указано')}\n${applicationData.plan.discount ? `🎁 ${applicationData.plan.discount}` : ''}`,
+          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.totalPrice || applicationData.plan.price || applicationData.plan.basePrice} ₽\n⏰ ${applicationData.plan.months ? `${applicationData.plan.months} мес.` : applicationData.plan.duration || "Не указано"}\n${applicationData.plan.discount ? `🎁 ${applicationData.plan.discount}` : ""}`,
           inline: true,
         },
         {
