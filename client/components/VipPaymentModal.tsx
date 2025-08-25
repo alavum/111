@@ -153,7 +153,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось отправить ��аявку. Попробуйте позже.",
+        description: "Не удалось отправить заявку. Попробуйте позже.",
         variant: "destructive",
       });
     } finally {
@@ -286,7 +286,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                   <li>1. Переведите точную сумму {calculatePrice()} ₽ на указанную карту</li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
                   <li>3. Заполните форму ниже и загрузите скриншот</li>
-                  <li>4. Дождитесь подтверждения (обычн�� в течение 1-24 часов)</li>
+                  <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
                 </ol>
               </div>
 
@@ -388,8 +388,8 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 Заявка успешно отправлена!
               </h3>
               <p className="text-gaming-text-muted mb-4 text-sm">
-                Ваша заявка на получение VIP статуса "{selectedPlan.name}" принята к рассмотрению.
-                Обычно обработка занимает от 1 до 24 ч��сов.
+                Ваша заявка на получение VIP статуса "{selectedPlan.name}" на {selectedMonths} {selectedMonths === 1 ? 'месяц' : selectedMonths < 5 ? 'месяца' : 'месяцев'} принята к рассмотрению.
+                Сумма: {calculatePrice()} ₽. Обычно обработка занимает от 1 до 24 часов.
               </p>
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3 mb-4">
                 <h4 className="font-semibold text-gaming-text mb-2 text-sm">Чт�� дальше?</h4>
