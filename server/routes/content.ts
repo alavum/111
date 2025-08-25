@@ -28,7 +28,7 @@ const newsImageUpload = multer({
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Только изображения разрешены!"));
+      cb(new Error("Т��лько изображения разрешены!"));
     }
   },
 });
@@ -67,7 +67,7 @@ let rules = {
   content: `
 # Основные правила сервера
 
-## 1. Общие правила поведения
+## 1. Общие правила пове��ения
 - Уважайте других игроков
 - Запрещены оскорбления и токсичное поведение
 - Используйте микрофон для командной игры
@@ -116,7 +116,7 @@ let terms = {
 # Пользовательское соглашение
 
 ## 1. Предмет соглашения
-Настоящее соглашение регулирует отношения меж��у администрацией RSGS и пользователями серверов.
+Настоящее соглашение регулирует отношения между администрацией RSGS и пользователями серверов.
 
 ## 2. Права и обязанности пользователей
 - Соблюдение правил сервера
@@ -193,17 +193,42 @@ export const uploadNewsImage = newsImageUpload.single('image');
 
 export const updateNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
-  const { title, content, published } = req.body;
-  
+  const { title, content, published, excerpt, category } = req.body;
+  const image = req.file;
+
   const articleIndex = newsArticles.findIndex(a => a.id === id);
   if (articleIndex === -1) {
     return res.status(404).json({ error: "Новость не найдена" });
   }
-  
-  if (title) newsArticles[articleIndex].title = title;
+
+  if (title) {
+    newsArticles[articleIndex].title = title;
+    // Update slug if title changed
+    const slug = title
+      .toLowerCase()
+      .replace(/[^а-яa-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .substring(0, 50);
+    newsArticles[articleIndex].slug = `${slug}-${newsArticles[articleIndex].id}`;
+  }
   if (content) newsArticles[articleIndex].content = content;
   if (typeof published === 'boolean') newsArticles[articleIndex].published = published;
-  
+  if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
+  if (category) newsArticles[articleIndex].category = category;
+
+  // Update image if new one is uploaded
+  if (image) {
+    // Delete old image file if it exists and is not a placeholder
+    const oldImage = newsArticles[articleIndex].image;
+    if (oldImage && !oldImage.includes('placeholder') && oldImage.startsWith('/uploads/')) {
+      const oldImagePath = `uploads${oldImage.substring('/uploads'.length)}`;
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+    newsArticles[articleIndex].image = `/uploads/news-images/${image.filename}`;
+  }
+
   res.json(newsArticles[articleIndex]);
 };
 
