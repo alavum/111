@@ -68,9 +68,10 @@ export default function News() {
           const apiNews = await response.json();
           console.log("Received news data:", apiNews);
 
-          // Filter only published news and limit to 6 items
+          // Filter only published news, sort by date (newest first), and limit to 6 items
           const publishedNews = apiNews
             .filter((news: NewsItem) => news.published !== false)
+            .sort((a: NewsItem, b: NewsItem) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .slice(0, 6);
 
           console.log("Filtered published news:", publishedNews);
@@ -194,7 +195,7 @@ export default function News() {
               Не пропускайте важные новости!
             </h3>
             <p className="text-gaming-text-muted mb-6">
-              Подпишитесь на наши уведомления, чтобы первыми узнавать о новых
+              Подпишитесь на наши уведомления, чтобы первыми узнавать о новы��
               обновлениях, турнирах и событиях в сообществе RSGS.
             </p>
             <Button
