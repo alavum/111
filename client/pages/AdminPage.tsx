@@ -105,16 +105,38 @@ export default function AdminPage() {
     }
 
     try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('title', newNews.title);
+      formData.append('content', newNews.content);
+      formData.append('author', newNews.author);
+      formData.append('excerpt', newNews.excerpt);
+      formData.append('category', newNews.category);
+
+      if (newNews.image) {
+        formData.append('image', newNews.image);
+      }
+
+      const token = localStorage.getItem("admin_auth");
       const response = await fetch("/api/news", {
         method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(newNews),
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
       });
 
       if (response.ok) {
         const article = await response.json();
         setNews((prev) => [article, ...prev]);
-        setNewNews({ title: "", content: "", author: "Admin" });
+        setNewNews({
+          title: "",
+          content: "",
+          author: "Admin",
+          excerpt: "",
+          category: "Общее",
+          image: null
+        });
         toast({
           title: "Новость создана",
           description: "Новость успешно добавлена",
@@ -544,7 +566,7 @@ export default function AdminPage() {
                   <CardHeader>
                     <CardTitle className="text-gaming-text flex items-center">
                       <FileText className="w-5 h-5 mr-2" />
-                      П��льзовательское соглашение
+                      П��льзов��тельское соглашение
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
