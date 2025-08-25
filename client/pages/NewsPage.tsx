@@ -214,7 +214,62 @@ export default function NewsPage() {
         {/* Featured News Grid */}
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
+            {/* Search/Filter Results Info */}
+            {(searchQuery || selectedCategory !== "Все") && (
+              <div className="mb-6 p-4 bg-gaming-card border border-gaming-border rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gaming-text text-sm">
+                      Найдено новостей: <span className="font-semibold text-gaming-accent">{filteredNews.length}</span>
+                    </p>
+                    {searchQuery && (
+                      <p className="text-gaming-text-muted text-xs">
+                        Поиск: "{searchQuery}"
+                      </p>
+                    )}
+                    {selectedCategory !== "Все" && (
+                      <p className="text-gaming-text-muted text-xs">
+                        Категория: {selectedCategory}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedCategory("Все");
+                    }}
+                    className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
+                  >
+                    Сбросить
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {filteredNews.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-xl font-bold text-gaming-text mb-2">
+                  Новости не найдены
+                </h3>
+                <p className="text-gaming-text-muted mb-4">
+                  Попробуйте изменить параметры поиска или сбросить фильтры
+                </p>
+                <Button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("Все");
+                  }}
+                  className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
+                >
+                  Показать все новости
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
               {featuredNews.map((item, index) => (
                 <article
                   key={item.id}
@@ -317,16 +372,18 @@ export default function NewsPage() {
               ))}
             </div>
 
-            {/* Load More */}
-            <div className="text-center mt-12">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-gaming-border text-gaming-text hover:bg-gaming-card hover:text-gaming-accent"
-              >
-                Загрузить больше новостей
-              </Button>
-            </div>
+                {/* Load More */}
+                <div className="text-center mt-12">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-gaming-border text-gaming-text hover:bg-gaming-card hover:text-gaming-accent"
+                  >
+                    Загрузить больше новостей
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </section>
       </main>
