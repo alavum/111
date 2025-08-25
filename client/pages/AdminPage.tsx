@@ -350,6 +350,62 @@ export default function AdminPage() {
                     />
                   </div>
                   <div>
+                    <Label htmlFor="newsExcerpt" className="text-gaming-text">
+                      Краткое описание
+                    </Label>
+                    <Input
+                      id="newsExcerpt"
+                      value={newNews.excerpt}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          excerpt: e.target.value,
+                        }))
+                      }
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                      placeholder="Краткое описание новости"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="newsCategory" className="text-gaming-text">
+                      Категория
+                    </Label>
+                    <Input
+                      id="newsCategory"
+                      value={newNews.category}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                      placeholder="Категория новости"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="newsImage" className="text-gaming-text">
+                      Изображение
+                    </Label>
+                    <Input
+                      id="newsImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          image: e.target.files?.[0] || null,
+                        }))
+                      }
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                    />
+                    {newNews.image && (
+                      <p className="text-green-400 text-sm mt-1">
+                        ✓ Файл выбран: {newNews.image.name}
+                      </p>
+                    )}
+                  </div>
+                  <div>
                     <Label htmlFor="newsAuthor" className="text-gaming-text">
                       Автор
                     </Label>
