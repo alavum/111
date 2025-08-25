@@ -34,7 +34,7 @@ export const checkServerStatus: RequestHandler = async (req, res) => {
     
     // If server is available, provide connect URL
     if (result.ok) {
-      result.connectUrl = `https://rgs-squad.ru/c/s=${serverId}`;
+      result.connectUrl = `https://rgs-squad.ru/c/?s=${serverId}`;
     }
     
     res.json(result);
