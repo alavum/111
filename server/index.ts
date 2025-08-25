@@ -14,6 +14,7 @@ import {
   updatePrivacyPolicy,
   getTerms,
   updateTerms,
+  uploadNewsImage,
 } from "./routes/content";
 import {
   checkServerStatus,
