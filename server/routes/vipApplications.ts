@@ -213,7 +213,7 @@ export const handleVipApplication: RequestHandler = async (req, res) => {
       planData = JSON.parse(plan);
     } catch (error) {
       return res.status(400).json({
-        error: "Неверный формат данных плана",
+        error: "Не��ерный формат данных плана",
       });
     }
 
@@ -230,6 +230,7 @@ export const handleVipApplication: RequestHandler = async (req, res) => {
         originalname: screenshot.originalname,
         path: screenshot.path,
         size: screenshot.size,
+        mimetype: screenshot.mimetype,
       },
       status: "pending",
       createdAt: new Date().toISOString(),
