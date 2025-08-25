@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AdminAuth from "@/components/AdminAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -484,7 +485,7 @@ export default function AdminPage() {
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Сохранить условия
+                      Сохранить усл��вия
                     </Button>
                   </CardContent>
                 </Card>
