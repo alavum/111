@@ -211,49 +211,51 @@ export default function VipPage() {
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-gaming-card via-purple-900/20 to-gaming-card border-2 border-purple-500 rounded-lg p-8">
-                <div className="text-center mb-6">
-                  <h4 className="text-2xl font-bold mb-2">
+              <div className="bg-gradient-to-r from-gaming-card via-yellow-900/10 to-gaming-card border-2 border-gradient-to-r border-yellow-500/50 rounded-lg p-8 shadow-xl">
+                <div className="text-center mb-8">
+                  <h4 className="text-3xl font-bold mb-4">
                     <span className="bg-gradient-to-r from-yellow-400 via-purple-400 to-yellow-400 bg-clip-text text-transparent">
                       {sponsorPlan.name}
                     </span>
                   </h4>
-                  <p className="text-xl text-gaming-accent font-semibold">
+                  <p className="text-xl text-gaming-accent font-semibold mb-4">
                     {sponsorPlan.description}
                   </p>
+                  <div className="inline-block bg-gradient-to-r from-yellow-400 to-purple-500 p-3 rounded-lg">
+                    <p className="text-black font-bold text-sm">
+                      Роль <span className="bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent">@Спонсор</span> с уникальным градиентом
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   {sponsorPlan.features.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start text-gaming-text"
+                      className="flex items-start text-gaming-text bg-gaming-bg/50 p-4 rounded-lg"
                     >
                       <Star className="w-5 h-5 text-yellow-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <span>{feature}</span>
+                      <span className="text-gaming-text">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="text-center space-y-4">
-                  <Button
-                    className="bg-gradient-to-r from-yellow-500 to-purple-500 hover:from-yellow-600 hover:to-purple-600 text-black font-semibold px-8"
-                    size="lg"
-                    onClick={() => handleBuyVip(sponsorPlan)}
+                <div className="text-center space-y-6">
+                  <a
+                    href="https://discord.gg/HXne8JVJ"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    Стать спонсором
-                  </Button>
-                  <div className="flex justify-center">
-                    <a
-                      href="https://discord.gg/HXne8JVJ"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover transition-colors"
+                    <Button
+                      className="bg-gradient-to-r from-yellow-500 to-purple-500 hover:from-yellow-600 hover:to-purple-600 text-black font-bold px-12 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      size="lg"
                     >
-                      <Users className="w-4 h-4 mr-2" />
-                      Перейти в Discord для связи
-                    </a>
-                  </div>
+                      Стать спонсором
+                    </Button>
+                  </a>
+                  <p className="text-gaming-text-muted text-sm">
+                    Нажмите кнопку выше, чтобы перейти в Discord и связаться с администрацией
+                  </p>
                 </div>
               </div>
             </div>
