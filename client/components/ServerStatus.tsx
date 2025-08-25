@@ -205,15 +205,21 @@ export default function ServerStatus() {
       }
     };
 
-    // Initial data fetch
-    fetchRconData();
+    // Try to load cached data first
+    const hasCachedData = loadCachedData();
+
+    // If no cached data, fetch fresh data
+    if (!hasCachedData) {
+      fetchRconData();
+    }
+
     checkAllServers();
 
-    // Refresh server data every 60 seconds (reduced frequency to improve performance)
+    // Refresh server data every 45 seconds
     const interval = setInterval(() => {
       fetchRconData();
       checkAllServers();
-    }, 60000);
+    }, 45000);
 
     return () => clearInterval(interval);
   }, []);
@@ -349,7 +355,7 @@ export default function ServerStatus() {
               {/* Map and Game Mode */}
               <div className="space-y-2">
                 <div>
-                  <span className="text-gaming-text-muted text-sm">Карта:</span>
+                  <span className="text-gaming-text-muted text-sm">Карт��:</span>
                   <p className="text-gaming-text text-sm">{server.map}</p>
                 </div>
                 <div>
