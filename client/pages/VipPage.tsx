@@ -30,6 +30,19 @@ const vipFeatures = [
 
 const vipPlans = [
   {
+    id: "basic",
+    name: "VIP Обычный",
+    description: "Индивидуальный VIP статус",
+    basePrice: 150,
+    popular: false,
+    features: [
+      "Приоритетная очередь",
+      "Защита от кика",
+      "VIP чат в Discord",
+      "Эксклюзивная роль",
+    ],
+  },
+  {
     id: "group",
     name: "VIP Групповой",
     description: "10 VIP слотов с возможностью расширения",
@@ -45,7 +58,7 @@ const vipPlans = [
   {
     id: "clan",
     name: "Клановый",
-    description: "30 VIP слотов с возможностью расширения",
+    description: "30 VIP слотов с возможностью расши��ения",
     basePrice: 1200,
     popular: false,
     features: [
