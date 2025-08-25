@@ -42,6 +42,7 @@ const paymentMethods = [
 
 export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPaymentModalProps) {
   const [selectedMethod, setSelectedMethod] = useState("tbank");
+  const [selectedMonths, setSelectedMonths] = useState(1);
   const [playerData, setPlayerData] = useState({
     steamId: "",
     discordId: "",
@@ -50,6 +51,31 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
   });
   const [step, setStep] = useState(1); // 1: payment info, 2: confirmation
   const [uploading, setUploading] = useState(false);
+
+  // Calculate price based on months
+  const calculatePrice = () => {
+    if (!selectedPlan?.basePrice) return 0;
+    const basePrice = selectedPlan.basePrice;
+    let totalPrice = basePrice * selectedMonths;
+
+    // Apply discounts
+    if (selectedMonths >= 12) {
+      totalPrice = totalPrice * 0.78; // 22% discount
+    } else if (selectedMonths >= 6) {
+      totalPrice = totalPrice * 0.83; // 17% discount
+    } else if (selectedMonths >= 3) {
+      totalPrice = totalPrice * 0.89; // 11% discount
+    }
+
+    return Math.round(totalPrice);
+  };
+
+  const getDiscountText = () => {
+    if (selectedMonths >= 12) return "Скидка 22%";
+    if (selectedMonths >= 6) return "Скидка 17%";
+    if (selectedMonths >= 3) return "Скидка 11%";
+    return null;
+  };
 
   const handleCopyCard = async (cardNumber: string) => {
     try {
@@ -62,7 +88,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось скопировать номер карты",
+        description: "Не удалось ск��пировать номер карты",
         variant: "destructive",
       });
     }
