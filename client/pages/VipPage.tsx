@@ -30,33 +30,45 @@ const vipFeatures = [
 
 const vipPlans = [
   {
-    name: "VIP 1 месяц",
-    price: "299 ₽",
-    duration: "30 дней",
-    popular: false,
-  },
-  {
-    name: "VIP 3 месяца",
-    price: "799 ₽",
-    duration: "90 дней",
+    id: "group",
+    name: "VIP Групповой",
+    description: "10 VIP слотов с возможностью расширения",
+    basePrice: 500,
     popular: true,
-    discount: "Скидка 11%",
+    features: [
+      "10 VIP слотов",
+      "Приоритетная очередь",
+      "Возможность расширения",
+      "Управление группой"
+    ]
   },
   {
-    name: "VIP 6 месяцев",
-    price: "1499 ₽",
-    duration: "180 дней",
+    id: "clan",
+    name: "Клановый",
+    description: "30 VIP слотов с возможностью расширения",
+    basePrice: 1200,
     popular: false,
-    discount: "Скидка 17%",
-  },
-  {
-    name: "VIP 1 год",
-    price: "2799 ₽",
-    duration: "365 дней",
-    popular: false,
-    discount: "Скидка 22%",
-  },
+    features: [
+      "30 VIP слотов",
+      "Приоритетная очередь",
+      "Возможность расширения",
+      "Управление кланом",
+      "Дополни��ельные привилегии"
+    ]
+  }
 ];
+
+const sponsorPlan = {
+  id: "sponsor",
+  name: "Спонсор",
+  description: "от 1 500 руб.",
+  features: [
+    "Эксклюзивная роль @Спонсор в Discord",
+    "Любая уникальная роль на ваш выбор",
+    "Прямая связь с администрацией проекта",
+    "Персональная поддержка"
+  ]
+};
 
 export default function VipPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -162,7 +174,7 @@ export default function VipPage() {
                       </li>
                       <li className="flex items-center text-gaming-text">
                         <Check className="w-5 h-5 text-gaming-accent mr-2" />
-                        Защита от кика
+                        За��ита от кика
                       </li>
                       <li className="flex items-center text-gaming-text">
                         <Check className="w-5 h-5 text-gaming-accent mr-2" />
