@@ -479,6 +479,7 @@ export default function AdminPage() {
                     {editingNews?.id === article.id ? (
                       <CardContent className="space-y-4">
                         <Input
+                          placeholder="Заголовок"
                           value={editingNews.title}
                           onChange={(e) =>
                             setEditingNews({
@@ -488,7 +489,49 @@ export default function AdminPage() {
                           }
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
+                        <Input
+                          placeholder="Краткое описание"
+                          value={editingNews.excerpt || ''}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              excerpt: e.target.value,
+                            })
+                          }
+                          className="bg-gaming-bg border-gaming-border text-gaming-text"
+                        />
+                        <Input
+                          placeholder="Категория"
+                          value={editingNews.category || ''}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              category: e.target.value,
+                            })
+                          }
+                          className="bg-gaming-bg border-gaming-border text-gaming-text"
+                        />
+                        <div>
+                          <Label className="text-gaming-text text-sm">Новое изображение</Label>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) =>
+                              setEditingNews({
+                                ...editingNews,
+                                newImage: e.target.files?.[0],
+                              } as any)
+                            }
+                            className="bg-gaming-bg border-gaming-border text-gaming-text"
+                          />
+                          {editingNews.image && (
+                            <p className="text-gaming-text-muted text-xs mt-1">
+                              Текущее: {editingNews.image}
+                            </p>
+                          )}
+                        </div>
                         <Textarea
+                          placeholder="Содержимое"
                           value={editingNews.content}
                           onChange={(e) =>
                             setEditingNews({
@@ -500,7 +543,7 @@ export default function AdminPage() {
                         />
                         <div className="flex space-x-2">
                           <Button
-                            onClick={() => handleUpdateNews(editingNews)}
+                            onClick={() => handleUpdateNews(editingNews as any)}
                             className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                           >
                             <Save className="w-4 h-4 mr-2" />
