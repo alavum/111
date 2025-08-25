@@ -183,18 +183,40 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
           {step === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Selected Plan */}
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3">
+              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4 space-y-3">
                 <h3 className="font-semibold text-gaming-text mb-2 text-sm">Выбранный план:</h3>
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-gaming-accent font-bold text-sm">{selectedPlan.name}</p>
-                    <p className="text-gaming-text-muted text-xs">{selectedPlan.duration}</p>
+                    <p className="text-gaming-text-muted text-xs">{selectedPlan.description}</p>
                   </div>
+                </div>
+
+                {/* Duration Selection */}
+                <div>
+                  <Label className="text-gaming-text text-xs">Срок действия:</Label>
+                  <Select value={selectedMonths.toString()} onValueChange={(value) => setSelectedMonths(parseInt(value))}>
+                    <SelectTrigger className="bg-gaming-card border-gaming-border text-gaming-text text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gaming-card border-gaming-border">
+                      <SelectItem value="1">1 месяц</SelectItem>
+                      <SelectItem value="3">3 месяца</SelectItem>
+                      <SelectItem value="6">6 месяцев</SelectItem>
+                      <SelectItem value="12">12 месяцев</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-gaming-border">
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gaming-accent">{selectedPlan.price}</p>
-                    {selectedPlan.discount && (
-                      <p className="text-green-400 text-xs">{selectedPlan.discount}</p>
+                    <p className="text-lg font-bold text-gaming-accent">{calculatePrice()} ₽</p>
+                    {getDiscountText() && (
+                      <p className="text-green-400 text-xs">{getDiscountText()}</p>
                     )}
+                  </div>
+                  <div className="text-xs text-gaming-text-muted">
+                    {selectedPlan.basePrice} ₽/мес × {selectedMonths} мес.
                   </div>
                 </div>
               </div>
@@ -258,7 +280,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 <ol className="text-gaming-text-muted text-xs space-y-1">
                   <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
-                  <li>3. Заполните форму ниже и загрузите с��риншот</li>
+                  <li>3. Заполните форму ниже и загрузите скриншот</li>
                   <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
                 </ol>
               </div>
@@ -368,7 +390,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 <h4 className="font-semibold text-gaming-text mb-2 text-sm">Чт�� дальше?</h4>
                 <ul className="text-gaming-text-muted text-xs space-y-1 text-left">
                   <li>• Администратор проверит ваш перевод</li>
-                  <li>• При п��дтверждении VIP статус будет активирован</li>
+                  <li>• При подтверждении VIP статус будет активирован</li>
                   <li>• Вы получите уведомление в Discord</li>
                   <li>• При возникновении вопросов свяжемся с вами</li>
                 </ul>
