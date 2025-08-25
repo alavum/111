@@ -61,8 +61,8 @@ export function createServer() {
   // News routes (public read, admin write)
   app.get("/api/news", getNews);
   app.get("/api/news/:id", getNewsById);
-  app.post("/api/news", requireAdmin, createNews);
-  app.put("/api/news/:id", requireAdmin, updateNews);
+  app.post("/api/news", requireAdmin, uploadNewsImage, createNews);
+  app.put("/api/news/:id", requireAdmin, uploadNewsImage, updateNews);
   app.delete("/api/news/:id", requireAdmin, deleteNews);
 
   // Rules routes (public read, admin write)
