@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Copy, CreditCard, Upload, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -257,7 +258,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 <ol className="text-gaming-text-muted text-xs space-y-1">
                   <li>1. Переведите точную сумму {selectedPlan.price} на указанную карту</li>
                   <li>2. Сделайте скриншот подтверждения перевода</li>
-                  <li>3. Заполните форму ниже и загрузите скриншот</li>
+                  <li>3. Заполните форму ниже и загрузите с��риншот</li>
                   <li>4. Дождитесь подтверждения (обычно в течение 1-24 часов)</li>
                 </ol>
               </div>
@@ -367,7 +368,7 @@ export default function VipPaymentModal({ isOpen, onClose, selectedPlan }: VipPa
                 <h4 className="font-semibold text-gaming-text mb-2 text-sm">Чт�� дальше?</h4>
                 <ul className="text-gaming-text-muted text-xs space-y-1 text-left">
                   <li>• Администратор проверит ваш перевод</li>
-                  <li>• При подтверждении VIP статус будет активирован</li>
+                  <li>• При п��дтверждении VIP статус будет активирован</li>
                   <li>• Вы получите уведомление в Discord</li>
                   <li>• При возникновении вопросов свяжемся с вами</li>
                 </ul>
