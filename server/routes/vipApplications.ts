@@ -115,11 +115,19 @@ async function sendDiscordWebhook(applicationData: any) {
       try {
         const form = new FormData();
 
+        // Update embed to indicate file attachment
+        const embedWithAttachment = {
+          ...embed,
+          image: {
+            url: `attachment://${applicationData.screenshot.filename}`,
+          },
+        };
+
         form.append(
           "payload_json",
           JSON.stringify({
             content: "👋 @here Новая заявка на VIP!",
-            embeds: [embed],
+            embeds: [embedWithAttachment],
           }),
         );
 
@@ -128,7 +136,7 @@ async function sendDiscordWebhook(applicationData: any) {
           fs.createReadStream(applicationData.screenshot.path),
           {
             filename: applicationData.screenshot.filename,
-            contentType: "image/png",
+            contentType: applicationData.screenshot.mimetype || "image/png",
           },
         );
 
@@ -139,10 +147,12 @@ async function sendDiscordWebhook(applicationData: any) {
         });
 
         if (!response.ok) {
+          const errorText = await response.text();
           console.error(
             "Discord webhook with file failed:",
             response.status,
             response.statusText,
+            errorText,
           );
           throw new Error("File upload failed");
         } else {
