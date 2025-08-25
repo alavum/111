@@ -223,7 +223,11 @@ export default function VipPage() {
                   </p>
                   <div className="inline-block bg-gradient-to-r from-yellow-400 to-purple-500 p-3 rounded-lg">
                     <p className="text-black font-bold text-sm">
-                      Роль <span className="bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent">@Спонсор</span> с уникальным градиентом
+                      Роль{" "}
+                      <span className="bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent">
+                        @Спонсор
+                      </span>{" "}
+                      с уникальным градиентом
                     </p>
                   </div>
                 </div>
@@ -254,7 +258,8 @@ export default function VipPage() {
                     </Button>
                   </a>
                   <p className="text-gaming-text-muted text-sm">
-                    Нажмите кнопку выше, чтобы перейти в Discord и связаться с администрацией
+                    Нажмите кнопку выше, чтобы перейти в Discord и связаться с
+                    администрацией
                   </p>
                 </div>
               </div>
