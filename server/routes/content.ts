@@ -116,7 +116,7 @@ let terms = {
 # Пользовательское соглашение
 
 ## 1. Предмет соглашения
-Настоящее соглашение регулирует отношения между администрацией RSGS и пользователями серверов.
+Настоящее соглашение регулирует отношения меж��у администрацией RSGS и пользователями серверов.
 
 ## 2. Права и обязанности пользователей
 - Соблюдение правил сервера
@@ -153,12 +153,24 @@ export const getNewsById: RequestHandler = (req, res) => {
 };
 
 export const createNews: RequestHandler = (req, res) => {
-  const { title, content, author } = req.body;
-  
+  const { title, content, author, excerpt, category } = req.body;
+  const image = req.file;
+
   if (!title || !content) {
     return res.status(400).json({ error: "Заголовок и содержимое обязательны" });
   }
-  
+
+  // Generate slug from title
+  const slug = title
+    .toLowerCase()
+    .replace(/[^а-яa-z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+    .substring(0, 50);
+
+  const imageUrl = image
+    ? `/uploads/news-images/${image.filename}`
+    : "/api/placeholder/600/350";
+
   const newArticle = {
     id: Math.max(...newsArticles.map(a => a.id)) + 1,
     title,
@@ -166,11 +178,18 @@ export const createNews: RequestHandler = (req, res) => {
     author: author || "Admin",
     date: new Date().toISOString(),
     published: true,
+    image: imageUrl,
+    excerpt: excerpt || content.substring(0, 150) + "...",
+    category: category || "Общее",
+    slug: `${slug}-${Date.now()}`
   };
-  
+
   newsArticles.push(newArticle);
   res.status(201).json(newArticle);
 };
+
+// Upload middleware for news images
+export const uploadNewsImage = newsImageUpload.single('image');
 
 export const updateNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
@@ -193,7 +212,7 @@ export const deleteNews: RequestHandler = (req, res) => {
   const articleIndex = newsArticles.findIndex(a => a.id === id);
   
   if (articleIndex === -1) {
-    return res.status(404).json({ error: "Новость не ��айдена" });
+    return res.status(404).json({ error: "Новость не найдена" });
   }
   
   newsArticles.splice(articleIndex, 1);
