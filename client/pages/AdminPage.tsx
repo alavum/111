@@ -47,6 +47,9 @@ export default function AdminPage() {
     title: "",
     content: "",
     author: "Admin",
+    excerpt: "",
+    category: "Общее",
+    image: null as File | null,
   });
 
   // Helper function to get auth headers
