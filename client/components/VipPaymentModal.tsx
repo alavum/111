@@ -110,7 +110,7 @@ export default function VipPaymentModal({
       if (file.size > 5 * 1024 * 1024) {
         // 5MB limit
         toast({
-          title: "Файл слишком большой",
+          title: "Файл сл��шком большой",
           description: "Максимальный размер файла: 5MB",
           variant: "destructive",
         });
@@ -332,31 +332,16 @@ export default function VipPaymentModal({
                 <h4 className="font-semibold text-gaming-accent mb-2 text-sm">
                   Инструкции по оплате:
                 </h4>
-                {selectedMethod === "tbank" ? (
-                  <ol className="text-gaming-text-muted text-xs space-y-1">
-                    <li>
-                      1. Переведите точную сумму {calculatePrice()} ₽ на указанную
-                      карту
-                    </li>
-                    <li>2. Сделайте скриншот подтверждения перевода</li>
-                    <li>3. Заполните форму ниже и загрузите скриншот</li>
-                    <li>
-                      4. Дождитесь подтверждения (обычно в течение 1-24 часов)
-                    </li>
-                  </ol>
-                ) : (
-                  <ol className="text-gaming-text-muted text-xs space-y-1">
-                    <li>
-                      1. Нажмите "Отправить заявку" для перехода к оплате
-                    </li>
-                    <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
-                    <li>3. Сдел��йте скриншот подтверждения платежа</li>
-                    <li>4. Загрузите скриншот и заполните данные</li>
-                    <li>
-                      5. Дождитесь подтверждения (обычно в течение 1-24 часов)
-                    </li>
-                  </ol>
-                )}
+                <ol className="text-gaming-text-muted text-xs space-y-1">
+                  <li>
+                    1. Нажмите "Отправить заявку" для перехода к оплате
+                  </li>
+                  <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
+                  <li>3. Заполните данные игрока в форме ниже</li>
+                  <li>
+                    4. Дождитесь подтверждения (обычно в течение 1-24 часов)
+                  </li>
+                </ol>
               </div>
 
               {/* Player Data Form */}
