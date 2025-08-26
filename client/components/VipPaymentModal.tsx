@@ -98,7 +98,7 @@ export default function VipPaymentModal({
       await navigator.clipboard.writeText(cardNumber.replace(/\s/g, ""));
       toast({
         title: "Скопировано!",
-        description: "Номер карты скопирован в буфер обмена",
+        description: "Номер карты скопи��ован в буфер обмена",
         duration: 2000,
       });
     } catch (error) {
@@ -309,18 +309,25 @@ export default function VipPaymentModal({
                           <p className="text-gaming-text-muted text-xs">
                             {method.cardHolder}
                           </p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="mt-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyCard(method.cardNumber);
-                            }}
-                          >
-                            <Copy className="w-4 h-4 mr-1" />
-                            Копировать
-                          </Button>
+                          {method.id === "tbank" && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyCard(method.cardNumber);
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-1" />
+                              Копировать
+                            </Button>
+                          )}
+                          {method.id === "yukassa" && (
+                            <div className="mt-2 text-gaming-accent text-xs">
+                              Банковские карты, электронные кошельки
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -351,7 +358,7 @@ export default function VipPaymentModal({
                       1. Нажмите "Отправить заявку" для перехода к оплате
                     </li>
                     <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
-                    <li>3. Сделайте скрин��от подтверждения платежа</li>
+                    <li>3. Сдел��йте скриншот подтверждения платежа</li>
                     <li>4. Загрузите скриншот и заполните данные</li>
                     <li>
                       5. Дождитесь подтверждения (обычно в течение 1-24 часов)
@@ -482,7 +489,7 @@ export default function VipPaymentModal({
             <div className="text-center py-6">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
               <h3 className="text-xl font-bold text-gaming-text mb-3">
-                Заявка успешно от��равлена!
+                Заявка ��спешно отправлена!
               </h3>
               <p className="text-gaming-text-muted mb-4 text-sm">
                 Ваша заявка на получение VIP статуса "{selectedPlan.name}" на{" "}
@@ -503,7 +510,7 @@ export default function VipPaymentModal({
                   <li>• Администратор проверит ваш перевод</li>
                   <li>• При подтверждении VIP статус будет активирован</li>
                   <li>• Вы получите уведомление в Discord</li>
-                  <li>• Пр�� возникновении вопросов свяжемся с вами</li>
+                  <li>• При возникновении вопросов свяжемся с вами</li>
                 </ul>
               </div>
               <Button
