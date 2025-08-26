@@ -49,7 +49,17 @@ export default function Hero() {
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
       {/* Background with overlay */}
-      <div className={`absolute inset-0 ${currentHero.background}`}>
+      <div
+        className={`absolute inset-0 ${currentHero.background}`}
+        style={{
+          backgroundImage: `url(${currentHero.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/50"></div>
         {/* Soldier silhouette overlay */}
         <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-black/30 to-transparent">
           <div className="absolute right-8 top-8 w-64 h-64 md:w-80 md:h-80 opacity-20">
