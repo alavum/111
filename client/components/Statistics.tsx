@@ -15,7 +15,7 @@ const mockData = {
   ],
   snipers: [
     { rank: 1, name: "Игрок 1", value: 537 },
-    { rank: 2, name: "Игрок 2", value: 301 },
+    { rank: 2, name: "И��рок 2", value: 301 },
     { rank: 3, name: "Игрок 3", value: 150 },
   ],
   medics: [
@@ -64,13 +64,15 @@ interface StatCardProps {
 }
 
 function StatCard({ title, data, icon, color }: StatCardProps) {
+  const showHours = title === 'Командиры' || title === 'Снайперы' || title === 'Медики' || title === 'Стрелки' || title === 'Пулеметчики';
+
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
       <div className={`flex items-center gap-2 mb-4 text-${color}`}>
         {icon}
         <h3 className="font-semibold text-gaming-text">{title}</h3>
       </div>
-      
+
       <div className="space-y-2">
         {data.map((player) => (
           <div key={player.rank} className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded">
@@ -81,7 +83,9 @@ function StatCard({ title, data, icon, color }: StatCardProps) {
               </div>
               <span className="text-gaming-text text-sm truncate">{player.name}</span>
             </div>
-            <span className={`text-${color} font-semibold text-sm`}>{player.value}</span>
+            <span className={`text-${color} font-semibold text-sm`}>
+              {player.value}{showHours ? ' ч.' : ''}
+            </span>
           </div>
         ))}
       </div>
