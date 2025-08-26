@@ -9,7 +9,7 @@ const vipFeatures = [
   {
     icon: <Star className="w-6 h-6" />,
     title: "Приоритетная очередь",
-    description: "Подключайтесь к с��рверам без ожидания",
+    description: "Подключайтесь к серверам без ожидания",
   },
   {
     icon: <Shield className="w-6 h-6" />,
@@ -19,7 +19,7 @@ const vipFeatures = [
   {
     icon: <Zap className="w-6 h-6" />,
     title: "Эксклюзивные функции",
-    description: "Доступ к дополнительным возможностям в игре",
+    description: "Доступ к дополнит��льным возможностям в игре",
   },
   {
     icon: <Users className="w-6 h-6" />,
@@ -155,7 +155,7 @@ export default function VipPage() {
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <span className="bg-gaming-accent text-black px-4 py-1 rounded-full text-sm font-semibold">
-                        Рекомендуемый
+                        Рекомендуемы��
                       </span>
                     </div>
                   )}
@@ -203,10 +203,10 @@ export default function VipPage() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gaming-text mb-4">
-                  Для потенциальных спонсоров
+                  Поддержка проекта
                 </h3>
                 <p className="text-gaming-text-muted">
-                  Поддержите проект RSGS и получите эксклюзивные привилегии
+                  Станьте спонсором и помогите развивать сообщество RSGS
                 </p>
               </div>
 
@@ -274,7 +274,7 @@ export default function VipPage() {
                   Как активируется VIP статус?
                 </h3>
                 <p className="text-gaming-text-muted">
-                  VIP статус активируется автоматически после оплаты в течение
+                  VIP статус ��ктивируется автоматически после оплаты в течение
                   5-10 минут. Вы получите уведомление в Discord о активации.
                 </p>
               </div>
