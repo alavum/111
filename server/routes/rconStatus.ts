@@ -44,9 +44,9 @@ const servers: Record<number, Omit<RconServerInfo, "serverId" | "status">> = {
   },
 };
 
-// Cache for RCON responses (5 second cache)
+// Cache for RCON responses (15 second cache for better performance)
 const rconCache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5000; // 5 seconds
+const CACHE_DURATION = 15000; // 15 seconds
 
 // Real RCON query function for Squad
 async function querySquadRconServer(ip: string, port: number, password: string): Promise<any> {
@@ -65,7 +65,7 @@ async function querySquadRconServer(ip: string, port: number, password: string):
       host: ip,
       port: port,
       password: password,
-      timeout: 8000, // Reduced from 15000 to 8000ms
+      timeout: 5000, // Reduced to 5000ms for faster responses
     });
     
     await rcon.connect();
