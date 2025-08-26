@@ -86,5 +86,37 @@
     },
     "status": "pending",
     "createdAt": "2025-08-25T00:14:18.640Z"
+  },
+  {
+    "id": 1756235292709,
+    "steamId": "532",
+    "discordId": "",
+    "comment": "",
+    "plan": {
+      "id": "group",
+      "name": "VIP Групповой",
+      "description": "10 VIP слотов с возможностью расширения",
+      "basePrice": 500,
+      "popular": true,
+      "features": [
+        "10 VIP слотов",
+        "Приоритетная очередь",
+        "Возможность расширения",
+        "Управление группой"
+      ],
+      "months": 1,
+      "totalPrice": 500,
+      "discount": null
+    },
+    "paymentMethod": "sbp",
+    "screenshot": {
+      "filename": "vip-1756235292611.png",
+      "originalname": "Frame 39255.png",
+      "path": "uploads/vip-screenshots/vip-1756235292611.png",
+      "size": 115718,
+      "mimetype": "image/png"
+    },
+    "status": "pending",
+    "createdAt": "2025-08-26T19:08:12.709Z"
   }
 ]
