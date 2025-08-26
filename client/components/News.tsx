@@ -198,22 +198,20 @@ export default function News() {
               Не пропускайте важные новости!
             </h3>
             <p className="text-gaming-text-muted mb-6">
-              Подпишитесь на наши уведомления, чтобы первыми узнавать о новы��
+              Присоединяйтесь к нашему Discord-серверу, чтобы первыми ��знавать о новых
               обновлениях, турнирах и событиях в сообществе RSGS.
             </p>
-            <Button
-              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
-              onClick={() =>
-                toast({
-                  title: "В разработке",
-                  description:
-                    "Функция подписки на новости скоро будет доступна",
-                  duration: 3000,
-                })
-              }
+            <a
+              href="https://discord.gg/HXne8JVJ"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Подписаться на новости
-            </Button>
+              <Button
+                className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
+              >
+                Присоединиться к Discord
+              </Button>
+            </a>
           </div>
         </div>
       </div>
