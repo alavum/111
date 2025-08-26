@@ -9,7 +9,7 @@ const vipFeatures = [
   {
     icon: <Star className="w-6 h-6" />,
     title: "Приоритетная очередь",
-    description: "Подключайтесь к серверам без ожидания",
+    description: "Подключайтесь к с��рверам без ожидания",
   },
   {
     icon: <Shield className="w-6 h-6" />,
@@ -210,55 +210,50 @@ export default function VipPage() {
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-gaming-card via-yellow-900/10 to-gaming-card border-2 border-gradient-to-r border-yellow-500/50 rounded-lg p-8 shadow-xl">
+              <div className="bg-gaming-card border-2 border-gaming-accent/30 rounded-lg p-8 hover:border-gaming-accent/50 transition-colors">
                 <div className="text-center mb-8">
-                  <h4 className="text-3xl font-bold mb-4">
-                    <span className="bg-gradient-to-r from-yellow-400 via-purple-400 to-yellow-400 bg-clip-text text-transparent">
-                      {sponsorPlan.name}
-                    </span>
-                  </h4>
-                  <p className="text-xl text-gaming-accent font-semibold mb-4">
-                    {sponsorPlan.description}
-                  </p>
-                  <div className="inline-block bg-gradient-to-r from-yellow-400 to-purple-500 p-3 rounded-lg">
-                    <p className="text-black font-bold text-sm">
-                      Роль{" "}
-                      <span className="bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent">
-                        @Спонсор
-                      </span>{" "}
-                      с уникальным градиентом
-                    </p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gaming-accent/20 rounded-full text-gaming-accent mb-4">
+                    <Star className="w-8 h-8" />
                   </div>
+
+                  <h4 className="text-2xl font-bold text-gaming-text mb-2">
+                    Спонсорство
+                  </h4>
+                  <p className="text-lg text-gaming-accent font-semibold mb-4">
+                    от 1 500 ₽/месяц
+                  </p>
+                  <p className="text-gaming-text-muted max-w-md mx-auto">
+                    Получите эксклюзивную роль <span className="text-gaming-accent font-semibold">@Спонсор</span> и особые привилегии
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                   {sponsorPlan.features.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start text-gaming-text bg-gaming-bg/50 p-4 rounded-lg"
+                      className="flex items-start text-gaming-text bg-gaming-bg/50 border border-gaming-border rounded-lg p-4"
                     >
-                      <Star className="w-5 h-5 text-yellow-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-gaming-text">{feature}</span>
+                      <Check className="w-5 h-5 text-gaming-accent mr-3 mt-0.5 flex-shrink-0" />
+                      <span>{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="text-center space-y-6">
+                <div className="text-center">
                   <a
                     href="https://discord.gg/HXne8JVJ"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Button
-                      className="bg-gradient-to-r from-yellow-500 to-purple-500 hover:from-yellow-600 hover:to-purple-600 text-black font-bold px-12 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
                       size="lg"
                     >
-                      Стать спонсором
+                      Связаться в Discord
                     </Button>
                   </a>
-                  <p className="text-gaming-text-muted text-sm">
-                    Нажмите кнопку выше, чтобы перейти в Discord и связаться с
-                    администрацией
+                  <p className="text-gaming-text-muted text-sm mt-4">
+                    Обсудите детали спонсорства с администрацией
                   </p>
                 </div>
               </div>
