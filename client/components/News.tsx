@@ -198,17 +198,15 @@ export default function News() {
               Не пропускайте важные новости!
             </h3>
             <p className="text-gaming-text-muted mb-6">
-              Присоединяйтесь к нашему Discord-серверу, чтобы первыми ��знавать о новых
-              обновлениях, турнирах и событиях в сообществе RSGS.
+              Присоединяйтесь к нашему Discord-серверу, чтобы первыми ��знавать
+              о новых обновлениях, турнирах и событиях в сообществе RSGS.
             </p>
             <a
               href="https://discord.gg/HXne8JVJ"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button
-                className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
-              >
+              <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">
                 Присоединиться к Discord
               </Button>
             </a>

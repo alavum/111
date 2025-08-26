@@ -64,7 +64,12 @@ interface StatCardProps {
 }
 
 function StatCard({ title, data, icon, color }: StatCardProps) {
-  const showHours = title === 'Командиры' || title === 'Снайперы' || title === 'Медики' || title === 'Стрелки' || title === 'Пулеметчики';
+  const showHours =
+    title === "Командиры" ||
+    title === "Снайперы" ||
+    title === "Медики" ||
+    title === "Стрелки" ||
+    title === "Пулеметчики";
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
@@ -75,16 +80,24 @@ function StatCard({ title, data, icon, color }: StatCardProps) {
 
       <div className="space-y-2">
         {data.map((player) => (
-          <div key={player.rank} className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded">
+          <div
+            key={player.rank}
+            className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
+          >
             <div className="flex items-center gap-3">
-              <span className={`text-${color} font-bold text-sm w-4`}>{player.rank}.</span>
+              <span className={`text-${color} font-bold text-sm w-4`}>
+                {player.rank}.
+              </span>
               <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
                 <span className="text-xs text-gaming-text">👤</span>
               </div>
-              <span className="text-gaming-text text-sm truncate">{player.name}</span>
+              <span className="text-gaming-text text-sm truncate">
+                {player.name}
+              </span>
             </div>
             <span className={`text-${color} font-semibold text-sm`}>
-              {player.value}{showHours ? ' ч.' : ''}
+              {player.value}
+              {showHours ? " ч." : ""}
             </span>
           </div>
         ))}
@@ -102,19 +115,30 @@ interface StatListProps {
 function StatList({ title, data, color }: StatListProps) {
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
-      <h3 className={`font-semibold text-gaming-text mb-4 text-${color}`}>{title}</h3>
-      
+      <h3 className={`font-semibold text-gaming-text mb-4 text-${color}`}>
+        {title}
+      </h3>
+
       <div className="space-y-2">
         {data.map((player) => (
-          <div key={player.rank} className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded">
+          <div
+            key={player.rank}
+            className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
+          >
             <div className="flex items-center gap-3">
-              <span className={`text-${color} font-bold text-sm w-4`}>{player.rank}.</span>
+              <span className={`text-${color} font-bold text-sm w-4`}>
+                {player.rank}.
+              </span>
               <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
                 <span className="text-xs text-gaming-text">👤</span>
               </div>
-              <span className="text-gaming-text text-sm truncate">{player.name}</span>
+              <span className="text-gaming-text text-sm truncate">
+                {player.name}
+              </span>
             </div>
-            <span className={`text-${color} font-semibold text-sm`}>{player.value}</span>
+            <span className={`text-${color} font-semibold text-sm`}>
+              {player.value}
+            </span>
           </div>
         ))}
       </div>
@@ -146,28 +170,28 @@ export default function Statistics() {
               icon={<Shield className="w-5 h-5" />}
               color="yellow-400"
             />
-            
+
             <StatCard
               title="Снайперы"
               data={mockData.snipers}
               icon={<Target className="w-5 h-5" />}
               color="red-400"
             />
-            
+
             <StatCard
               title="Медики"
               data={mockData.medics}
               icon={<Heart className="w-5 h-5" />}
               color="green-400"
             />
-            
+
             <StatCard
               title="Стрелки"
               data={mockData.soldiers}
               icon={<Zap className="w-5 h-5" />}
               color="blue-400"
             />
-            
+
             <StatCard
               title="Пулеметчики"
               data={mockData.gunners}
@@ -183,13 +207,13 @@ export default function Statistics() {
               data={mockData.kills}
               color="gaming-accent"
             />
-            
+
             <StatList
               title="Подбития"
               data={mockData.damage}
               color="gaming-accent"
             />
-            
+
             <StatList
               title="Лучший игрок"
               data={mockData.bestPlayer}
@@ -204,14 +228,15 @@ export default function Statistics() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gaming-accent/20 rounded-full text-gaming-accent mb-4">
               <Trophy className="w-8 h-8" />
             </div>
-            
+
             <h3 className="text-2xl font-bold text-gaming-text mb-2">
               В разработке
             </h3>
             <p className="text-gaming-text-muted mb-6 max-w-md">
-              Система статистики находится на стадии разработки. Скоро вы сможете видеть подробную статистику игроков.
+              Система статистики находится на стадии разработки. Скоро вы
+              сможете видеть подробную статистику игроков.
             </p>
-            
+
             <div className="flex items-center justify-center space-x-2 text-gaming-accent">
               <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse"></div>
               <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse delay-75"></div>

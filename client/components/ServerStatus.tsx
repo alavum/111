@@ -137,7 +137,11 @@ export default function ServerStatus() {
     async (forceRefresh = false, showLoading = true) => {
       const now = Date.now();
 
-      if (!forceRefresh && lastFetchTime && now - lastFetchTime < CACHE_DURATION) {
+      if (
+        !forceRefresh &&
+        lastFetchTime &&
+        now - lastFetchTime < CACHE_DURATION
+      ) {
         return;
       }
 
@@ -152,13 +156,19 @@ export default function ServerStatus() {
           const rconData = await response.json();
 
           const updatedServers = rconData.map((rconServer: any) => {
-            const existingServer = serverData.find(s => s.id === rconServer.serverId);
+            const existingServer = serverData.find(
+              (s) => s.id === rconServer.serverId,
+            );
             return {
               id: rconServer.serverId,
-              name: existingServer?.name || `RSGS Server ${rconServer.serverId}`,
+              name:
+                existingServer?.name || `RSGS Server ${rconServer.serverId}`,
               players: rconServer.players || 0,
               maxPlayers: rconServer.maxPlayers || 100,
-              queue: Math.max(0, (rconServer.players || 0) - (rconServer.maxPlayers || 100)),
+              queue: Math.max(
+                0,
+                (rconServer.players || 0) - (rconServer.maxPlayers || 100),
+              ),
               map: rconServer.map || "Unknown",
               gameMode: rconServer.gameMode || "Unknown",
               status: rconServer.status as Server["status"],
@@ -173,10 +183,13 @@ export default function ServerStatus() {
             data: updatedServers,
             timestamp: now,
           };
-          localStorage.setItem("server_status_cache", JSON.stringify(cacheData));
+          localStorage.setItem(
+            "server_status_cache",
+            JSON.stringify(cacheData),
+          );
         }
       } catch (error) {
-        if (error instanceof Error && error.name !== 'AbortError') {
+        if (error instanceof Error && error.name !== "AbortError") {
           console.error("Failed to fetch RCON data:", error);
           if (showLoading) {
             toast({
@@ -190,13 +203,13 @@ export default function ServerStatus() {
         if (showLoading) setIsLoadingRcon(false);
       }
     },
-    [lastFetchTime, serverData]
+    [lastFetchTime, serverData],
   );
 
   // Check server connection statuses
   const checkServerConnections = useCallback(async () => {
     try {
-      const serverIds = serverData.map(s => s.id);
+      const serverIds = serverData.map((s) => s.id);
       const response = await fetch("/api/server-status/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -211,7 +224,7 @@ export default function ServerStatus() {
             acc[status.serverId] = status;
             return acc;
           },
-          {} as Record<number, ServerConnectionStatus>
+          {} as Record<number, ServerConnectionStatus>,
         );
         setConnectionStatuses(statusMap);
       }
@@ -223,7 +236,7 @@ export default function ServerStatus() {
   // Initialize data
   useEffect(() => {
     const hasCachedData = loadCachedData();
-    
+
     // Fetch fresh data in background if we have cache, or immediately if no cache
     if (hasCachedData) {
       // Background update after short delay
@@ -231,7 +244,7 @@ export default function ServerStatus() {
     } else {
       fetchRconData(true, true);
     }
-    
+
     checkServerConnections();
   }, []);
 
@@ -249,23 +262,24 @@ export default function ServerStatus() {
     if (server.status !== "online") {
       toast({
         title: "Сервер недоступен",
-        description: "Сервер находится в оффлайне или на техническом обслуживании",
+        description:
+          "Сервер находится в оффлайне или на техническом обслуживании",
         variant: "destructive",
       });
       return;
     }
 
     const connectionStatus = connectionStatuses[server.id];
-    
+
     if (!connectionStatus) {
-      setLoadingConnections(prev => ({ ...prev, [server.id]: true }));
-      
+      setLoadingConnections((prev) => ({ ...prev, [server.id]: true }));
+
       try {
         const response = await fetch(`/api/server-status/${server.id}`);
         const status: ServerConnectionStatus = await response.json();
-        
-        setConnectionStatuses(prev => ({ ...prev, [server.id]: status }));
-        
+
+        setConnectionStatuses((prev) => ({ ...prev, [server.id]: status }));
+
         if (status.ok && status.connectUrl) {
           window.open(status.connectUrl, "_blank");
         } else {
@@ -282,7 +296,7 @@ export default function ServerStatus() {
           variant: "destructive",
         });
       } finally {
-        setLoadingConnections(prev => ({ ...prev, [server.id]: false }));
+        setLoadingConnections((prev) => ({ ...prev, [server.id]: false }));
       }
       return;
     }
@@ -292,7 +306,9 @@ export default function ServerStatus() {
     } else {
       toast({
         title: "Подключение недоступно",
-        description: connectionStatus.error || "Сервер временно недоступен для подключения",
+        description:
+          connectionStatus.error ||
+          "Сервер временно недоступен для подключения",
         variant: "destructive",
       });
     }
@@ -304,16 +320,18 @@ export default function ServerStatus() {
   };
 
   const isConnectionAvailable = (server: Server) => {
-    return server.status === "online" && connectionStatuses[server.id]?.ok === true;
+    return (
+      server.status === "online" && connectionStatuses[server.id]?.ok === true
+    );
   };
 
   const getConnectButtonText = (server: Server) => {
     if (server.status !== "online") return "Недоступен";
     if (loadingConnections[server.id]) return "Проверка...";
-    
+
     const connectionStatus = connectionStatuses[server.id];
     if (!connectionStatus) return "Подключиться";
-    
+
     return connectionStatus.ok ? "Подключиться" : "Недоступен";
   };
 
@@ -325,7 +343,7 @@ export default function ServerStatus() {
           <h2 className="text-2xl md:text-3xl font-bold text-gaming-text">
             Статус серверов
           </h2>
-          
+
           <div className="flex items-center space-x-4">
             {isLoadingRcon && (
               <div className="flex items-center text-gaming-accent">
@@ -333,7 +351,7 @@ export default function ServerStatus() {
                 <span className="text-sm">Обновление...</span>
               </div>
             )}
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -404,16 +422,24 @@ export default function ServerStatus() {
                 <div className="flex items-start">
                   <MapPin className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <span className="text-gaming-text-muted text-xs">Карта:</span>
-                    <p className="text-gaming-text text-sm truncate">{server.map}</p>
+                    <span className="text-gaming-text-muted text-xs">
+                      Карта:
+                    </span>
+                    <p className="text-gaming-text text-sm truncate">
+                      {server.map}
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Gamepad2 className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <span className="text-gaming-text-muted text-xs">Режим:</span>
-                    <p className="text-gaming-text text-sm">{server.gameMode}</p>
+                    <span className="text-gaming-text-muted text-xs">
+                      Режим:
+                    </span>
+                    <p className="text-gaming-text text-sm">
+                      {server.gameMode}
+                    </p>
                   </div>
                 </div>
               </div>

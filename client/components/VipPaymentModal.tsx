@@ -121,10 +121,16 @@ export default function VipPaymentModal({
   };
 
   const handleSubmitPayment = async () => {
-    if (!playerData.steamId || (selectedMethod === "tbank" && !playerData.screenshot)) {
+    if (
+      !playerData.steamId ||
+      (selectedMethod === "tbank" && !playerData.screenshot)
+    ) {
       toast({
         title: "Заполните обязательные поля",
-        description: selectedMethod === "tbank" ? "Steam ID и скриншот перевода обязательны" : "Steam ID обязателен",
+        description:
+          selectedMethod === "tbank"
+            ? "Steam ID и скриншот перевода обязательны"
+            : "Steam ID обязателен",
         variant: "destructive",
       });
       return;
@@ -319,9 +325,7 @@ export default function VipPaymentModal({
                   Инструкции по оплате:
                 </h4>
                 <ol className="text-gaming-text-muted text-xs space-y-1">
-                  <li>
-                    1. Нажмите "Отправить заявку" для перехода к оплате
-                  </li>
+                  <li>1. Нажмите "Отправить заявку" для перехода к оплате</li>
                   <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
                   <li>3. Заполните данные игрока в форме ниже</li>
                   <li>
@@ -403,7 +407,10 @@ export default function VipPaymentModal({
 
                 {selectedMethod !== "yukassa" && (
                   <div>
-                    <Label htmlFor="comment" className="text-gaming-text text-sm">
+                    <Label
+                      htmlFor="comment"
+                      className="text-gaming-text text-sm"
+                    >
                       Комментарий
                     </Label>
                     <Textarea

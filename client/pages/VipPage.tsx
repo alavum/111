@@ -223,7 +223,11 @@ export default function VipPage() {
                     от 1 500 ₽/месяц
                   </p>
                   <p className="text-gaming-text-muted max-w-md mx-auto">
-                    Получите эксклюзивную роль <span className="text-gaming-accent font-semibold">@Спонсор</span> и особые привилегии
+                    Получите эксклюзивную роль{" "}
+                    <span className="text-gaming-accent font-semibold">
+                      @Спонсор
+                    </span>{" "}
+                    и особые привилегии
                   </p>
                 </div>
 
