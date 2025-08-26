@@ -25,7 +25,7 @@ let servers: Server[] = [
     id: 1,
     name: "RSGS Free",
     players: 0,
-    maxPlayers: 80,
+    maxPlayers: 100,
     queue: 0,
     map: "Loading...",
     gameMode: "Checking...",
@@ -35,7 +35,7 @@ let servers: Server[] = [
     id: 2,
     name: "RSGS #1",
     players: 0,
-    maxPlayers: 80,
+    maxPlayers: 100,
     queue: 0,
     map: "Offline",
     gameMode: "Offline",
@@ -45,7 +45,7 @@ let servers: Server[] = [
     id: 3,
     name: "RSGS Invasion",
     players: 0,
-    maxPlayers: 80,
+    maxPlayers: 100,
     queue: 0,
     map: "Offline",
     gameMode: "Offline",
@@ -55,7 +55,7 @@ let servers: Server[] = [
     id: 4,
     name: "RSGS International",
     players: 0,
-    maxPlayers: 80,
+    maxPlayers: 100,
     queue: 0,
     map: "Offline",
     gameMode: "Offline",
@@ -136,10 +136,10 @@ export default function ServerStatus() {
             id: rconServer.serverId,
             name: `RSGS Server ${rconServer.serverId}`,
             players: rconServer.players || 0,
-            maxPlayers: rconServer.maxPlayers || 80,
+            maxPlayers: rconServer.maxPlayers || 100,
             queue: Math.max(
               0,
-              (rconServer.players || 0) - (rconServer.maxPlayers || 80),
+              (rconServer.players || 0) - (rconServer.maxPlayers || 100),
             ),
             map: rconServer.map || "Unknown",
             gameMode: rconServer.gameMode || "Unknown",
@@ -245,7 +245,7 @@ export default function ServerStatus() {
       toast({
         title: "Сервер недоступен",
         description:
-          "Сервер находится в оффлайне или на техническом обслуживании",
+          "Сервер находится в оффлайне или на техническом обслужива��ии",
         variant: "destructive",
       });
       return;
