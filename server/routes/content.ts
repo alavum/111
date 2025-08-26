@@ -68,7 +68,7 @@ let newsArticles = (() => {
     },
     {
       id: 2,
-      title: "Обновление серверных правил",
+      title: "Обновление с��рверных правил",
       content: "Обновлены правила поведения на серверах...",
       author: "Moderator",
       date: new Date(Date.now() - 86400000).toISOString(),
@@ -228,6 +228,7 @@ export const createNews: RequestHandler = (req, res) => {
   };
 
   newsArticles.push(newArticle);
+  saveNewsArticles();
   res.status(201).json(newArticle);
 };
 
@@ -278,6 +279,7 @@ export const updateNews: RequestHandler = (req, res) => {
     newsArticles[articleIndex].image = `/uploads/news-images/${image.filename}`;
   }
 
+  saveNewsArticles();
   res.json(newsArticles[articleIndex]);
 };
 
@@ -290,6 +292,7 @@ export const deleteNews: RequestHandler = (req, res) => {
   }
 
   newsArticles.splice(articleIndex, 1);
+  saveNewsArticles();
   res.json({ message: "Новость удалена" });
 };
 
