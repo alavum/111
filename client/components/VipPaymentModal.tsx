@@ -37,18 +37,18 @@ const paymentMethods = [
   {
     id: "tbank",
     name: "Т-Банк",
-    icon: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iI0ZGREIwMCIvPgo8cGF0aCBkPSJNMTAgMTJIMzBWMTRIMjhWMjZIMjZWMjhIMTRWMjZIMTJWMTRIMTBWMTJaIiBmaWxsPSIjMDAwIi8+CjxwYXRoIGQ9Ik0xNiAxNkgyNFYxOEgyMlYyMkgyMFYyNEgxOFYyMkgxNlYxNloiIGZpbGw9IiMwMDAiLz4KPC9zdmc+",
+    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F3b133b96231941439770ad380fea2377?format=webp&width=800",
     cardNumber: "2200 1234 5678 9012",
     cardHolder: "RSGS PAYMENTS",
     description: "Переводы на карту Т-Банк",
   },
   {
-    id: "sbp",
-    name: "СБП (Т-Банк)",
-    icon: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN0FGRiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMTRIMjZWMjZIMjhWMjhIMTJWMjZIMTBWMTRIMTJWMTJaIiBmaWxsPSIjRkZGIi8+CjxwYXRoIGQ9Ik0xNiAxNkgyNFYyNEgxNlYxNloiIGZpbGw9IiNGRkYiLz4KPC9zdmc+",
-    cardNumber: "+7 932 257 80 92",
-    cardHolder: "Система быстрых платежей (Т-Банк)",
-    description: "Перевод через СБП в Т-Банк по номеру телефона",
+    id: "yukassa",
+    name: "ЮKassa",
+    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F5e21e9cbb0544c55aa22204efe271343?format=webp&width=800",
+    cardNumber: "Онлайн-оплата",
+    cardHolder: "ЮKassa (безопасные платежи)",
+    description: "Оплата картой через ЮKassa",
   },
 ];
 
