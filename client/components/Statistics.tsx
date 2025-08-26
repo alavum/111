@@ -1,267 +1,217 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, Target, Heart, Crosshair, Zap } from "lucide-react";
+import { Trophy, Target, Heart, Shield, Zap } from "lucide-react";
 
-interface Player {
-  id: number;
-  name: string;
-  score: number;
-  avatar?: string;
+interface PlayerStat {
   rank: number;
+  name: string;
+  value: number;
+  avatar?: string;
 }
 
-interface StatCategory {
-  id: string;
+const mockData = {
+  commanders: [
+    { rank: 1, name: "РПКН Призрак Москвы", value: 375 },
+    { rank: 2, name: "Ночной штурмовик", value: 298 },
+    { rank: 3, name: "[ST] Генералиссимус", value: 275 },
+  ],
+  snipers: [
+    { rank: 1, name: "[TAC] Icintale", value: 537 },
+    { rank: 2, name: "[ST] Генералиссимус", value: 301 },
+    { rank: 3, name: "[TAC] Обрывок", value: 150 },
+  ],
+  medics: [
+    { rank: 1, name: "Mk 96", value: 193 },
+    { rank: 2, name: "[TAC] Обрывок", value: 130 },
+    { rank: 3, name: "Krait Блеск", value: 125 },
+  ],
+  soldiers: [
+    { rank: 1, name: "[RION] Cергіll", value: 770 },
+    { rank: 2, name: "[CTR] Burnley", value: 458 },
+    { rank: 3, name: "[TAC] suavIlle", value: 420 },
+  ],
+  gunners: [
+    { rank: 1, name: "[RION] Кроша Archer", value: 370 },
+    { rank: 2, name: "[VF] Ufimskunk", value: 356 },
+    { rank: 3, name: "[TAC] Обрывок", value: 338 },
+  ],
+  kills: [
+    { rank: 1, name: "[RION] Cергіll", value: 770 },
+    { rank: 2, name: "[CTR] Burnley", value: 458 },
+    { rank: 3, name: "[TAC] suavIlle", value: 420 },
+    { rank: 4, name: "Воображением", value: 401 },
+    { rank: 5, name: "bubula", value: 401 },
+  ],
+  damage: [
+    { rank: 1, name: "[TAC] Icintale", value: 537 },
+    { rank: 2, name: "крысиновация", value: 301 },
+    { rank: 3, name: "крысила Андрей", value: 300 },
+    { rank: 4, name: "Воображением", value: 201 },
+    { rank: 5, name: "bubula", value: 201 },
+  ],
+  bestPlayer: [
+    { rank: 1, name: "[RION] Cергіll", value: 193 },
+    { rank: 2, name: "[TLS] sveabelle", value: 150 },
+    { rank: 3, name: "[RION] WeMeIn", value: 76 },
+    { rank: 4, name: "[VF] Ufimskunk", value: 50 },
+    { rank: 5, name: "[TAC] Burnley", value: 75 },
+  ],
+};
+
+interface StatCardProps {
   title: string;
+  data: PlayerStat[];
   icon: React.ReactNode;
-  players: Player[];
   color: string;
 }
 
-const generatePlayers = (count: number, baseScore: number = 1000): Player[] => {
-  const names = [
-    "Volkov",
-    "Petrov",
-    "Smirnov",
-    "Kuznetsov",
-    "Popov",
-    "Lebedev",
-    "Kozlov",
-    "Novikov",
-    "Morozov",
-    "Petrov",
-    "Volkov",
-    "Sokolov",
-    "Zaytsev",
-    "Pavlov",
-    "Semenov",
-    "Golubev",
-  ];
+function StatCard({ title, data, icon, color }: StatCardProps) {
+  return (
+    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
+      <div className={`flex items-center gap-2 mb-4 text-${color}`}>
+        {icon}
+        <h3 className="font-semibold text-gaming-text">{title}</h3>
+      </div>
+      
+      <div className="space-y-2">
+        {data.map((player) => (
+          <div key={player.rank} className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded">
+            <div className="flex items-center gap-3">
+              <span className={`text-${color} font-bold text-sm w-4`}>{player.rank}.</span>
+              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
+                <span className="text-xs text-gaming-text">👤</span>
+              </div>
+              <span className="text-gaming-text text-sm truncate">{player.name}</span>
+            </div>
+            <span className={`text-${color} font-semibold text-sm`}>{player.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-  return Array.from({ length: count }, (_, i) => ({
-    id: i + 1,
-    name:
-      names[i % names.length] +
-      (i > names.length - 1 ? ` ${Math.floor(i / names.length) + 1}` : ""),
-    score: baseScore - i * 50 + Math.floor(Math.random() * 100),
-    rank: i + 1,
-  }));
-};
+interface StatListProps {
+  title: string;
+  data: PlayerStat[];
+  color: string;
+}
 
-const statCategories: StatCategory[] = [
-  {
-    id: "commanders",
-    title: "Командиры",
-    icon: <Trophy className="w-5 h-5" />,
-    players: generatePlayers(5, 2500),
-    color: "text-gaming-warning",
-  },
-  {
-    id: "snipers",
-    title: "Снайперы",
-    icon: <Target className="w-5 h-5" />,
-    players: generatePlayers(5, 2200),
-    color: "text-red-400",
-  },
-  {
-    id: "medics",
-    title: "Медики",
-    icon: <Heart className="w-5 h-5" />,
-    players: generatePlayers(5, 2000),
-    color: "text-green-400",
-  },
-  {
-    id: "riflemen",
-    title: "Стрелки",
-    icon: <Crosshair className="w-5 h-5" />,
-    players: generatePlayers(5, 1800),
-    color: "text-blue-400",
-  },
-  {
-    id: "gunners",
-    title: "Пулеметчики",
-    icon: <Zap className="w-5 h-5" />,
-    players: generatePlayers(5, 1600),
-    color: "text-purple-400",
-  },
-];
-
-const topPlayers = generatePlayers(10, 3000);
+function StatList({ title, data, color }: StatListProps) {
+  return (
+    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
+      <h3 className={`font-semibold text-gaming-text mb-4 text-${color}`}>{title}</h3>
+      
+      <div className="space-y-2">
+        {data.map((player) => (
+          <div key={player.rank} className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded">
+            <div className="flex items-center gap-3">
+              <span className={`text-${color} font-bold text-sm w-4`}>{player.rank}.</span>
+              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
+                <span className="text-xs text-gaming-text">👤</span>
+              </div>
+              <span className="text-gaming-text text-sm truncate">{player.name}</span>
+            </div>
+            <span className={`text-${color} font-semibold text-sm`}>{player.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Statistics() {
   return (
-    <section className="py-12 bg-gaming-card relative">
+    <section className="py-16 bg-gaming-bg relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-gaming-text mb-8">
-          Статистика за неделю
-        </h2>
-
-        {/* Category Leaderboards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12 blur-sm">
-          {statCategories.map((category) => (
-            <div
-              key={category.id}
-              className="bg-gaming-bg border border-gaming-border rounded-lg p-4"
-            >
-              <div className="flex items-center mb-4">
-                <div className={`${category.color} mr-2`}>{category.icon}</div>
-                <h3 className="font-semibold text-gaming-text">
-                  {category.title}
-                </h3>
-              </div>
-
-              <div className="space-y-3">
-                {category.players.map((player) => (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span className="text-gaming-accent font-semibold text-sm w-4">
-                        {player.rank}
-                      </span>
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src={player.avatar} />
-                        <AvatarFallback className="text-xs bg-gaming-border text-gaming-text">
-                          {player.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-gaming-text text-sm truncate max-w-20">
-                        {player.name}
-                      </span>
-                    </div>
-                    <span className="text-gaming-accent font-semibold text-sm">
-                      {player.score.toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gaming-text mb-4">
+            Статистика за неделю
+          </h2>
+          <p className="text-gaming-text-muted">
+            Лучшие игроки по различным показателям
+          </p>
         </div>
 
-        {/* Main Leaderboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 blur-sm">
-          {/* Top Players */}
-          <div className="lg:col-span-2">
-            <h3 className="text-xl font-bold text-gaming-text mb-4 flex items-center">
-              <Trophy className="w-5 h-5 text-gaming-warning mr-2" />
-              Лучшие игроки
-            </h3>
-            <div className="bg-gaming-bg border border-gaming-border rounded-lg">
-              <div className="divide-y divide-gaming-border">
-                {topPlayers.map((player, index) => (
-                  <div
-                    key={player.id}
-                    className="p-4 flex items-center justify-between hover:bg-gaming-card-hover transition-colors"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span
-                        className={`font-bold text-lg w-6 ${
-                          index === 0
-                            ? "text-gaming-warning"
-                            : index === 1
-                              ? "text-gray-400"
-                              : index === 2
-                                ? "text-orange-400"
-                                : "text-gaming-text-muted"
-                        }`}
-                      >
-                        {index + 1}
-                      </span>
-                      <Avatar>
-                        <AvatarImage src={player.avatar} />
-                        <AvatarFallback className="bg-gaming-border text-gaming-text">
-                          {player.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-gaming-text">
-                          {player.name}
-                        </p>
-                        <p className="text-gaming-text-muted text-sm">
-                          Игрок RSGS
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-gaming-accent">
-                        {player.score.toLocaleString()}
-                      </p>
-                      <p className="text-gaming-text-muted text-sm">очков</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* Statistics Content */}
+        <div className="space-y-8 blur-sm">
+          {/* Role-based Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <StatCard
+              title="Командиры"
+              data={mockData.commanders}
+              icon={<Shield className="w-5 h-5" />}
+              color="yellow-400"
+            />
+            
+            <StatCard
+              title="Снайперы"
+              data={mockData.snipers}
+              icon={<Target className="w-5 h-5" />}
+              color="red-400"
+            />
+            
+            <StatCard
+              title="Медики"
+              data={mockData.medics}
+              icon={<Heart className="w-5 h-5" />}
+              color="green-400"
+            />
+            
+            <StatCard
+              title="Стрелки"
+              data={mockData.soldiers}
+              icon={<Zap className="w-5 h-5" />}
+              color="blue-400"
+            />
+            
+            <StatCard
+              title="Пулеметчики"
+              data={mockData.gunners}
+              icon={<Trophy className="w-5 h-5" />}
+              color="purple-400"
+            />
           </div>
 
-          {/* Additional Stats */}
-          <div>
-            <h3 className="text-xl font-bold text-gaming-text mb-4">
-              Общая статистика
-            </h3>
-            <div className="space-y-4">
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
-                <h4 className="font-semibold text-gaming-text mb-2">
-                  Активность сегодня
-                </h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">
-                      Онлайн игроков
-                    </span>
-                    <span className="text-gaming-accent font-semibold">
-                      292
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Всего матчей</span>
-                    <span className="text-gaming-accent font-semibold">
-                      156
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">
-                      Новых игроков
-                    </span>
-                    <span className="text-gaming-accent font-semibold">23</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4">
-                <h4 className="font-semibold text-gaming-text mb-2">
-                  Популярные карты
-                </h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Anvil RAAS</span>
-                    <span className="text-gaming-text">34%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Yehorivka</span>
-                    <span className="text-gaming-text">28%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gaming-text-muted">Mutaha</span>
-                    <span className="text-gaming-text">22%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Performance Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatList
+              title="Количество убийств"
+              data={mockData.kills}
+              color="gaming-accent"
+            />
+            
+            <StatList
+              title="Подбития"
+              data={mockData.damage}
+              color="gaming-accent"
+            />
+            
+            <StatList
+              title="Лучший игрок"
+              data={mockData.bestPlayer}
+              color="gaming-accent"
+            />
           </div>
         </div>
 
         {/* Development Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="text-center">
-            <div className="bg-gaming-card border border-gaming-border rounded-lg px-8 py-6 shadow-2xl">
-              <h3 className="text-2xl font-bold text-gaming-accent mb-2">
-                В разработке
-              </h3>
-              <p className="text-gaming-text-muted">
-                Раздел статистики находится в разработке и скоро будет доступен
-              </p>
+        <div className="absolute inset-0 flex items-center justify-center bg-gaming-bg/10 backdrop-blur-sm rounded-lg">
+          <div className="text-center bg-gaming-card border-2 border-gaming-accent rounded-lg p-8 shadow-2xl">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gaming-accent/20 rounded-full text-gaming-accent mb-4">
+              <Trophy className="w-8 h-8" />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-gaming-text mb-2">
+              В разработке
+            </h3>
+            <p className="text-gaming-text-muted mb-6 max-w-md">
+              Система статистики находится на стадии разработки. Скоро вы сможете видеть подробную статистику игроков.
+            </p>
+            
+            <div className="flex items-center justify-center space-x-2 text-gaming-accent">
+              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse delay-75"></div>
+              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse delay-150"></div>
             </div>
           </div>
         </div>
