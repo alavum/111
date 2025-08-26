@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
-import { Users, MapPin, Gamepad2, Clock, RefreshCw } from "lucide-react";
+import { Users, MapPin, Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Server {
@@ -78,36 +78,17 @@ function getStatusColor(status: Server["status"]) {
   }
 }
 
-function getStatusBgColor(status: Server["status"]) {
+function getStatusDot(status: Server["status"]) {
   switch (status) {
     case "online":
-      return "bg-green-400/20 border-green-400/30";
+      return "bg-green-400";
     case "offline":
-      return "bg-red-400/20 border-red-400/30";
+      return "bg-red-400";
     case "maintenance":
-      return "bg-yellow-400/20 border-yellow-400/30";
+      return "bg-yellow-400";
     default:
-      return "bg-gaming-border/20 border-gaming-border/30";
+      return "bg-gaming-text-muted";
   }
-}
-
-function getStatusIcon(status: Server["status"]) {
-  switch (status) {
-    case "online":
-      return "⚡";
-    case "offline":
-      return "⭕";
-    case "maintenance":
-      return "🔧";
-    default:
-      return "❓";
-  }
-}
-
-function getPlayerFillColor(percentage: number) {
-  if (percentage >= 90) return "bg-red-400";
-  if (percentage >= 70) return "bg-yellow-400";
-  return "bg-gaming-accent";
 }
 
 // Cache interface
@@ -129,7 +110,6 @@ export default function ServerStatus() {
   >({});
   const [isLoadingRcon, setIsLoadingRcon] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
-  const [autoRefresh, setAutoRefresh] = useState(true);
 
   // Load cached data on mount
   const loadCachedData = useCallback(() => {
@@ -257,15 +237,13 @@ export default function ServerStatus() {
 
   // Auto-refresh interval
   useEffect(() => {
-    if (!autoRefresh) return;
-
     const interval = setInterval(() => {
       fetchRconData(true, false); // Background updates
       checkServerConnections();
     }, 30000); // Every 30 seconds
 
     return () => clearInterval(interval);
-  }, [autoRefresh, fetchRconData, checkServerConnections]);
+  }, [fetchRconData, checkServerConnections]);
 
   const handleConnect = async (server: Server) => {
     if (server.status !== "online") {
@@ -325,10 +303,6 @@ export default function ServerStatus() {
     checkServerConnections();
   };
 
-  const getPlayerPercentage = (players: number, maxPlayers: number) => {
-    return Math.min((players / maxPlayers) * 100, 100);
-  };
-
   const isConnectionAvailable = (server: Server) => {
     return server.status === "online" && connectionStatuses[server.id]?.ok === true;
   };
@@ -344,18 +318,13 @@ export default function ServerStatus() {
   };
 
   return (
-    <section id="servers" className="py-16 bg-gaming-bg">
+    <section id="servers" className="py-12 bg-gaming-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gaming-text mb-2">
-              Статус серверов
-            </h2>
-            <p className="text-gaming-text-muted">
-              Информация о серверах обновляется в реальном времени
-            </p>
-          </div>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gaming-text">
+            Статус серверов
+          </h2>
           
           <div className="flex items-center space-x-4">
             {isLoadingRcon && (
@@ -380,119 +349,99 @@ export default function ServerStatus() {
 
         {/* Servers Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {serverData.map((server) => {
-            const playerPercentage = getPlayerPercentage(server.players, server.maxPlayers);
-            
-            return (
-              <div
-                key={server.id}
-                className={`relative bg-gaming-card border-2 rounded-xl p-6 transition-all duration-300 hover:scale-105 ${getStatusBgColor(server.status)}`}
-              >
-                {/* Status Badge */}
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">{getStatusIcon(server.status)}</span>
-                    <span className={`text-xs font-bold uppercase tracking-wide ${getStatusColor(server.status)}`}>
-                      {server.status === "online" ? "Online" : 
-                       server.status === "offline" ? "Offline" : "Maintenance"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Server Name */}
-                <div className="mb-6 pr-20">
-                  <h3 className="text-xl font-bold text-gaming-text">{server.name}</h3>
-                </div>
-
-                {/* Player Count */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center text-gaming-text-muted">
-                      <Users className="w-4 h-4 mr-2" />
-                      <span className="text-sm font-medium">Игроки</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-gaming-text">
-                        {server.players}
-                      </span>
-                      <span className="text-gaming-text-muted">/{server.maxPlayers}</span>
-                      {server.queue > 0 && (
-                        <div className="text-xs text-yellow-400 font-semibold">
-                          +{server.queue} в очереди
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Progress Bar */}
-                  <div className="w-full bg-gaming-border/30 rounded-full h-3 overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-500 rounded-full ${getPlayerFillColor(playerPercentage)}`}
-                      style={{ width: `${playerPercentage}%` }}
-                    />
-                  </div>
-                  <div className="text-xs text-gaming-text-muted mt-1 text-center">
-                    {playerPercentage.toFixed(0)}% заполненность
-                  </div>
-                </div>
-
-                {/* Server Info */}
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-start">
-                    <MapPin className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
-                    <div>
-                      <div className="text-xs text-gaming-text-muted uppercase tracking-wide">Карта</div>
-                      <div className="text-sm text-gaming-text font-medium truncate">{server.map}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <Gamepad2 className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
-                    <div>
-                      <div className="text-xs text-gaming-text-muted uppercase tracking-wide">Режим</div>
-                      <div className="text-sm text-gaming-text font-medium">{server.gameMode}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Connect Button */}
-                <Button
-                  onClick={() => handleConnect(server)}
-                  disabled={!isConnectionAvailable(server) && server.status === "online" && connectionStatuses[server.id]?.ok === false}
-                  className={`w-full font-semibold transition-all duration-200 ${
-                    isConnectionAvailable(server)
-                      ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black shadow-lg hover:shadow-xl"
-                      : server.status === "online" && !connectionStatuses[server.id]
-                      ? "bg-gaming-accent/80 hover:bg-gaming-accent text-black"
-                      : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
-                  }`}
-                >
-                  {loadingConnections[server.id] && (
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  )}
-                  {getConnectButtonText(server)}
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Auto-refresh Toggle */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center space-x-3 bg-gaming-card border border-gaming-border rounded-lg px-4 py-2">
-            <Clock className="w-4 h-4 text-gaming-text-muted" />
-            <span className="text-sm text-gaming-text-muted">
-              Автообновление: 
-            </span>
-            <button
-              onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`text-sm font-medium transition-colors ${
-                autoRefresh ? "text-gaming-accent" : "text-gaming-text-muted"
-              }`}
+          {serverData.map((server) => (
+            <div
+              key={server.id}
+              className="bg-gaming-card border border-gaming-border rounded-lg p-6 hover:bg-gaming-card-hover transition-colors"
             >
-              {autoRefresh ? "Включено" : "Отключено"}
-            </button>
-          </div>
+              {/* Server Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gaming-text">
+                  {server.name}
+                </h3>
+                <div className="flex items-center">
+                  <div
+                    className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`}
+                  />
+                  <span className={`text-sm ${getStatusColor(server.status)}`}>
+                    {server.status === "online"
+                      ? "Online"
+                      : server.status === "offline"
+                        ? "Offline"
+                        : "Maintenance"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Player Count */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-gaming-text-muted text-sm">
+                    <Users className="w-4 h-4 mr-2" />
+                    <span>Игроки</span>
+                  </div>
+                  <span className="text-gaming-text font-semibold">
+                    {server.players}/{server.maxPlayers}
+                    {server.queue > 0 && (
+                      <span className="text-yellow-400 ml-1">
+                        (+{server.queue})
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div className="w-full bg-gaming-border rounded-full h-2 mt-2">
+                  <div
+                    className="h-2 rounded-full bg-gaming-accent"
+                    style={{
+                      width: `${Math.min((server.players / server.maxPlayers) * 100, 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Map Info */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-start">
+                  <MapPin className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <span className="text-gaming-text-muted text-xs">Карта:</span>
+                    <p className="text-gaming-text text-sm truncate">{server.map}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Gamepad2 className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <span className="text-gaming-text-muted text-xs">Режим:</span>
+                    <p className="text-gaming-text text-sm">{server.gameMode}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Connect Button */}
+              <button
+                onClick={() => handleConnect(server)}
+                disabled={
+                  !isConnectionAvailable(server) &&
+                  server.status === "online" &&
+                  connectionStatuses[server.id]?.ok === false
+                }
+                className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
+                  isConnectionAvailable(server)
+                    ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black cursor-pointer"
+                    : server.status === "online" &&
+                        !connectionStatuses[server.id]
+                      ? "bg-gaming-accent/70 hover:bg-gaming-accent text-black cursor-pointer"
+                      : "bg-gaming-border text-gaming-text-muted cursor-not-allowed"
+                }`}
+              >
+                {loadingConnections[server.id] && (
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin inline" />
+                )}
+                {getConnectButtonText(server)}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </section>
