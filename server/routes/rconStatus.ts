@@ -210,7 +210,7 @@ function parseSquadServerInfo(response: string): { maxPlayers?: number } {
                           response.match(/MaxPlayers=(\d+)/i);
   
   return {
-    maxPlayers: maxPlayersMatch ? parseInt(maxPlayersMatch[1]) : 80
+    maxPlayers: maxPlayersMatch ? parseInt(maxPlayersMatch[1]) : 100
   };
 }
 
@@ -248,7 +248,7 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
       ...serverConfig,
       status: "offline",
       players: 0,
-      maxPlayers: 80,
+      maxPlayers: 100,
       map: "Offline",
       gameMode: "Offline",
       error: "Server is offline",
@@ -281,7 +281,7 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
       ...serverConfig,
       status: "offline",
       players: 0,
-      maxPlayers: 80,
+      maxPlayers: 100,
       map: "Connection failed",
       gameMode: "Offline",
       error: error instanceof Error ? error.message : "Unknown error",
@@ -307,7 +307,7 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
           ...serverConfig,
           status: "offline" as const,
           players: 0,
-          maxPlayers: 80,
+          maxPlayers: 100,
           map: "Offline",
           gameMode: "Offline",
           error: "Server is offline",
@@ -333,7 +333,7 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
           ...serverConfig,
           status: "offline" as const,
           players: 0,
-          maxPlayers: 80,
+          maxPlayers: 100,
           map: "Connection failed",
           gameMode: "Offline",
           error: error instanceof Error ? error.message : "Unknown error",
