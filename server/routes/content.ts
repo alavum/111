@@ -33,33 +33,62 @@ const newsImageUpload = multer({
   },
 });
 
-// Temporary in-memory storage - in production, use a database
-let newsArticles = [
-  {
-    id: 1,
-    title: "Новый сервер RSGS Invasion",
-    content: "Мы запустили новый сервер со специальным режимом Invasion...",
-    author: "Admin",
-    date: new Date().toISOString(),
-    published: true,
-    image: "/api/placeholder/600/350",
-    excerpt: "Новый игровой режим с уникальными механиками",
-    category: "Обновления",
-    slug: "new-invasion-server",
-  },
-  {
-    id: 2,
-    title: "Обновление серверных правил",
-    content: "Обновлены правила поведения на серверах...",
-    author: "Moderator",
-    date: new Date(Date.now() - 86400000).toISOString(),
-    published: true,
-    image: "/api/placeholder/600/350",
-    excerpt: "Важные изменения в правилах сервера",
-    category: "Правила",
-    slug: "rules-update",
-  },
-];
+// File-based storage for persistence
+const newsDataFile = "data/news-articles.json";
+
+// Ensure data directory exists
+if (!fs.existsSync("data")) {
+  fs.mkdirSync("data", { recursive: true });
+}
+
+// Load news articles from file or use defaults
+let newsArticles = (() => {
+  try {
+    if (fs.existsSync(newsDataFile)) {
+      const data = fs.readFileSync(newsDataFile, "utf8");
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error("Error loading news data:", error);
+  }
+
+  // Default news articles
+  return [
+    {
+      id: 1,
+      title: "Новый сервер RSGS Invasion",
+      content: "Мы запустили новый сервер со специальным режимом Invasion...",
+      author: "Admin",
+      date: new Date().toISOString(),
+      published: true,
+      image: "/api/placeholder/600/350",
+      excerpt: "Новый игровой режим с уникальными механиками",
+      category: "Обновления",
+      slug: "new-invasion-server",
+    },
+    {
+      id: 2,
+      title: "Обновление серверных правил",
+      content: "Обновлены правила поведения на серверах...",
+      author: "Moderator",
+      date: new Date(Date.now() - 86400000).toISOString(),
+      published: true,
+      image: "/api/placeholder/600/350",
+      excerpt: "Важные изменения в правилах сервера",
+      category: "Правила",
+      slug: "rules-update",
+    },
+  ];
+})();
+
+// Save news articles to file
+const saveNewsArticles = () => {
+  try {
+    fs.writeFileSync(newsDataFile, JSON.stringify(newsArticles, null, 2));
+  } catch (error) {
+    console.error("Error saving news data:", error);
+  }
+};
 
 let rules = {
   id: 1,
@@ -75,7 +104,7 @@ let rules = {
 ## 2. Игровые правила
 - Следуйте указаниям Squad Leader
 - Не покидайте отряд без разрешения
-- Запрещено мешать союзным командам
+- Запрещено мешать сою��ным командам
 
 ## 3. Наказания
 - Предупреждение
@@ -116,7 +145,7 @@ let terms = {
 # Пользовательское соглашение
 
 ## 1. Предмет соглашения
-Настоящее соглашение регулирует отношения между администрацией RSGS и пользователями серверов.
+Настоящее соглаше��ие регулирует отношения между администрацией RSGS и пользователями серверов.
 
 ## 2. Права и обязанности пользователей
 - Соблюдение правил сервера
