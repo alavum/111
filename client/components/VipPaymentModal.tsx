@@ -407,45 +407,49 @@ export default function VipPaymentModal({
                   />
                 </div>
 
-                <div>
-                  <Label
-                    htmlFor="screenshot"
-                    className="text-gaming-text text-sm"
-                  >
-                    Скриншот перевода <span className="text-red-400">*</span>
-                  </Label>
-                  <Input
-                    id="screenshot"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleScreenshotUpload}
-                    className="bg-gaming-bg border-gaming-border text-gaming-text"
-                  />
-                  {playerData.screenshot && (
-                    <p className="text-green-400 text-xs mt-1">
-                      ✓ Файл загружен: {playerData.screenshot.name}
-                    </p>
-                  )}
-                </div>
+                {selectedMethod !== "yukassa" && (
+                  <div>
+                    <Label
+                      htmlFor="screenshot"
+                      className="text-gaming-text text-sm"
+                    >
+                      Скриншот перевода <span className="text-red-400">*</span>
+                    </Label>
+                    <Input
+                      id="screenshot"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleScreenshotUpload}
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                    />
+                    {playerData.screenshot && (
+                      <p className="text-green-400 text-xs mt-1">
+                        ✓ Файл за��ружен: {playerData.screenshot.name}
+                      </p>
+                    )}
+                  </div>
+                )}
 
-                <div>
-                  <Label htmlFor="comment" className="text-gaming-text text-sm">
-                    Комментарий
-                  </Label>
-                  <Textarea
-                    id="comment"
-                    value={playerData.comment}
-                    onChange={(e) =>
-                      setPlayerData((prev) => ({
-                        ...prev,
-                        comment: e.target.value,
-                      }))
-                    }
-                    placeholder="Дополнительная информация (необязательно)"
-                    className="bg-gaming-bg border-gaming-border text-gaming-text"
-                    rows={2}
-                  />
-                </div>
+                {selectedMethod !== "yukassa" && (
+                  <div>
+                    <Label htmlFor="comment" className="text-gaming-text text-sm">
+                      Комментарий
+                    </Label>
+                    <Textarea
+                      id="comment"
+                      value={playerData.comment}
+                      onChange={(e) =>
+                        setPlayerData((prev) => ({
+                          ...prev,
+                          comment: e.target.value,
+                        }))
+                      }
+                      placeholder="Дополнительная информация (необязательно)"
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                      rows={2}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Submit Button */}
