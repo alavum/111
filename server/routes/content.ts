@@ -142,8 +142,20 @@ export const getNews: RequestHandler = (req, res) => {
 };
 
 export const getNewsById: RequestHandler = (req, res) => {
-  const id = parseInt(req.params.id);
-  const article = newsArticles.find((a) => a.id === id && a.published);
+  const param = req.params.id;
+
+  // Try to find by ID first (if param is numeric)
+  const numericId = parseInt(param);
+  let article;
+
+  if (!isNaN(numericId)) {
+    article = newsArticles.find((a) => a.id === numericId && a.published);
+  }
+
+  // If not found by ID, try to find by slug
+  if (!article) {
+    article = newsArticles.find((a) => a.slug === param && a.published);
+  }
 
   if (!article) {
     return res.status(404).json({ error: "Новость не найдена" });
