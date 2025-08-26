@@ -35,17 +35,9 @@ interface VipPaymentModalProps {
 
 const paymentMethods = [
   {
-    id: "tbank",
-    name: "Т-Банк",
-    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F3b133b96231941439770ad380fea2377?format=webp&width=800",
-    cardNumber: "2200 1234 5678 9012",
-    cardHolder: "RSGS PAYMENTS",
-    description: "Переводы на карту Т-Банк",
-  },
-  {
     id: "yukassa",
     name: "ЮKassa",
-    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F5e21e9cbb0544c55aa22204efe271343?format=webp&width=800",
+    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F085c41bea03e41bd98a089b641edb7f7?format=webp&width=800",
     cardNumber: "Онлайн-оплата",
     cardHolder: "ЮKassa (безопасные платежи)",
     description: "Оплата картой через ЮKassa",
@@ -57,7 +49,7 @@ export default function VipPaymentModal({
   onClose,
   selectedPlan,
 }: VipPaymentModalProps) {
-  const [selectedMethod, setSelectedMethod] = useState("tbank");
+  const [selectedMethod, setSelectedMethod] = useState("yukassa");
   const [selectedMonths, setSelectedMonths] = useState(1);
   const [playerData, setPlayerData] = useState({
     steamId: "",
@@ -129,10 +121,10 @@ export default function VipPaymentModal({
   };
 
   const handleSubmitPayment = async () => {
-    if (!playerData.steamId || !playerData.screenshot) {
+    if (!playerData.steamId || (selectedMethod === "tbank" && !playerData.screenshot)) {
       toast({
         title: "Заполните обязательные поля",
-        description: "Steam ID и скриншот перевода обязательны",
+        description: selectedMethod === "tbank" ? "Steam ID и скриншот перевода обязательны" : "Steam ID обязателен",
         variant: "destructive",
       });
       return;
@@ -390,7 +382,7 @@ export default function VipPaymentModal({
                     className="bg-gaming-bg border-gaming-border text-gaming-text"
                   />
                   <p className="text-gaming-text-muted text-xs mt-1">
-                    Найти Steam ID можно на steamid.io
+                    Найти Steam ID можно н�� steamid.io
                   </p>
                 </div>
 
