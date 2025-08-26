@@ -333,17 +333,31 @@ export default function VipPaymentModal({
                 <h4 className="font-semibold text-gaming-accent mb-2 text-sm">
                   Инструкции по оплате:
                 </h4>
-                <ol className="text-gaming-text-muted text-xs space-y-1">
-                  <li>
-                    1. Переведите точную сумму {calculatePrice()} ₽ на указанную
-                    карту
-                  </li>
-                  <li>2. Сделайте скриншот подтверждения перевода</li>
-                  <li>3. Заполните форму ниже и загрузите скриншот</li>
-                  <li>
-                    4. Дождитесь подтверждения (обычно в течение 1-24 часов)
-                  </li>
-                </ol>
+                {selectedMethod === "tbank" ? (
+                  <ol className="text-gaming-text-muted text-xs space-y-1">
+                    <li>
+                      1. Переведите точную сумму {calculatePrice()} ₽ на указанную
+                      карту
+                    </li>
+                    <li>2. Сделайте скриншот подтверждения перевода</li>
+                    <li>3. Заполните форму ниже и загрузите скриншот</li>
+                    <li>
+                      4. Дождитесь подтверждения (обычно в течение 1-24 часов)
+                    </li>
+                  </ol>
+                ) : (
+                  <ol className="text-gaming-text-muted text-xs space-y-1">
+                    <li>
+                      1. Нажмите "Отправить заявку" для перехода к оплате
+                    </li>
+                    <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
+                    <li>3. Сделайте скрин��от подтверждения платежа</li>
+                    <li>4. Загрузите скриншот и заполните данные</li>
+                    <li>
+                      5. Дождитесь подтверждения (обычно в течение 1-24 часов)
+                    </li>
+                  </ol>
+                )}
               </div>
 
               {/* Player Data Form */}
@@ -468,7 +482,7 @@ export default function VipPaymentModal({
             <div className="text-center py-6">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
               <h3 className="text-xl font-bold text-gaming-text mb-3">
-                Заявка успешно отправлена!
+                Заявка успешно от��равлена!
               </h3>
               <p className="text-gaming-text-muted mb-4 text-sm">
                 Ваша заявка на получение VIP статуса "{selectedPlan.name}" на{" "}
@@ -489,7 +503,7 @@ export default function VipPaymentModal({
                   <li>• Администратор проверит ваш перевод</li>
                   <li>• При подтверждении VIP статус будет активирован</li>
                   <li>• Вы получите уведомление в Discord</li>
-                  <li>• При возникновении вопросов свяжемся с вами</li>
+                  <li>• Пр�� возникновении вопросов свяжемся с вами</li>
                 </ul>
               </div>
               <Button
