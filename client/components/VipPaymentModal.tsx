@@ -110,7 +110,7 @@ export default function VipPaymentModal({
       if (file.size > 5 * 1024 * 1024) {
         // 5MB limit
         toast({
-          title: "Файл сл��шком большой",
+          title: "Файл слишком большой",
           description: "Максимальный размер файла: 5MB",
           variant: "destructive",
         });
@@ -158,7 +158,7 @@ export default function VipPaymentModal({
         setStep(2);
         toast({
           title: "Заявка отправлена!",
-          description: "Ваша заявка на VIP статус принята к рассмотрению",
+          description: "Ва��а заявка на VIP статус принята к рассмотрению",
         });
       } else {
         throw new Error("Server error");
@@ -301,20 +301,6 @@ export default function VipPaymentModal({
                           <p className="text-gaming-text-muted text-xs">
                             {method.cardHolder}
                           </p>
-                          {method.id === "tbank" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="mt-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCopyCard(method.cardNumber);
-                              }}
-                            >
-                              <Copy className="w-4 h-4 mr-1" />
-                              Копировать
-                            </Button>
-                          )}
                           {method.id === "yukassa" && (
                             <div className="mt-2 text-gaming-accent text-xs">
                               Банковские карты, электронные кошельки
