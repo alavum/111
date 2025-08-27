@@ -275,8 +275,7 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
   // Only server 1 has real RCON, others are offline
   if (serverId !== 1) {
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "offline",
       players: 0,
       maxPlayers: 100,
