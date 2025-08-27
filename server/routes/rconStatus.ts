@@ -47,6 +47,16 @@ const servers: Record<number, Omit<RconServerInfo, "serverId" | "status">> = {
 const rconCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 15000; // 15 seconds
 
+// Helper function to safely extract server info without password
+function getSafeServerInfo(serverId: number, serverConfig: Omit<RconServerInfo, "serverId" | "status">): Pick<RconServerInfo, "serverId" | "ip" | "port" | "rconPort"> {
+  return {
+    serverId,
+    ip: serverConfig.ip,
+    port: serverConfig.port,
+    rconPort: serverConfig.rconPort,
+  };
+}
+
 // Real RCON query function for Squad
 async function querySquadRconServer(
   ip: string,
