@@ -6,7 +6,6 @@ export interface RconServerInfo {
   ip: string;
   port: number;
   rconPort: number;
-  rconPassword: string;
   status: "online" | "offline" | "error";
   players?: number;
   maxPlayers?: number;
