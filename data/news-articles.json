@@ -1,0 +1,14 @@
+[
+  {
+    "id": 2,
+    "title": "Обновление с��рверных правил",
+    "content": "Обновлены правила поведения на серверах...",
+    "author": "Moderator",
+    "date": "2025-08-26T21:15:55.811Z",
+    "published": true,
+    "image": "/api/placeholder/600/350",
+    "excerpt": "Важные изменения в правилах сервера",
+    "category": "Правила",
+    "slug": "rules-update"
+  }
+]
