@@ -354,8 +354,7 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
         };
       } catch (error) {
         return {
-          serverId,
-          ...serverConfig,
+          ...getSafeServerInfo(serverId, serverConfig),
           status: "offline" as const,
           players: 0,
           maxPlayers: 100,
