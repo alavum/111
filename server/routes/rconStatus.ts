@@ -305,8 +305,7 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
     console.error(`RCON query failed for server ${serverId}:`, error);
 
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "offline",
       players: 0,
       maxPlayers: 100,
