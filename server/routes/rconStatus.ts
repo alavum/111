@@ -348,8 +348,7 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
         );
 
         return {
-          serverId,
-          ...serverConfig,
+          ...getSafeServerInfo(serverId, serverConfig),
           status: "online" as const,
           ...serverInfo,
         };
