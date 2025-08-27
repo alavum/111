@@ -65,8 +65,8 @@ interface StatCardProps {
 
 function StatCard({ title, data, icon, color }: StatCardProps) {
   const showHours =
-    title === "Командиры" ||
-    title === "Снайперы" ||
+    title === "CMD" ||
+    title === "Сквадные" ||
     title === "Медики" ||
     title === "Стрелки" ||
     title === "Пулеметчики";
@@ -165,14 +165,14 @@ export default function Statistics() {
           {/* Role-based Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <StatCard
-              title="Командиры"
+              title="CMD"
               data={mockData.commanders}
               icon={<Shield className="w-5 h-5" />}
               color="yellow-400"
             />
 
             <StatCard
-              title="Снайперы"
+              title="Сквадные"
               data={mockData.snipers}
               icon={<Target className="w-5 h-5" />}
               color="red-400"
@@ -223,17 +223,17 @@ export default function Statistics() {
         </div>
 
         {/* Development Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-gaming-bg/10 backdrop-blur-sm rounded-lg">
-          <div className="text-center bg-gaming-card border-2 border-gaming-accent rounded-lg p-8 shadow-2xl">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gaming-accent/20 rounded-full text-gaming-accent mb-4">
-              <Trophy className="w-8 h-8" />
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center bg-gaming-bg/10 backdrop-blur-sm">
+          <div className="text-center bg-gaming-card border-2 border-gaming-accent rounded-lg p-6 shadow-2xl mx-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gaming-accent/20 rounded-full text-gaming-accent mb-3">
+              <Trophy className="w-6 h-6" />
             </div>
 
-            <h3 className="text-2xl font-bold text-gaming-text mb-2">
+            <h3 className="text-xl font-bold text-gaming-text mb-2">
               В разработке
             </h3>
-            <p className="text-gaming-text-muted mb-6 max-w-md">
-              Система статистики находится на стадии разработки. Скоро вы
+            <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
+              Система статистик�� находится на стадии разработки. Скоро вы
               сможете видеть подробную статистику игроков.
             </p>
 
