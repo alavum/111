@@ -295,8 +295,7 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
     );
 
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "online",
       ...serverInfo,
     };
