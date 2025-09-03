@@ -38,15 +38,12 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0); // 0..1
   const [fading, setFading] = useState(false);
+  const [timerReset, setTimerReset] = useState(0);
   const DURATION = 10000; // ms
-  const startRef = (typeof window !== 'undefined' ? (window as any) : {}) && ({} as { current: number });
-  // Fallback simple ref without React.useRef to avoid extra imports
-  // We'll emulate with closure variable
-  let startTime = performance.now();
 
   const resetTimer = () => {
-    startTime = performance.now();
     setProgress(0);
+    setTimerReset((x) => x + 1);
   };
 
   const goToSlide = (index: number) => {
@@ -90,7 +87,7 @@ export default function Hero() {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [DURATION]);
+  }, [DURATION, timerReset]);
 
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
