@@ -168,7 +168,7 @@ export default function Statistics() {
               title="CMD"
               data={mockData.commanders}
               icon={<Shield className="w-5 h-5" />}
-              color="yellow-400"
+              colorClass="text-yellow-400"
             />
 
             <StatCard
