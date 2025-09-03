@@ -7,7 +7,7 @@ const heroSlides = [
   {
     id: 1,
     title: "Выгодный VIP",
-    subtitle: "Проходка для себя или клана",
+    subtitle: "Проходка для себя или кл��на",
     description: "Получите доступ к эксклюзивным возможностям и преимуществам",
     background: "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900",
     backgroundImage:
@@ -41,15 +41,19 @@ export default function Hero() {
   const DURATION = 12000; // ms
 
   const rafRef = useRef<number>(0);
-  const startRef = useRef<number>(performance.now());
+  const baseStartRef = useRef<number>(performance.now());
   const runningRef = useRef<boolean>(false);
   const advancingRef = useRef<boolean>(false);
-  const pausedRef = useRef<boolean>(false);
+  const pausedAtRef = useRef<number | null>(null);
+  const totalPausedRef = useRef<number>(0);
+  const hoverRef = useRef<boolean>(false);
   const autoDisabledRef = useRef<boolean>(false);
 
   const resetTimer = () => {
     setProgress(0);
-    startRef.current = performance.now();
+    baseStartRef.current = performance.now();
+    totalPausedRef.current = 0;
+    pausedAtRef.current = null;
   };
 
   const stopLoop = () => {
@@ -61,22 +65,30 @@ export default function Hero() {
     if (autoDisabledRef.current) return;
     stopLoop();
     runningRef.current = true;
-    startRef.current = performance.now();
+    baseStartRef.current = performance.now();
+    totalPausedRef.current = 0;
+    pausedAtRef.current = null;
     const tick = (now: number) => {
       if (!runningRef.current) return;
-      if (pausedRef.current) {
-        startRef.current = now - progress * DURATION;
+      // handle pause only when hovering banner
+      if (hoverRef.current) {
+        if (pausedAtRef.current == null) pausedAtRef.current = now;
+      } else if (pausedAtRef.current != null) {
+        totalPausedRef.current += now - pausedAtRef.current;
+        pausedAtRef.current = null;
       }
-      const elapsed = now - startRef.current;
-      const p = Math.min(elapsed / DURATION, 1);
+      const elapsed = now - baseStartRef.current - totalPausedRef.current;
+      const p = Math.min(Math.max(elapsed / DURATION, 0), 1);
       setProgress(p);
-      if (p >= 1 && !advancingRef.current && !pausedRef.current) {
+      if (p >= 1 && !advancingRef.current && !hoverRef.current) {
         advancingRef.current = true;
         setFading(true);
         setTimeout(() => {
           setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
           setFading(false);
-          startRef.current = performance.now();
+          baseStartRef.current = performance.now();
+          totalPausedRef.current = 0;
+          pausedAtRef.current = null;
           setProgress(0);
           advancingRef.current = false;
         }, 300);
@@ -119,8 +131,8 @@ export default function Hero() {
   return (
     <section
       className="relative h-96 md:h-[500px] overflow-hidden"
-      onMouseEnter={() => { pausedRef.current = true; }}
-      onMouseLeave={() => { pausedRef.current = false; }}
+      onMouseEnter={() => { hoverRef.current = true; }}
+      onMouseLeave={() => { hoverRef.current = false; }}
     >
       {/* Background with overlay */}
       <div
