@@ -60,10 +60,10 @@ interface StatCardProps {
   title: string;
   data: PlayerStat[];
   icon: React.ReactNode;
-  color: string;
+  colorClass: string;
 }
 
-function StatCard({ title, data, icon, color }: StatCardProps) {
+function StatCard({ title, data, icon, colorClass }: StatCardProps) {
   const showHours =
     title === "CMD" ||
     title === "Сквадные" ||
@@ -233,7 +233,7 @@ export default function Statistics() {
               В разработке
             </h3>
             <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
-              Система статистик�� находится на стадии разработки. Скоро вы
+              Система статистик���� находится на стадии разработки. Скоро вы
               сможете видеть подробную статистику игроков.
             </p>
 
