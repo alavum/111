@@ -41,7 +41,13 @@ interface ContentItem {
   lastUpdated: string;
 }
 
-function PublishedSwitch({ editingNews, setEditingNews }: { editingNews: any; setEditingNews: any }) {
+function PublishedSwitch({
+  editingNews,
+  setEditingNews,
+}: {
+  editingNews: any;
+  setEditingNews: any;
+}) {
   return (
     <Switch
       checked={!!editingNews.published}
@@ -82,34 +88,59 @@ export default function AdminPage() {
       img.onload = async () => {
         try {
           let bestBlob: Blob | null = null;
-          let bestType = 'image/jpeg';
+          let bestType = "image/jpeg";
           for (const s of steps) {
             const scale = Math.min(1, s.maxWidth / img.width);
             const width = Math.max(1, Math.round(img.width * scale));
             const height = Math.max(1, Math.round(img.height * scale));
-            const canvas = document.createElement('canvas');
+            const canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            if (!ctx) throw new Error('Canvas not supported');
+            const ctx = canvas.getContext("2d");
+            if (!ctx) throw new Error("Canvas not supported");
             ctx.drawImage(img, 0, 0, width, height);
-            const jpeg: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', s.quality));
-            const webp: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/webp', s.quality));
-            const candidate = webp && (!jpeg || webp.size < jpeg.size) ? { blob: webp, type: 'image/webp' } : { blob: jpeg, type: 'image/jpeg' };
+            const jpeg: Blob | null = await new Promise((res) =>
+              canvas.toBlob(res, "image/jpeg", s.quality),
+            );
+            const webp: Blob | null = await new Promise((res) =>
+              canvas.toBlob(res, "image/webp", s.quality),
+            );
+            const candidate =
+              webp && (!jpeg || webp.size < jpeg.size)
+                ? { blob: webp, type: "image/webp" }
+                : { blob: jpeg, type: "image/jpeg" };
             if (candidate.blob) {
               if (!bestBlob || candidate.blob.size < bestBlob.size) {
                 bestBlob = candidate.blob;
                 bestType = candidate.type;
               }
               if (candidate.blob.size <= MAX_BYTES) {
-                return resolve(new File([candidate.blob], file.name.replace(/\.[^.]+$/, bestType === 'image/webp' ? '.webp' : '.jpg'), { type: bestType }));
+                return resolve(
+                  new File(
+                    [candidate.blob],
+                    file.name.replace(
+                      /\.[^.]+$/,
+                      bestType === "image/webp" ? ".webp" : ".jpg",
+                    ),
+                    { type: bestType },
+                  ),
+                );
               }
             }
           }
           if (bestBlob) {
-            return resolve(new File([bestBlob], file.name.replace(/\.[^.]+$/, bestType === 'image/webp' ? '.webp' : '.jpg'), { type: bestType }));
+            return resolve(
+              new File(
+                [bestBlob],
+                file.name.replace(
+                  /\.[^.]+$/,
+                  bestType === "image/webp" ? ".webp" : ".jpg",
+                ),
+                { type: bestType },
+              ),
+            );
           }
-          reject(new Error('Compression failed'));
+          reject(new Error("Compression failed"));
         } catch (e) {
           reject(e);
         }
@@ -465,10 +496,17 @@ export default function AdminPage() {
                         try {
                           const compressed = await compressImage(file);
                           if (compressed.size > 9 * 1024 * 1024) {
-                            toast({ title: 'Файл слишком большой', description: 'Сократите изображение до < 9MB', variant: 'destructive' });
+                            toast({
+                              title: "Файл слишком большой",
+                              description: "Сократите изображение до < 9MB",
+                              variant: "destructive",
+                            });
                             return;
                           }
-                          setNewNews((prev) => ({ ...prev, image: compressed }));
+                          setNewNews((prev) => ({
+                            ...prev,
+                            image: compressed,
+                          }));
                         } catch (err) {
                           setNewNews((prev) => ({ ...prev, image: file }));
                         }
@@ -600,12 +638,23 @@ export default function AdminPage() {
                               try {
                                 const compressed = await compressImage(file);
                                 if (compressed.size > 9 * 1024 * 1024) {
-                                  toast({ title: 'Файл слишком большой', description: 'Сократите изображение до < 9MB', variant: 'destructive' });
+                                  toast({
+                                    title: "Файл слишком большой",
+                                    description:
+                                      "Сократите изображение до < 9MB",
+                                    variant: "destructive",
+                                  });
                                   return;
                                 }
-                                setEditingNews({ ...(editingNews as any), newImage: compressed } as any);
+                                setEditingNews({
+                                  ...(editingNews as any),
+                                  newImage: compressed,
+                                } as any);
                               } catch (err) {
-                                setEditingNews({ ...(editingNews as any), newImage: file } as any);
+                                setEditingNews({
+                                  ...(editingNews as any),
+                                  newImage: file,
+                                } as any);
                               }
                             }}
                             className="bg-gaming-bg border-gaming-border text-gaming-text"
@@ -629,12 +678,19 @@ export default function AdminPage() {
                         />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Label className="text-gaming-text text-sm">Опубликовано</Label>
-                            <PublishedSwitch editingNews={editingNews} setEditingNews={setEditingNews} />
+                            <Label className="text-gaming-text text-sm">
+                              Опубликовано
+                            </Label>
+                            <PublishedSwitch
+                              editingNews={editingNews}
+                              setEditingNews={setEditingNews}
+                            />
                           </div>
                           <div className="flex space-x-2">
                             <Button
-                              onClick={() => handleUpdateNews(editingNews as any)}
+                              onClick={() =>
+                                handleUpdateNews(editingNews as any)
+                              }
                               className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                             >
                               <Save className="w-4 h-4 mr-2" />

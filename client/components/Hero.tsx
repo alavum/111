@@ -37,7 +37,7 @@ const heroSlides = [
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const progressElRef = useRef<HTMLDivElement | null>(null);
-  const progressRef = useRef(0)
+  const progressRef = useRef(0);
   const [fading, setFading] = useState(false);
   const DURATION = 12000; // ms
 
@@ -52,7 +52,8 @@ export default function Hero() {
 
   const resetTimer = () => {
     progressRef.current = 0;
-    if (progressElRef.current) progressElRef.current.style.transform = 'scaleX(0)'
+    if (progressElRef.current)
+      progressElRef.current.style.transform = "scaleX(0)";
     baseStartRef.current = performance.now();
     totalPausedRef.current = 0;
     pausedAtRef.current = null;
@@ -80,10 +81,12 @@ export default function Hero() {
         pausedAtRef.current = null;
       }
       const effectiveNow = pausedAtRef.current ?? now;
-      const elapsed = effectiveNow - baseStartRef.current - totalPausedRef.current;
+      const elapsed =
+        effectiveNow - baseStartRef.current - totalPausedRef.current;
       const p = Math.min(Math.max(elapsed / DURATION, 0), 1);
       progressRef.current = p;
-      if (progressElRef.current) progressElRef.current.style.transform = `scaleX(${p})`
+      if (progressElRef.current)
+        progressElRef.current.style.transform = `scaleX(${p})`;
       if (p >= 1 && !advancingRef.current && !hoverRef.current) {
         advancingRef.current = true;
         setFading(true);
@@ -94,7 +97,8 @@ export default function Hero() {
           totalPausedRef.current = 0;
           pausedAtRef.current = null;
           progressRef.current = 0;
-    if (progressElRef.current) progressElRef.current.style.transform = 'scaleX(0)'
+          if (progressElRef.current)
+            progressElRef.current.style.transform = "scaleX(0)";
           advancingRef.current = false;
         }, 300);
       }
@@ -123,7 +127,10 @@ export default function Hero() {
   };
 
   const prevSlide = (disableAuto = true) => {
-    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length, disableAuto);
+    goToSlide(
+      (currentSlide - 1 + heroSlides.length) % heroSlides.length,
+      disableAuto,
+    );
   };
 
   const currentHero = heroSlides[currentSlide];
@@ -136,12 +143,16 @@ export default function Hero() {
   return (
     <section
       className="relative h-96 md:h-[500px] overflow-hidden"
-      onMouseEnter={() => { hoverRef.current = true; }}
-      onMouseLeave={() => { hoverRef.current = false; }}
+      onMouseEnter={() => {
+        hoverRef.current = true;
+      }}
+      onMouseLeave={() => {
+        hoverRef.current = false;
+      }}
     >
       {/* Background with overlay */}
       <div
-        className={`absolute inset-0 ${currentHero.background} transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute inset-0 ${currentHero.background} transition-opacity duration-700 ${fading ? "opacity-0" : "opacity-100"}`}
         style={{
           backgroundImage: `url(${currentHero.backgroundImage})`,
           backgroundSize: "cover",
@@ -154,7 +165,9 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className={`relative z-10 h-full flex items-center transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}>
+      <div
+        className={`relative z-10 h-full flex items-center transition-opacity duration-700 ${fading ? "opacity-0" : "opacity-100"}`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -231,7 +244,7 @@ export default function Hero() {
         <div
           ref={progressElRef}
           className="h-full bg-gaming-accent origin-left will-change-transform"
-          style={{ transform: 'scaleX(0)' }}
+          style={{ transform: "scaleX(0)" }}
         />
       </div>
     </section>

@@ -28,7 +28,11 @@ const newsImageUpload = multer({
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Только изображения разрешены! Формат файла должен быть image/*"));
+      cb(
+        new Error(
+          "Только изображения разрешены! Формат файла должен быть image/*",
+        ),
+      );
     }
   },
 });
@@ -265,7 +269,8 @@ export const updateNews: RequestHandler = (req, res) => {
   }
   if (content) newsArticles[articleIndex].content = content;
   if (typeof published !== "undefined") {
-    const pub = typeof published === "string" ? published === "true" : Boolean(published);
+    const pub =
+      typeof published === "string" ? published === "true" : Boolean(published);
     newsArticles[articleIndex].published = pub;
   }
   if (excerpt) newsArticles[articleIndex].excerpt = excerpt;

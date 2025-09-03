@@ -120,80 +120,86 @@ export default function News() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading
-            ? // Loading skeleton
-              Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden animate-pulse"
-                >
-                  <div className="w-full h-48 bg-gaming-bg"></div>
-                  <div className="p-6 space-y-3">
-                    <div className="h-4 bg-gaming-bg rounded w-3/4"></div>
-                    <div className="h-4 bg-gaming-bg rounded w-1/2"></div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-gaming-bg rounded"></div>
-                      <div className="h-3 bg-gaming-bg rounded"></div>
-                    </div>
+          {loading ? (
+            // Loading skeleton
+            Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden animate-pulse"
+              >
+                <div className="w-full h-48 bg-gaming-bg"></div>
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-gaming-bg rounded w-3/4"></div>
+                  <div className="h-4 bg-gaming-bg rounded w-1/2"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gaming-bg rounded"></div>
+                    <div className="h-3 bg-gaming-bg rounded"></div>
                   </div>
                 </div>
-              ))
-            : newsItems.length === 0 ? (
-                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-gaming-card border border-gaming-border rounded-lg p-8 text-center">
-                  <h3 className="text-xl font-bold text-gaming-text mb-2">Новостей пока нет</h3>
-                  <p className="text-gaming-text-muted">Загляните позже — мы обязательно поделимся обновлениями.</p>
-                </div>
-              ) : newsItems.map((item) => (
-                <article
-                  key={item.id}
-                  className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
-                >
-                  {/* Image */}
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={item.image || "/api/placeholder/400/250"}
-                      alt={item.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-md bg-black/50 ${getCategoryColor(getCategory(item.content))}`}
-                      >
-                        {getCategory(item.content)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-center text-gaming-text-muted text-sm mb-3">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(item.date).toLocaleDateString("ru-RU", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </div>
-
-                    <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
-                      <Link to={`/news/${item.id}`}>{item.title}</Link>
-                    </h3>
-
-                    <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
-                      {item.content.substring(0, 150)}
-                      {item.content.length > 150 ? "..." : ""}
-                    </p>
-
-                    <Link
-                      to={`/news/${item.id}`}
-                      className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
+              </div>
+            ))
+          ) : newsItems.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-gaming-card border border-gaming-border rounded-lg p-8 text-center">
+              <h3 className="text-xl font-bold text-gaming-text mb-2">
+                Новостей пока нет
+              </h3>
+              <p className="text-gaming-text-muted">
+                Загляните позже — мы обязательно поделимся обновлениями.
+              </p>
+            </div>
+          ) : (
+            newsItems.map((item) => (
+              <article
+                key={item.id}
+                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
+              >
+                {/* Image */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={item.image || "/api/placeholder/400/250"}
+                    alt={item.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-md bg-black/50 ${getCategoryColor(getCategory(item.content))}`}
                     >
-                      Читать далее
-                      <ArrowRight className="w-4 h-4 ml-1" />
-                    </Link>
+                      {getCategory(item.content)}
+                    </span>
                   </div>
-                </article>
-              ))}
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center text-gaming-text-muted text-sm mb-3">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    {new Date(item.date).toLocaleDateString("ru-RU", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </div>
+
+                  <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
+                    <Link to={`/news/${item.id}`}>{item.title}</Link>
+                  </h3>
+
+                  <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
+                    {item.content.substring(0, 150)}
+                    {item.content.length > 150 ? "..." : ""}
+                  </p>
+
+                  <Link
+                    to={`/news/${item.id}`}
+                    className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
+                  >
+                    Читать далее
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </div>
+              </article>
+            ))
+          )}
         </div>
 
         {/* Call to Action */}
