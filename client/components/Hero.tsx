@@ -186,12 +186,12 @@ export default function Hero() {
               {currentHero.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/vip">
+              <Link to={currentHero.primaryLink}>
                 <Button
                   size="lg"
                   className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold px-8"
                 >
-                  Получить VIP
+                  {currentHero.primaryText}
                 </Button>
               </Link>
               <a
