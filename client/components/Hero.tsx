@@ -36,7 +36,8 @@ const heroSlides = [
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [progress, setProgress] = useState(0); // 0..1
+  const progressElRef = useRef<HTMLDivElement | null>(null);
+  const progressRef = useRef(0)
   const [fading, setFading] = useState(false);
   const DURATION = 12000; // ms
 
@@ -50,7 +51,8 @@ export default function Hero() {
   const autoDisabledRef = useRef<boolean>(false);
 
   const resetTimer = () => {
-    setProgress(0);
+    progressRef.current = 0;
+    if (progressElRef.current) progressElRef.current.style.transform = 'scaleX(0)'
     baseStartRef.current = performance.now();
     totalPausedRef.current = 0;
     pausedAtRef.current = null;
@@ -79,7 +81,8 @@ export default function Hero() {
       }
       const elapsed = now - baseStartRef.current - totalPausedRef.current;
       const p = Math.min(Math.max(elapsed / DURATION, 0), 1);
-      setProgress(p);
+      progressRef.current = p;
+      if (progressElRef.current) progressElRef.current.style.transform = `scaleX(${p})`
       if (p >= 1 && !advancingRef.current && !hoverRef.current) {
         advancingRef.current = true;
         setFading(true);
@@ -89,7 +92,8 @@ export default function Hero() {
           baseStartRef.current = performance.now();
           totalPausedRef.current = 0;
           pausedAtRef.current = null;
-          setProgress(0);
+          progressRef.current = 0;
+    if (progressElRef.current) progressElRef.current.style.transform = 'scaleX(0)'
           advancingRef.current = false;
         }, 300);
       }
@@ -224,8 +228,9 @@ export default function Hero() {
       {/* Progress bar */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 overflow-hidden">
         <div
-          className="h-full bg-gaming-accent"
-          style={{ width: `${progress * 100}%`, transition: 'width 80ms linear' }}
+          ref={progressElRef}
+          className="h-full bg-gaming-accent origin-left will-change-transform"
+          style={{ transform: 'scaleX(0)' }}
         />
       </div>
     </section>
