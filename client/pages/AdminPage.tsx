@@ -68,24 +68,50 @@ export default function AdminPage() {
     image: null as File | null,
   });
 
-  const compressImage = (file: File, maxWidth = 1600, quality = 0.8): Promise<File> => {
+  const compressImage = (file: File): Promise<File> => {
+    const MAX_BYTES = 4 * 1024 * 1024; // 4MB target
+    const steps = [
+      { maxWidth: 1600, quality: 0.8 },
+      { maxWidth: 1400, quality: 0.7 },
+      { maxWidth: 1200, quality: 0.65 },
+      { maxWidth: 1000, quality: 0.6 },
+      { maxWidth: 800, quality: 0.55 },
+    ];
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, maxWidth / img.width);
-        const width = Math.round(img.width * scale);
-        const height = Math.round(img.height * scale);
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject(new Error('Canvas not supported'));
-        ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => {
-          if (!blob) return reject(new Error('Compression failed'));
-          const compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
-          resolve(compressed);
-        }, 'image/jpeg', quality);
+      img.onload = async () => {
+        try {
+          for (const s of steps) {
+            const scale = Math.min(1, s.maxWidth / img.width);
+            const width = Math.max(1, Math.round(img.width * scale));
+            const height = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Canvas not supported');
+            ctx.drawImage(img, 0, 0, width, height);
+            const blob: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', s.quality));
+            if (!blob) continue;
+            if (blob.size <= MAX_BYTES) {
+              return resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+            }
+          }
+          // last fallback: return the smallest attempted
+          const last = await new Promise<Blob | null>((res) => {
+            const c = document.createElement('canvas');
+            const w = 800, h = Math.round(800 * (img.height / img.width));
+            c.width = w; c.height = h;
+            const ctx = c.getContext('2d');
+            if (!ctx) return res(null);
+            ctx.drawImage(img, 0, 0, w, h);
+            c.toBlob((b) => res(b), 'image/jpeg', 0.5);
+          });
+          if (!last) throw new Error('Compression failed');
+          resolve(new File([last], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+        } catch (e) {
+          reject(e);
+        }
       };
       img.onerror = reject;
       img.src = URL.createObjectURL(file);
@@ -680,7 +706,7 @@ export default function AdminPage() {
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Сохранить правила
+                      Сохранить прав��ла
                     </Button>
                   </CardContent>
                 </Card>
