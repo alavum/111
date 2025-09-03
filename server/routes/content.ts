@@ -28,7 +28,7 @@ const newsImageUpload = multer({
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Т��лько изображения разрешены!"));
+      cb(new Error("Только изображения разрешены!"));
     }
   },
 });
@@ -149,7 +149,7 @@ let terms = {
 
 ## 2. Права и обязанности пользователей
 - Соблюдение правил сервера
-- Уважительное отношение к другим игрокам
+- Уважительное о��ношение к другим игрокам
 - Запрет на использование читов и модификаций
 
 ## 3. Ответственность
@@ -168,6 +168,11 @@ let terms = {
 export const getNews: RequestHandler = (req, res) => {
   const published = newsArticles.filter((article) => article.published);
   res.json(published);
+};
+
+// Admin: get all news (published and drafts)
+export const getAllNews: RequestHandler = (_req, res) => {
+  res.json(newsArticles);
 };
 
 export const getNewsById: RequestHandler = (req, res) => {
@@ -215,7 +220,9 @@ export const createNews: RequestHandler = (req, res) => {
     : "/api/placeholder/600/350";
 
   const newArticle = {
-    id: Math.max(...newsArticles.map((a) => a.id)) + 1,
+    id: newsArticles.length
+      ? Math.max(...newsArticles.map((a) => a.id)) + 1
+      : 1,
     title,
     content,
     author: author || "Admin",
@@ -237,7 +244,7 @@ export const uploadNewsImage = newsImageUpload.single("image");
 
 export const updateNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
-  const { title, content, published, excerpt, category } = req.body;
+  const { title, content, published, excerpt, category } = req.body as any;
   const image = req.file;
 
   const articleIndex = newsArticles.findIndex((a) => a.id === id);
@@ -257,8 +264,10 @@ export const updateNews: RequestHandler = (req, res) => {
       `${slug}-${newsArticles[articleIndex].id}`;
   }
   if (content) newsArticles[articleIndex].content = content;
-  if (typeof published === "boolean")
-    newsArticles[articleIndex].published = published;
+  if (typeof published !== "undefined") {
+    const pub = typeof published === "string" ? published === "true" : Boolean(published);
+    newsArticles[articleIndex].published = pub;
+  }
   if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
   if (category) newsArticles[articleIndex].category = category;
 
