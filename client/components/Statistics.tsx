@@ -196,7 +196,7 @@ export default function Statistics() {
               title="Пулеметчики"
               data={mockData.gunners}
               icon={<Trophy className="w-5 h-5" />}
-              color="purple-400"
+              colorClass="text-purple-400"
             />
           </div>
 
