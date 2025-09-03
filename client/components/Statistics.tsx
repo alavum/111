@@ -109,10 +109,10 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
 interface StatListProps {
   title: string;
   data: PlayerStat[];
-  color: string;
+  colorClass: string;
 }
 
-function StatList({ title, data, color }: StatListProps) {
+function StatList({ title, data, colorClass }: StatListProps) {
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
       <h3 className={`font-semibold text-gaming-text mb-4 text-${color}`}>
