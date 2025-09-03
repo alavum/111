@@ -163,7 +163,7 @@ export default function Statistics() {
         {/* Statistics Content */}
         <div className="space-y-8 blur-sm">
           {/* Role-based Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard
               title="CMD"
               data={mockData.commanders}
