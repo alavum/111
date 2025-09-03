@@ -65,15 +65,20 @@ export default function NewsPage() {
           const apiNews = await response.json();
 
           // Transform API data to match expected format
-          const transformedNews = apiNews.map((item: any) => ({
-            ...item,
-            excerpt:
-              item.excerpt || item.content?.substring(0, 150) + "..." || "",
-            image: item.image || "/api/placeholder/600/350",
-            slug: item.slug || item.id.toString(),
-            category: item.category || "Общее",
-            featured: item.id <= 4, // First 4 items are featured
-          }));
+          const transformedNews = apiNews
+            .map((item: any) => ({
+              ...item,
+              excerpt:
+                item.excerpt || item.content?.substring(0, 150) + "..." || "",
+              image: item.image || "/api/placeholder/600/350",
+              slug: item.slug || item.id.toString(),
+              category: item.category || "Общее",
+              featured: item.id <= 4,
+            }))
+            .sort(
+              (a: any, b: any) =>
+                new Date(b.date).getTime() - new Date(a.date).getTime(),
+            );
 
           setAllNewsItems(transformedNews);
         } else {
