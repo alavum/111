@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import {
   getNews,
+  getAllNews,
   getNewsById,
   createNews,
   updateNews,
