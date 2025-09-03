@@ -189,7 +189,7 @@ export default function Statistics() {
               title="Стрелки"
               data={mockData.soldiers}
               icon={<Zap className="w-5 h-5" />}
-              color="blue-400"
+              colorClass="text-blue-400"
             />
 
             <StatCard
