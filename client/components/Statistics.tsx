@@ -175,7 +175,7 @@ export default function Statistics() {
               title="Сквадные"
               data={mockData.snipers}
               icon={<Target className="w-5 h-5" />}
-              color="red-400"
+              colorClass="text-red-400"
             />
 
             <StatCard
