@@ -69,18 +69,20 @@ export default function AdminPage() {
   });
 
   const compressImage = (file: File): Promise<File> => {
-    const MAX_BYTES = 4 * 1024 * 1024; // 4MB target
+    const MAX_BYTES = 2 * 1024 * 1024; // 2MB target
     const steps = [
-      { maxWidth: 1600, quality: 0.8 },
-      { maxWidth: 1400, quality: 0.7 },
-      { maxWidth: 1200, quality: 0.65 },
-      { maxWidth: 1000, quality: 0.6 },
-      { maxWidth: 800, quality: 0.55 },
+      { maxWidth: 1400, quality: 0.8 },
+      { maxWidth: 1200, quality: 0.7 },
+      { maxWidth: 1000, quality: 0.65 },
+      { maxWidth: 900, quality: 0.6 },
+      { maxWidth: 780, quality: 0.55 },
     ];
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = async () => {
         try {
+          let bestBlob: Blob | null = null;
+          let bestType = 'image/jpeg';
           for (const s of steps) {
             const scale = Math.min(1, s.maxWidth / img.width);
             const width = Math.max(1, Math.round(img.width * scale));
@@ -91,24 +93,23 @@ export default function AdminPage() {
             const ctx = canvas.getContext('2d');
             if (!ctx) throw new Error('Canvas not supported');
             ctx.drawImage(img, 0, 0, width, height);
-            const blob: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', s.quality));
-            if (!blob) continue;
-            if (blob.size <= MAX_BYTES) {
-              return resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+            const jpeg: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', s.quality));
+            const webp: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/webp', s.quality));
+            const candidate = webp && (!jpeg || webp.size < jpeg.size) ? { blob: webp, type: 'image/webp' } : { blob: jpeg, type: 'image/jpeg' };
+            if (candidate.blob) {
+              if (!bestBlob || candidate.blob.size < bestBlob.size) {
+                bestBlob = candidate.blob;
+                bestType = candidate.type;
+              }
+              if (candidate.blob.size <= MAX_BYTES) {
+                return resolve(new File([candidate.blob], file.name.replace(/\.[^.]+$/, bestType === 'image/webp' ? '.webp' : '.jpg'), { type: bestType }));
+              }
             }
           }
-          // last fallback: return the smallest attempted
-          const last = await new Promise<Blob | null>((res) => {
-            const c = document.createElement('canvas');
-            const w = 800, h = Math.round(800 * (img.height / img.width));
-            c.width = w; c.height = h;
-            const ctx = c.getContext('2d');
-            if (!ctx) return res(null);
-            ctx.drawImage(img, 0, 0, w, h);
-            c.toBlob((b) => res(b), 'image/jpeg', 0.5);
-          });
-          if (!last) throw new Error('Compression failed');
-          resolve(new File([last], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+          if (bestBlob) {
+            return resolve(new File([bestBlob], file.name.replace(/\.[^.]+$/, bestType === 'image/webp' ? '.webp' : '.jpg'), { type: bestType }));
+          }
+          reject(new Error('Compression failed'));
         } catch (e) {
           reject(e);
         }
