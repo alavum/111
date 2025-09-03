@@ -49,6 +49,13 @@ export default function Hero() {
 
   const currentHero = heroSlides[currentSlide];
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
       {/* Background with overlay */}
