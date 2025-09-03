@@ -95,7 +95,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
                 {player.name}
               </span>
             </div>
-            <span className={`text-${color} font-semibold text-sm`}>
+            <span className={`${colorClass} font-semibold text-sm`}>
               {player.value}
               {showHours ? " ч." : ""}
             </span>
@@ -136,7 +136,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
                 {player.name}
               </span>
             </div>
-            <span className={`text-${color} font-semibold text-sm`}>
+            <span className={`${colorClass} font-semibold text-sm`}>
               {player.value}
             </span>
           </div>
