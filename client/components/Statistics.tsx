@@ -73,7 +73,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
-      <div className={`flex items-center gap-2 mb-4 text-${color}`}>
+      <div className={`flex items-center gap-2 mb-4 ${colorClass}`}>
         {icon}
         <h3 className="font-semibold text-gaming-text">{title}</h3>
       </div>
@@ -233,7 +233,7 @@ export default function Statistics() {
               В разработке
             </h3>
             <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
-              Система статистик���� находится на стадии разработки. Скоро вы
+              Система статистик�� находится на стадии разработки. Скоро вы
               сможете видеть подробную статистику игроков.
             </p>
 
