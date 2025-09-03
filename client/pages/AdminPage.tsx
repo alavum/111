@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import {
   Settings,
   FileText,
@@ -38,6 +39,17 @@ interface ContentItem {
   title: string;
   content: string;
   lastUpdated: string;
+}
+
+function PublishedSwitch({ editingNews, setEditingNews }: { editingNews: any; setEditingNews: any }) {
+  return (
+    <Switch
+      checked={!!editingNews.published}
+      onCheckedChange={(checked) =>
+        setEditingNews({ ...editingNews, published: checked })
+      }
+    />
+  );
 }
 
 export default function AdminPage() {
@@ -76,7 +88,7 @@ export default function AdminPage() {
 
       // Fetch all content
       const [newsRes, rulesRes, privacyRes, termsRes] = await Promise.all([
-        fetch("/api/news"),
+        fetch("/api/admin/news", { headers: getAuthHeaders() }),
         fetch("/api/rules"),
         fetch("/api/privacy"),
         fetch("/api/terms"),
@@ -211,7 +223,7 @@ export default function AdminPage() {
         setNews((prev) => prev.filter((n) => n.id !== id));
         toast({
           title: "Новость удалена",
-          description: "Новость успешно удалена",
+          description: "Новос��ь успешно удалена",
         });
       }
     } catch (error) {
@@ -503,7 +515,7 @@ export default function AdminPage() {
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
                         <Input
-                          placeholder="Категория"
+                          placeholder="Катего��ия"
                           value={editingNews.category || ""}
                           onChange={(e) =>
                             setEditingNews({
@@ -545,21 +557,27 @@ export default function AdminPage() {
                           }
                           className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
                         />
-                        <div className="flex space-x-2">
-                          <Button
-                            onClick={() => handleUpdateNews(editingNews as any)}
-                            className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
-                          >
-                            <Save className="w-4 h-4 mr-2" />
-                            Сохранить
-                          </Button>
-                          <Button
-                            onClick={() => setEditingNews(null)}
-                            variant="outline"
-                            className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
-                          >
-                            Отмена
-                          </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Label className="text-gaming-text text-sm">Опубликовано</Label>
+                            <PublishedSwitch editingNews={editingNews} setEditingNews={setEditingNews} />
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              onClick={() => handleUpdateNews(editingNews as any)}
+                              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
+                            >
+                              <Save className="w-4 h-4 mr-2" />
+                              Сохранить
+                            </Button>
+                            <Button
+                              onClick={() => setEditingNews(null)}
+                              variant="outline"
+                              className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
+                            >
+                              Отмена
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     ) : (
