@@ -43,6 +43,7 @@ export default function Hero() {
   const rafRef = useRef<number>(0);
   const startRef = useRef<number>(performance.now());
   const runningRef = useRef<boolean>(false);
+  const advancingRef = useRef<boolean>(false);
 
   const resetTimer = () => {
     setProgress(0);
@@ -63,14 +64,16 @@ export default function Hero() {
       const elapsed = now - startRef.current;
       const p = Math.min(elapsed / DURATION, 1);
       setProgress(p);
-      if (p >= 1) {
+      if (p >= 1 && !advancingRef.current) {
+        advancingRef.current = true;
         setFading(true);
         setTimeout(() => {
           setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
           setFading(false);
           startRef.current = performance.now();
           setProgress(0);
-        }, 250);
+          advancingRef.current = false;
+        }, 300);
       }
       rafRef.current = requestAnimationFrame(tick);
     };
