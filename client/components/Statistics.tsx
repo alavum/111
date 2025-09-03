@@ -205,19 +205,19 @@ export default function Statistics() {
             <StatList
               title="Количество убийств"
               data={mockData.kills}
-              color="gaming-accent"
+              colorClass="text-gaming-accent"
             />
 
             <StatList
               title="Подбития"
               data={mockData.damage}
-              color="gaming-accent"
+              colorClass="text-gaming-accent"
             />
 
             <StatList
               title="Лучший игрок"
               data={mockData.bestPlayer}
-              color="gaming-accent"
+              colorClass="text-gaming-accent"
             />
           </div>
         </div>
