@@ -68,6 +68,30 @@ export default function AdminPage() {
     image: null as File | null,
   });
 
+  const compressImage = (file: File, maxWidth = 1600, quality = 0.8): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const width = Math.round(img.width * scale);
+        const height = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject(new Error('Canvas not supported'));
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (!blob) return reject(new Error('Compression failed'));
+          const compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+          resolve(compressed);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   // Helper function to get auth headers
   const getAuthHeaders = () => {
     const token = localStorage.getItem("admin_auth");
@@ -223,7 +247,7 @@ export default function AdminPage() {
         setNews((prev) => prev.filter((n) => n.id !== id));
         toast({
           title: "Новость удалена",
-          description: "Новос��ь успешно удалена",
+          description: "Новость успешно удалена",
         });
       }
     } catch (error) {
@@ -405,12 +429,23 @@ export default function AdminPage() {
                       id="newsImage"
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
-                        setNewNews((prev) => ({
-                          ...prev,
-                          image: e.target.files?.[0] || null,
-                        }))
-                      }
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0] || null;
+                        if (!file) {
+                          setNewNews((prev) => ({ ...prev, image: null }));
+                          return;
+                        }
+                        try {
+                          const compressed = await compressImage(file);
+                          if (compressed.size > 9 * 1024 * 1024) {
+                            toast({ title: 'Файл слишком большой', description: 'Сократите изображение до < 9MB', variant: 'destructive' });
+                            return;
+                          }
+                          setNewNews((prev) => ({ ...prev, image: compressed }));
+                        } catch (err) {
+                          setNewNews((prev) => ({ ...prev, image: file }));
+                        }
+                      }}
                       className="bg-gaming-bg border-gaming-border text-gaming-text"
                     />
                     {newNews.image && (
@@ -515,7 +550,7 @@ export default function AdminPage() {
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
                         <Input
-                          placeholder="Катего��ия"
+                          placeholder="Категория"
                           value={editingNews.category || ""}
                           onChange={(e) =>
                             setEditingNews({
@@ -532,12 +567,20 @@ export default function AdminPage() {
                           <Input
                             type="file"
                             accept="image/*"
-                            onChange={(e) =>
-                              setEditingNews({
-                                ...editingNews,
-                                newImage: e.target.files?.[0],
-                              } as any)
-                            }
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0] || null;
+                              if (!file) return;
+                              try {
+                                const compressed = await compressImage(file);
+                                if (compressed.size > 9 * 1024 * 1024) {
+                                  toast({ title: 'Файл слишком большой', description: 'Сократите изображение до < 9MB', variant: 'destructive' });
+                                  return;
+                                }
+                                setEditingNews({ ...(editingNews as any), newImage: compressed } as any);
+                              } catch (err) {
+                                setEditingNews({ ...(editingNews as any), newImage: file } as any);
+                              }
+                            }}
                             className="bg-gaming-bg border-gaming-border text-gaming-text"
                           />
                           {editingNews.image && (
