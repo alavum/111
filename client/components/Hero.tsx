@@ -36,31 +36,67 @@ const heroSlides = [
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [progress, setProgress] = useState(0); // 0..1
+  const [fading, setFading] = useState(false);
+  const DURATION = 10000; // ms
+  const startRef = (typeof window !== 'undefined' ? (window as any) : {}) && ({} as { current: number });
+  // Fallback simple ref without React.useRef to avoid extra imports
+  // We'll emulate with closure variable
+  let startTime = performance.now();
+
+  const resetTimer = () => {
+    startTime = performance.now();
+    setProgress(0);
+  };
+
+  const goToSlide = (index: number) => {
+    setFading(true);
+    setTimeout(() => {
+      setCurrentSlide(index);
+      setFading(false);
+      resetTimer();
+    }, 200);
+  };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    goToSlide((currentSlide + 1) % heroSlides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
-    );
+    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length);
   };
 
   const currentHero = heroSlides[currentSlide];
 
   useEffect(() => {
-    const id = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    return () => clearInterval(id);
-  }, []);
+    let rafId = 0;
+    let start = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const p = Math.min(elapsed / DURATION, 1);
+      setProgress(p);
+      if (p >= 1) {
+        setFading(true);
+        setTimeout(() => {
+          setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+          setFading(false);
+          start = performance.now();
+          setProgress(0);
+        }, 200);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [DURATION]);
 
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
       {/* Background with overlay */}
       <div
-        className={`absolute inset-0 ${currentHero.background}`}
+        className={`absolute inset-0 ${currentHero.background} transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}
         style={{
           backgroundImage: `url(${currentHero.backgroundImage})`,
           backgroundSize: "cover",
@@ -70,18 +106,10 @@ export default function Hero() {
       >
         {/* Dark overlay for better text readability */}
         <div className="absolute inset-0 bg-black/50"></div>
-        {/* Soldier silhouette overlay */}
-        <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-black/30 to-transparent">
-          <div className="absolute right-8 top-8 w-64 h-64 md:w-80 md:h-80 opacity-20">
-            <svg viewBox="0 0 100 100" className="w-full h-full fill-white">
-              <path d="M50 10 L60 25 L50 30 L55 45 L65 50 L55 65 L50 70 L45 65 L35 50 L45 45 L50 30 L40 25 Z" />
-            </svg>
-          </div>
-        </div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex items-center">
+      <div className={`relative z-10 h-full flex items-center transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -142,7 +170,7 @@ export default function Hero() {
         {heroSlides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => goToSlide(index)}
             className={`w-3 h-3 rounded-full transition-colors ${
               index === currentSlide
                 ? "bg-gaming-accent"
@@ -151,6 +179,14 @@ export default function Hero() {
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
+      </div>
+
+      {/* Progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+        <div
+          className="h-full bg-gaming-accent transition-[width] duration-100 ease-linear"
+          style={{ width: `${progress * 100}%` }}
+        />
       </div>
     </section>
   );
