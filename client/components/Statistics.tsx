@@ -182,7 +182,7 @@ export default function Statistics() {
               title="Медики"
               data={mockData.medics}
               icon={<Heart className="w-5 h-5" />}
-              color="green-400"
+              colorClass="text-green-400"
             />
 
             <StatCard
