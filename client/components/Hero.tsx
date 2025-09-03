@@ -44,6 +44,8 @@ export default function Hero() {
   const startRef = useRef<number>(performance.now());
   const runningRef = useRef<boolean>(false);
   const advancingRef = useRef<boolean>(false);
+  const pausedRef = useRef<boolean>(false);
+  const autoDisabledRef = useRef<boolean>(false);
 
   const resetTimer = () => {
     setProgress(0);
@@ -56,15 +58,19 @@ export default function Hero() {
   };
 
   const startLoop = () => {
+    if (autoDisabledRef.current) return;
     stopLoop();
     runningRef.current = true;
     startRef.current = performance.now();
     const tick = (now: number) => {
       if (!runningRef.current) return;
+      if (pausedRef.current) {
+        startRef.current = now - progress * DURATION;
+      }
       const elapsed = now - startRef.current;
       const p = Math.min(elapsed / DURATION, 1);
       setProgress(p);
-      if (p >= 1 && !advancingRef.current) {
+      if (p >= 1 && !advancingRef.current && !pausedRef.current) {
         advancingRef.current = true;
         setFading(true);
         setTimeout(() => {
@@ -80,23 +86,27 @@ export default function Hero() {
     rafRef.current = requestAnimationFrame(tick);
   };
 
-  const goToSlide = (index: number) => {
+  const goToSlide = (index: number, disableAuto = false) => {
     setFading(true);
     stopLoop();
     setTimeout(() => {
       setCurrentSlide(index);
       setFading(false);
       resetTimer();
-      startLoop();
+      if (disableAuto) {
+        autoDisabledRef.current = true;
+      } else {
+        startLoop();
+      }
     }, 250);
   };
 
-  const nextSlide = () => {
-    goToSlide((currentSlide + 1) % heroSlides.length);
+  const nextSlide = (disableAuto = true) => {
+    goToSlide((currentSlide + 1) % heroSlides.length, disableAuto);
   };
 
-  const prevSlide = () => {
-    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length);
+  const prevSlide = (disableAuto = true) => {
+    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length, disableAuto);
   };
 
   const currentHero = heroSlides[currentSlide];
@@ -107,7 +117,11 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative h-96 md:h-[500px] overflow-hidden">
+    <section
+      className="relative h-96 md:h-[500px] overflow-hidden"
+      onMouseEnter={() => { pausedRef.current = true; }}
+      onMouseLeave={() => { pausedRef.current = false; }}
+    >
       {/* Background with overlay */}
       <div
         className={`absolute inset-0 ${currentHero.background} transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}
@@ -164,7 +178,7 @@ export default function Hero() {
 
       {/* Navigation arrows */}
       <button
-        onClick={prevSlide}
+        onClick={() => prevSlide(true)}
         className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gaming-accent transition-colors z-20"
         aria-label="Previous slide"
       >
@@ -172,7 +186,7 @@ export default function Hero() {
       </button>
 
       <button
-        onClick={nextSlide}
+        onClick={() => nextSlide(true)}
         className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gaming-accent transition-colors z-20"
         aria-label="Next slide"
       >
@@ -184,7 +198,7 @@ export default function Hero() {
         {heroSlides.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToSlide(index)}
+            onClick={() => goToSlide(index, true)}
             className={`w-3 h-3 rounded-full transition-colors ${
               index === currentSlide
                 ? "bg-gaming-accent"
