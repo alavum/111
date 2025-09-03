@@ -79,7 +79,8 @@ export default function Hero() {
         totalPausedRef.current += now - pausedAtRef.current;
         pausedAtRef.current = null;
       }
-      const elapsed = now - baseStartRef.current - totalPausedRef.current;
+      const effectiveNow = pausedAtRef.current ?? now;
+      const elapsed = effectiveNow - baseStartRef.current - totalPausedRef.current;
       const p = Math.min(Math.max(elapsed / DURATION, 0), 1);
       progressRef.current = p;
       if (progressElRef.current) progressElRef.current.style.transform = `scaleX(${p})`
