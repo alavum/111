@@ -85,7 +85,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
             className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
           >
             <div className="flex items-center gap-3">
-              <span className={`text-${color} font-bold text-sm w-4`}>
+              <span className={`${colorClass} font-bold text-sm w-4`}>
                 {player.rank}.
               </span>
               <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
@@ -126,7 +126,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
             className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
           >
             <div className="flex items-center gap-3">
-              <span className={`text-${color} font-bold text-sm w-4`}>
+              <span className={`${colorClass} font-bold text-sm w-4`}>
                 {player.rank}.
               </span>
               <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
