@@ -56,7 +56,7 @@ function getCategory(content: string): string {
 }
 
 export default function News() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNewsItems);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -84,15 +84,15 @@ export default function News() {
             console.log("Set news items to:", publishedNews);
           } else {
             console.log("No published news found, using fallback");
-            setNewsItems(fallbackNewsItems);
+            setNewsItems([]);
           }
         } else {
           console.error("Failed to fetch news:", response.status);
-          setNewsItems(fallbackNewsItems);
+          setNewsItems([]);
         }
       } catch (error) {
         console.error("Error fetching news:", error);
-        setNewsItems(fallbackNewsItems);
+        setNewsItems([]);
       } finally {
         setLoading(false);
       }
@@ -138,7 +138,12 @@ export default function News() {
                   </div>
                 </div>
               ))
-            : newsItems.map((item) => (
+            : newsItems.length === 0 ? (
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-gaming-card border border-gaming-border rounded-lg p-8 text-center">
+                  <h3 className="text-xl font-bold text-gaming-text mb-2">Новостей пока нет</h3>
+                  <p className="text-gaming-text-muted">Загляните позже — мы обязательно поделимся обновлениями.</p>
+                </div>
+              ) : newsItems.map((item) => (
                 <article
                   key={item.id}
                   className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
