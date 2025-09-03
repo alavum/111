@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 const heroSlides = [
@@ -38,21 +38,54 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0); // 0..1
   const [fading, setFading] = useState(false);
-  const [timerReset, setTimerReset] = useState(0);
-  const DURATION = 10000; // ms
+  const DURATION = 12000; // ms
+
+  const rafRef = useRef<number>(0);
+  const startRef = useRef<number>(performance.now());
+  const runningRef = useRef<boolean>(false);
 
   const resetTimer = () => {
     setProgress(0);
-    setTimerReset((x) => x + 1);
+    startRef.current = performance.now();
+  };
+
+  const stopLoop = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    runningRef.current = false;
+  };
+
+  const startLoop = () => {
+    stopLoop();
+    runningRef.current = true;
+    startRef.current = performance.now();
+    const tick = (now: number) => {
+      if (!runningRef.current) return;
+      const elapsed = now - startRef.current;
+      const p = Math.min(elapsed / DURATION, 1);
+      setProgress(p);
+      if (p >= 1) {
+        setFading(true);
+        setTimeout(() => {
+          setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+          setFading(false);
+          startRef.current = performance.now();
+          setProgress(0);
+        }, 250);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
   };
 
   const goToSlide = (index: number) => {
     setFading(true);
+    stopLoop();
     setTimeout(() => {
       setCurrentSlide(index);
       setFading(false);
       resetTimer();
-    }, 200);
+      startLoop();
+    }, 250);
   };
 
   const nextSlide = () => {
@@ -66,34 +99,15 @@ export default function Hero() {
   const currentHero = heroSlides[currentSlide];
 
   useEffect(() => {
-    let rafId = 0;
-    let start = performance.now();
-
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const p = Math.min(elapsed / DURATION, 1);
-      setProgress(p);
-      if (p >= 1) {
-        setFading(true);
-        setTimeout(() => {
-          setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-          setFading(false);
-          start = performance.now();
-          setProgress(0);
-        }, 200);
-      }
-      rafId = requestAnimationFrame(tick);
-    };
-
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [DURATION, timerReset]);
+    startLoop();
+    return () => stopLoop();
+  }, []);
 
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
       {/* Background with overlay */}
       <div
-        className={`absolute inset-0 ${currentHero.background} transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute inset-0 ${currentHero.background} transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}
         style={{
           backgroundImage: `url(${currentHero.backgroundImage})`,
           backgroundSize: "cover",
@@ -106,7 +120,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className={`relative z-10 h-full flex items-center transition-opacity duration-500 ${fading ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`relative z-10 h-full flex items-center transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -179,10 +193,10 @@ export default function Hero() {
       </div>
 
       {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 overflow-hidden">
         <div
-          className="h-full bg-gaming-accent transition-[width] duration-100 ease-linear"
-          style={{ width: `${progress * 100}%` }}
+          className="h-full bg-gaming-accent"
+          style={{ width: `${progress * 100}%`, transition: 'width 80ms linear' }}
         />
       </div>
     </section>

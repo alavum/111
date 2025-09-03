@@ -22,13 +22,13 @@ const newsImageStorage = multer.diskStorage({
 const newsImageUpload = multer({
   storage: newsImageStorage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 9 * 1024 * 1024, // 9MB limit (Netlify limit ~10MB)
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Только изображения разрешены!"));
+      cb(new Error("Только изображения разрешены! Формат файла должен быть image/*"));
     }
   },
 });
@@ -147,9 +147,9 @@ let terms = {
 ## 1. Предмет соглашения
 Настоящее соглаше��ие регулирует отношения между администрацией RSGS и пользователями серверов.
 
-## 2. Права и обязанности пользователей
+## 2. П��ава и обязанности пользователей
 - Соблюдение правил сервера
-- Уважительное о��ношение к другим игрокам
+- Уважительное отношение к другим игрокам
 - Запрет на использование читов и модификаций
 
 ## 3. Ответственность
