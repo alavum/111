@@ -362,7 +362,7 @@ export default function ServerStatus() {
           window.open(status.connectUrl, "_blank");
         } else {
           toast({
-            title: "Подключе��ие недоступно",
+            title: "Подключение недоступно",
             description: "Серве�� временно недоступен для подключения",
             variant: "destructive",
           });
@@ -535,7 +535,7 @@ export default function ServerStatus() {
                   server.status === "online" &&
                   connectionStatuses[server.id]?.ok === false
                 }
-                className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
+                className={`hidden md:block w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
                   isConnectionAvailable(server)
                     ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black cursor-pointer"
                     : server.status === "online" &&
