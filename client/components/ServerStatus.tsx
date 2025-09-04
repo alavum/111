@@ -157,17 +157,35 @@ export default function ServerStatus() {
         return { ok: false, status: 0, json: null, error: new Error("offline") } as any;
       }
 
-      const res = await fetch(input, { ...(init || {}), signal: controller.signal });
+      // Some injected scripts (FullStory) monkey-patch fetch and may throw synchronously.
+      // Guard synchronous throw by calling fetch inside try-catch and capturing the returned promise.
+      let fetchPromise: Promise<Response>;
+      try {
+        // call the native fetch via globalThis.fetch to reduce risk
+        fetchPromise = (globalThis.fetch as typeof fetch)(input, { ...(init || {}), signal: controller.signal });
+      } catch (syncErr) {
+        clearTimeout(id);
+        return { ok: false, status: 0, json: null, error: syncErr } as any;
+      }
+
+      let res: Response;
+      try {
+        res = await fetchPromise;
+      } catch (asyncErr) {
+        clearTimeout(id);
+        // Normalize abort reason to 'timeout' if we aborted
+        if (asyncErr && (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")) {
+          return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
+        }
+        return { ok: false, status: 0, json: null, error: asyncErr } as any;
+      }
+
       clearTimeout(id);
       if (!res.ok) return { ok: false, status: res.status, json: null };
       const json = await res.json();
       return { ok: true, status: res.status, json };
     } catch (err: any) {
       clearTimeout(id);
-      // Normalize abort reason to 'timeout' if we aborted
-      if (err && (err.name === "AbortError" || String(err) === "timeout")) {
-        return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
-      }
       return { ok: false, status: 0, json: null, error: err } as any;
     }
   };
