@@ -40,15 +40,15 @@ export default function Header() {
           {/* Middle navigation group (main links + external links) */}
           <div className="hidden md:flex items-center">
             <nav className="flex items-center relative z-10">
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-8 mr-4">
                 <Link to="/" className={getLinkClassName("/")}>Главная</Link>
                 <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
                 <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
-                <Link to="/rules" className={getLinkClassName("/rules") + ' pr-8 rounded-r-none'}>Правила</Link>
+                <Link to="/rules" className={getLinkClassName("/rules")}>Правила</Link>
               </div>
             </nav>
 
-            <div className="flex items-center relative z-30 border-l border-gaming-border pl-8 space-x-6">
+            <div className="flex items-center relative z-40 border-l border-gaming-border pl-6 space-x-6">
               <a
                 href="https://squadcalc.rgs-squad.ru"
                 target="_blank"
