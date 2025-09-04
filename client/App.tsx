@@ -43,4 +43,13 @@ const App = () => (
   </QueryClientProvider>
 );
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Ensure createRoot is called only once to avoid duplicate root warnings during HMR
+const rootElement = document.getElementById("root")!;
+const anyWindow = window as any;
+if (anyWindow.__REACT_ROOT__) {
+  anyWindow.__REACT_ROOT__.render(<App />);
+} else {
+  const root = createRoot(rootElement);
+  anyWindow.__REACT_ROOT__ = root;
+  root.render(<App />);
+}
