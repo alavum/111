@@ -190,6 +190,15 @@ export default function ServerStatus() {
       try {
         const result = await fetchJsonWithTimeout("/api/rcon-status", undefined, 8000);
         if (!result.ok || !result.json) {
+          // If timeout happened, avoid noisy toasts on background refreshes
+          const errMsg = result.error?.message || "";
+          if (errMsg === "timeout") {
+            if (showLoading) {
+              toast({ title: "Таймаут", description: "Сервер не ответил вовремя, попробуйте ещё раз", variant: "destructive" });
+            }
+            return;
+          }
+
           if (showLoading) {
             toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверов", variant: "destructive" });
           }
