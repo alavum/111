@@ -327,15 +327,18 @@ export default function ServerStatus() {
   useEffect(() => {
     const hasCachedData = loadCachedData();
 
-    // Fetch fresh data in background if we have cache, or immediately if no cache
+    // Defer network calls slightly to avoid running inside other scripts' message handlers (FullStory)
     if (hasCachedData) {
-      // Background update quickly so UI reflects real values soon after mount
       setTimeout(() => fetchRconData(true, false), 200);
     } else {
-      fetchRconData(true, true);
+      // small delay so we're not executing inside the same sync handler as other injected scripts
+      setTimeout(() => fetchRconData(true, true), 200);
     }
 
-    checkServerConnections();
+    // Defer connection checks to next tick to avoid potential wrappers from fullstory or extensions
+    setTimeout(() => {
+      checkServerConnections();
+    }, 250);
   }, []);
 
   // Auto-refresh interval
