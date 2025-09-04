@@ -215,7 +215,7 @@ export default function ServerStatus() {
           }
 
           if (showLoading) {
-            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверов", variant: "destructive" });
+            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверо��", variant: "destructive" });
           }
           return;
         }
@@ -422,38 +422,29 @@ export default function ServerStatus() {
   }, [serverData, connectionStatuses]);
 
 
-  // Initialize data
+  // Initialize data: immediately show cache and prefetch fresh data so buttons are ready
   useEffect(() => {
     const hasCachedData = loadCachedData();
+    const hasCachedConnections = loadCachedConnections();
 
-    // Defer network calls slightly to avoid running inside other scripts' message handlers (FullStory)
-    // Schedule revalidation on idle for faster perceived load (stale-while-revalidate)
-    const scheduleRevalidate = (fn: () => void, timeout = 500) => {
-      if (typeof (window as any).requestIdleCallback === "function") {
-        try {
-          (window as any).requestIdleCallback(fn, { timeout });
-          return;
-        } catch (e) {
-          // fallthrough
-        }
-      }
-      setTimeout(fn, 200);
-    };
+    let onOnline: (() => void) | null = null;
 
-    if (hasCachedData) {
-      scheduleRevalidate(() => {
-        if (navigator.onLine) fetchRconData(true, false);
-      }, 1000);
+    if (navigator.onLine) {
+      // Start background revalidation immediately (do not block render)
+      fetchRconData(true, false).catch(() => {});
+      checkServerConnections(true).catch(() => {});
     } else {
-      scheduleRevalidate(() => {
-        if (navigator.onLine) fetchRconData(true, true);
-      }, 1000);
+      onOnline = () => {
+        fetchRconData(true, false).catch(() => {});
+        checkServerConnections(true).catch(() => {});
+        if (onOnline) window.removeEventListener("online", onOnline);
+      };
+      window.addEventListener("online", onOnline);
     }
 
-    // Schedule connection checks on idle
-    scheduleRevalidate(() => {
-      if (navigator.onLine) checkServerConnections();
-    }, 1200);
+    return () => {
+      if (onOnline) window.removeEventListener("online", onOnline);
+    };
   }, []);
 
   // Auto-refresh interval
