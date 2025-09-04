@@ -38,16 +38,17 @@ export default function Header() {
           </div>
 
           {/* Navigation Menu */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className={getLinkClassName("/")}>
-              Главная
-            </Link>
-            <Link to="/news" className={getLinkClassName("/news")}>
-              Новости
-            </Link>
-            <Link to="/guides" className={getLinkClassName("/guides")}>
-              Гайды
-            </Link>
+          <nav className="hidden md:flex items-center">
+            <div className="flex items-center space-x-8">
+              <Link to="/" className={getLinkClassName("/")}>Главная</Link>
+              <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
+              <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
+              <Link to="/rules" className={getLinkClassName("/rules")}>Правила</Link>
+            </div>
+          </nav>
+
+          {/* External quick links separated to the right on desktop */}
+          <div className="hidden md:flex items-center ml-6 border-l border-gaming-border pl-4 space-x-4">
             <a
               href="https://squadcalc.rgs-squad.ru"
               target="_blank"
@@ -56,9 +57,6 @@ export default function Header() {
             >
               Squad Calc
             </a>
-            <Link to="/rules" className={getLinkClassName("/rules")}>
-              Правила
-            </Link>
             <a
               href="https://discord.gg/HXne8JVJ"
               target="_blank"
@@ -67,7 +65,7 @@ export default function Header() {
             >
               Обжаловать бан
             </a>
-          </nav>
+          </div>
 
           {/* Right Side Actions */}
           <div className="hidden sm:flex items-center space-x-4">
