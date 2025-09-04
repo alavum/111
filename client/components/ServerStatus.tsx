@@ -152,7 +152,7 @@ export default function ServerStatus() {
           signal: AbortSignal.timeout(8000), // 8 second timeout
         });
 
-        if (response.ok) {
+                if (response.ok) {
           const rconData = await response.json();
 
           const updatedServers = rconData.map((rconServer: any) => {
@@ -175,18 +175,41 @@ export default function ServerStatus() {
             };
           });
 
-          setServerData(updatedServers);
-          setLastFetchTime(now);
-
-          // Cache the data
-          const cacheData: CacheData = {
-            data: updatedServers,
-            timestamp: now,
+          // Only update UI if data actually changed to avoid flashing/loading
+          const isEqual = (a: Server[], b: Server[]) => {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+              const x = a[i];
+              const y = b[i];
+              if (
+                x.id !== y.id ||
+                x.players !== y.players ||
+                x.maxPlayers !== y.maxPlayers ||
+                x.queue !== y.queue ||
+                x.map !== y.map ||
+                x.gameMode !== y.gameMode ||
+                x.status !== y.status
+              )
+                return false;
+            }
+            return true;
           };
-          localStorage.setItem(
-            "server_status_cache",
-            JSON.stringify(cacheData),
-          );
+
+          if (!isEqual(serverData, updatedServers)) {
+            setServerData(updatedServers);
+            // Cache the data
+            const cacheData: CacheData = {
+              data: updatedServers,
+              timestamp: now,
+            };
+            localStorage.setItem(
+              "server_status_cache",
+              JSON.stringify(cacheData),
+            );
+          }
+
+          // Always update last fetch time to avoid excessive refetching, but UI is only updated when data changed
+          setLastFetchTime(now);
         }
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
