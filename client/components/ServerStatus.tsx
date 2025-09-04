@@ -408,7 +408,7 @@ export default function ServerStatus() {
           {serverData.map((server) => (
             <div
               key={server.id}
-              className="bg-gaming-card border border-gaming-border rounded-lg p-6 hover:bg-gaming-card-hover transition-colors"
+              className="bg-gaming-card border border-gaming-border rounded-lg p-4 sm:p-6 hover:bg-gaming-card-hover transition-colors"
             >
               {/* Server Header */}
               <div className="flex items-center justify-between mb-4">
