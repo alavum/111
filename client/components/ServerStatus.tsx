@@ -345,6 +345,11 @@ export default function ServerStatus() {
           }
         }
         if (changed) setConnectionStatuses(statusMap);
+      } else {
+        // If timeout happened, avoid noisy logs
+        if (result.error?.message && result.error.message !== "timeout") {
+          console.error("Failed to check server connections:", result.error);
+        }
       }
     } catch (error) {
       console.error("Failed to check server connections:", error);
@@ -419,7 +424,7 @@ export default function ServerStatus() {
         } else {
           toast({
             title: "Подключение недоступно",
-            description: "Сервер временно недоступен для подключения",
+            description: "Сервер времен��о недоступен для подключения",
             variant: "destructive",
           });
         }
@@ -460,7 +465,7 @@ export default function ServerStatus() {
   };
 
   const getConnectButtonText = (server: Server) => {
-    if (server.status !== "online") return "Недоступен";
+    if (server.status !== "online") return "Н��доступен";
     if (loadingConnections[server.id]) return "Проверка...";
 
     const connectionStatus = connectionStatuses[server.id];
