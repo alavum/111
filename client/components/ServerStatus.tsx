@@ -305,8 +305,8 @@ export default function ServerStatus() {
 
     // Fetch fresh data in background if we have cache, or immediately if no cache
     if (hasCachedData) {
-      // Background update after short delay
-      setTimeout(() => fetchRconData(true, false), 1000);
+      // Background update quickly so UI reflects real values soon after mount
+      setTimeout(() => fetchRconData(true, false), 200);
     } else {
       fetchRconData(true, true);
     }
