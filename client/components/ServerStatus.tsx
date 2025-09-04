@@ -140,7 +140,17 @@ export default function ServerStatus() {
   // Helper: fetch JSON with AbortController timeout and graceful failure
   const fetchJsonWithTimeout = async (input: RequestInfo, init?: RequestInit, timeout = 8000) => {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
+    // provide a reason when aborting to avoid unhelpful browser errors from some injected scripts
+    const id = setTimeout(() => {
+      try {
+        // Abort with a reason when supported
+        // @ts-ignore
+        controller.abort?.("timeout");
+      } catch (e) {
+        try { controller.abort(); } catch (_) {}
+      }
+    }, timeout);
+
     try {
       const res = await fetch(input, { ...(init || {}), signal: controller.signal });
       clearTimeout(id);
@@ -372,7 +382,7 @@ export default function ServerStatus() {
         if (!res.ok || !res.json) {
           toast({
             title: "Подключение недоступно",
-            description: "Сервер временно недоступен для подключения",
+            description: "Сервер в��еменно недоступен для подключения",
             variant: "destructive",
           });
           return;
