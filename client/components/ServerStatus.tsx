@@ -408,6 +408,12 @@ export default function ServerStatus() {
       try {
         const res = await fetchJsonWithTimeout(`/api/server-status/${server.id}`, undefined, 5000);
         if (!res.ok || !res.json) {
+          const errMsg = res.error?.message || "";
+          if (errMsg === "timeout") {
+            toast({ title: "Таймаут", description: "Проверка подключения заняла слишком много времени", variant: "destructive" });
+            return;
+          }
+
           toast({
             title: "Подключение недоступно",
             description: "Сервер временно недоступен для подключения",
@@ -424,7 +430,7 @@ export default function ServerStatus() {
         } else {
           toast({
             title: "Подключение недоступно",
-            description: "Сервер времен��о недоступен для подключения",
+            description: "Сервер временно недоступен для подключения",
             variant: "destructive",
           });
         }
@@ -465,7 +471,7 @@ export default function ServerStatus() {
   };
 
   const getConnectButtonText = (server: Server) => {
-    if (server.status !== "online") return "Н��доступен";
+    if (server.status !== "online") return "Недоступен";
     if (loadingConnections[server.id]) return "Проверка...";
 
     const connectionStatus = connectionStatuses[server.id];
