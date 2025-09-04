@@ -165,14 +165,26 @@ export default function ServerStatus() {
               (s) => s.id === rconServer.serverId,
             );
 
-            // Prefer valid positive maxPlayers reported by RCON; fall back to existing or default
-            const reportedMax = Number(rconServer.maxPlayers ?? NaN);
-            const totalSlots = reportedMax > 0 ? reportedMax : (existingServer?.maxPlayers ?? 100);
-
+            // Read candidate fields for total slots (support multiple RCON shapes)
+            const reportedMax = Number(rconServer.maxPlayers ?? rconServer.slots ?? rconServer.totalSlots ?? NaN);
             const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
             const reserved = Math.max(0, Number(
               rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
             ));
+
+            // Construct a robust totalSlots: prefer a sensible reportedMax, but ensure it's at least players+reserved and at least existing known value, fallback 100
+            const candidateReported = !isNaN(reportedMax) && reportedMax > 0 ? reportedMax : NaN;
+            const existingMax = existingServer?.maxPlayers ?? NaN;
+            let totalSlots = 100;
+            if (!isNaN(candidateReported) && !isNaN(existingMax)) {
+              totalSlots = Math.max(candidateReported, existingMax, players + reserved, 100);
+            } else if (!isNaN(candidateReported)) {
+              totalSlots = Math.max(candidateReported, players + reserved, 100);
+            } else if (!isNaN(existingMax)) {
+              totalSlots = Math.max(existingMax, players + reserved, 100);
+            } else {
+              totalSlots = Math.max(players + reserved, 100);
+            }
 
             // Queue: prefer explicit field, otherwise compute conservatively
             const explicitQueue = Number(rconServer.queue ?? NaN);
@@ -350,7 +362,7 @@ export default function ServerStatus() {
           window.open(status.connectUrl, "_blank");
         } else {
           toast({
-            title: "Подключение недоступно",
+            title: "Подключе��ие недоступно",
             description: "Серве�� временно недоступен для подключения",
             variant: "destructive",
           });
