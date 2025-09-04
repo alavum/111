@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 
 export default function Header() {
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -68,7 +69,7 @@ export default function Header() {
           </nav>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="hidden sm:flex items-center space-x-4">
             {/* VIP Button */}
             <Link to="/vip">
               <Button
@@ -87,7 +88,7 @@ export default function Header() {
               onClick={() =>
                 toast({
                   title: "В разработке",
-                  description: "Функция авторизации находится в разработке",
+                  description: "Функция авторизации наход��тся в разработке",
                   duration: 3000,
                 })
               }
@@ -103,23 +104,55 @@ export default function Header() {
               variant="ghost"
               size="sm"
               className="text-gaming-text hover:text-gaming-accent"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-expanded={mobileOpen}
+              aria-label="Menu"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+              {mobileOpen ? (
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
             </Button>
           </div>
         </div>
+
+        {/* Mobile navigation panel */}
+        {mobileOpen && (
+          <div className="md:hidden mt-2 pb-4">
+            <div className="flex flex-col space-y-2 px-2">
+              <Link to="/" onClick={() => setMobileOpen(false)} className={getLinkClassName("/")}>Главная</Link>
+              <Link to="/news" onClick={() => setMobileOpen(false)} className={getLinkClassName("/news")}>Новости</Link>
+              <Link to="/guides" onClick={() => setMobileOpen(false)} className={getLinkClassName("/guides")}>Гайды</Link>
+              <a href="https://squadcalc.rgs-squad.ru" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Squad Calc</a>
+              <Link to="/rules" onClick={() => setMobileOpen(false)} className={getLinkClassName("/rules")}>Правила</Link>
+              <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Обжаловать бан</a>
+
+              <div className="pt-2 border-t border-gaming-border mt-2">
+                <Link to="/vip" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">Стать VIP</Button>
+                </Link>
+                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В разработке', description: 'Функция авторизации находится в разработке' }); }}>
+                  <User className="w-4 h-4 mr-1" /> Войти
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
