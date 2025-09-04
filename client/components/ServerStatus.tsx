@@ -365,8 +365,16 @@ export default function ServerStatus() {
       setLoadingConnections((prev) => ({ ...prev, [server.id]: true }));
 
       try {
-        const response = await fetch(`/api/server-status/${server.id}`);
-        const status: ServerConnectionStatus = await response.json();
+        const res = await fetchJsonWithTimeout(`/api/server-status/${server.id}`, undefined, 5000);
+        if (!res.ok || !res.json) {
+          toast({
+            title: "Подключение недоступно",
+            description: "Сервер временно недоступен для подключения",
+            variant: "destructive",
+          });
+          return;
+        }
+        const status: ServerConnectionStatus = res.json;
 
         setConnectionStatuses((prev) => ({ ...prev, [server.id]: status }));
 
@@ -375,14 +383,14 @@ export default function ServerStatus() {
         } else {
           toast({
             title: "Подключение недоступно",
-            description: "Серве�� временно недоступен для подключения",
+            description: "Сервер временно недоступен для подключения",
             variant: "destructive",
           });
         }
       } catch (error) {
         toast({
           title: "Ошибка подключения",
-          description: "Н�� удалось проверить статус подключения к серверу",
+          description: "Не удалось проверить статус подключения к серве��у",
           variant: "destructive",
         });
       } finally {
