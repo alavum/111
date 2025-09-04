@@ -162,8 +162,12 @@ export default function ServerStatus() {
       if (!res.ok) return { ok: false, status: res.status, json: null };
       const json = await res.json();
       return { ok: true, status: res.status, json };
-    } catch (err) {
+    } catch (err: any) {
       clearTimeout(id);
+      // Normalize abort reason to 'timeout' if we aborted
+      if (err && (err.name === "AbortError" || String(err) === "timeout")) {
+        return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
+      }
       return { ok: false, status: 0, json: null, error: err } as any;
     }
   };
