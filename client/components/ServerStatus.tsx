@@ -135,7 +135,11 @@ export default function ServerStatus() {
   }, []);
 
   // Helper: fetch JSON with AbortController timeout and graceful failure
-  const fetchJsonWithTimeout = async (input: RequestInfo, init?: RequestInit, timeout = 8000) => {
+  const fetchJsonWithTimeout = async (
+    input: RequestInfo,
+    init?: RequestInit,
+    timeout = 8000,
+  ) => {
     const controller = new AbortController();
     // provide a reason when aborting to avoid unhelpful browser errors from some injected scripts
     const id = setTimeout(() => {
@@ -144,14 +148,21 @@ export default function ServerStatus() {
         // @ts-ignore
         controller.abort?.("timeout");
       } catch (e) {
-        try { controller.abort(); } catch (_) {}
+        try {
+          controller.abort();
+        } catch (_) {}
       }
     }, timeout);
 
     try {
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         clearTimeout(id);
-        return { ok: false, status: 0, json: null, error: new Error("offline") } as any;
+        return {
+          ok: false,
+          status: 0,
+          json: null,
+          error: new Error("offline"),
+        } as any;
       }
 
       // Some injected scripts (FullStory) monkey-patch fetch and may throw synchronously.
@@ -159,7 +170,10 @@ export default function ServerStatus() {
       let fetchPromise: Promise<Response>;
       try {
         // call the native fetch via globalThis.fetch to reduce risk
-        fetchPromise = (globalThis.fetch as typeof fetch)(input, { ...(init || {}), signal: controller.signal });
+        fetchPromise = (globalThis.fetch as typeof fetch)(input, {
+          ...(init || {}),
+          signal: controller.signal,
+        });
       } catch (syncErr) {
         clearTimeout(id);
         return { ok: false, status: 0, json: null, error: syncErr } as any;
@@ -171,8 +185,16 @@ export default function ServerStatus() {
       } catch (asyncErr) {
         clearTimeout(id);
         // Normalize abort reason to 'timeout' if we aborted
-        if (asyncErr && (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")) {
-          return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
+        if (
+          asyncErr &&
+          (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")
+        ) {
+          return {
+            ok: false,
+            status: 0,
+            json: null,
+            error: new Error("timeout"),
+          } as any;
         }
         return { ok: false, status: 0, json: null, error: asyncErr } as any;
       }
@@ -203,19 +225,31 @@ export default function ServerStatus() {
       if (showLoading) setIsLoadingRcon(true);
 
       try {
-        const result = await fetchJsonWithTimeout("/api/rcon-status", undefined, 8000);
+        const result = await fetchJsonWithTimeout(
+          "/api/rcon-status",
+          undefined,
+          8000,
+        );
         if (!result.ok || !result.json) {
           // If timeout happened, avoid noisy toasts on background refreshes
           const errMsg = result.error?.message || "";
           if (errMsg === "timeout") {
             if (showLoading) {
-              toast({ title: "Таймаут", description: "Сервер не ответил вовремя, попробуйте ещё раз", variant: "destructive" });
+              toast({
+                title: "Таймаут",
+                description: "Сервер не ответил вовремя, попробуйте ещё раз",
+                variant: "destructive",
+              });
             }
             return;
           }
 
           if (showLoading) {
-            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверов", variant: "destructive" });
+            toast({
+              title: "Ошибка загрузки",
+              description: "Не удалось обновить данные серверов",
+              variant: "destructive",
+            });
           }
           return;
         }
@@ -228,18 +262,39 @@ export default function ServerStatus() {
           );
 
           // Read candidate fields for total slots (support multiple RCON shapes)
-          const reportedMax = Number(rconServer.maxPlayers ?? rconServer.slots ?? rconServer.totalSlots ?? NaN);
-          const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
-          const reserved = Math.max(0, Number(
-            rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
-          ));
+          const reportedMax = Number(
+            rconServer.maxPlayers ??
+              rconServer.slots ??
+              rconServer.totalSlots ??
+              NaN,
+          );
+          const players = Math.max(
+            0,
+            Number(rconServer.players ?? existingServer?.players ?? 0),
+          );
+          const reserved = Math.max(
+            0,
+            Number(
+              rconServer.reservedSlots ??
+                rconServer.reserved ??
+                rconServer.reservedPlayers ??
+                existingServer?.reserved ??
+                0,
+            ),
+          );
 
           // Construct a robust totalSlots: prefer a sensible reportedMax, but ensure it's at least players+reserved and at least existing known value, fallback 100
-          const candidateReported = !isNaN(reportedMax) && reportedMax > 0 ? reportedMax : NaN;
+          const candidateReported =
+            !isNaN(reportedMax) && reportedMax > 0 ? reportedMax : NaN;
           const existingMax = existingServer?.maxPlayers ?? NaN;
           let totalSlots = 100;
           if (!isNaN(candidateReported) && !isNaN(existingMax)) {
-            totalSlots = Math.max(candidateReported, existingMax, players + reserved, 100);
+            totalSlots = Math.max(
+              candidateReported,
+              existingMax,
+              players + reserved,
+              100,
+            );
           } else if (!isNaN(candidateReported)) {
             totalSlots = Math.max(candidateReported, players + reserved, 100);
           } else if (!isNaN(existingMax)) {
@@ -250,14 +305,21 @@ export default function ServerStatus() {
 
           // Queue: prefer explicit field, otherwise compute conservatively
           const explicitQueue = Number(rconServer.queue ?? NaN);
-          const queue = !isNaN(explicitQueue) ? Math.max(0, explicitQueue) : Math.max(0, players - (totalSlots - reserved));
+          const queue = !isNaN(explicitQueue)
+            ? Math.max(0, explicitQueue)
+            : Math.max(0, players - (totalSlots - reserved));
 
           const map = rconServer.map ?? existingServer?.map ?? "—";
-          const gameMode = rconServer.gameMode ?? existingServer?.gameMode ?? "—";
+          const gameMode =
+            rconServer.gameMode ?? existingServer?.gameMode ?? "—";
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
-          if (status !== "online" && status !== "offline" && status !== "maintenance") {
+          if (
+            status !== "online" &&
+            status !== "offline" &&
+            status !== "maintenance"
+          ) {
             if (players > 0) status = "online";
             else if (existingServer?.status) status = existingServer.status;
             else status = "offline";
@@ -333,7 +395,10 @@ export default function ServerStatus() {
         const now = Date.now();
         // reuse regardless of age; we'll revalidate immediately
         if (parsed && (parsed.connections || parsed.connections === null)) {
-          const statusMap = (parsed as any).connections as Record<number, ServerConnectionStatus>;
+          const statusMap = (parsed as any).connections as Record<
+            number,
+            ServerConnectionStatus
+          >;
           if (statusMap) {
             setConnectionStatuses(statusMap);
             return true;
@@ -347,80 +412,91 @@ export default function ServerStatus() {
   }, []);
 
   // Check server connection statuses (batch). Optionally skip if cache is fresh and not forceRefresh.
-  const checkServerConnections = useCallback(async (forceRefresh = false) => {
-    try {
-      const serverIds = serverData.map((s) => s.id);
+  const checkServerConnections = useCallback(
+    async (forceRefresh = false) => {
+      try {
+        const serverIds = serverData.map((s) => s.id);
 
-      // If we have cached connections and not forcing, skip network
-      if (!forceRefresh) {
-        const cached = localStorage.getItem(CONNECTION_CACHE_KEY);
-        if (cached) {
-          try {
-            const parsed = JSON.parse(cached) as { timestamp: number; connections: Record<number, ServerConnectionStatus> };
-            if (parsed && Date.now() - (parsed.timestamp || 0) < CACHE_DURATION) {
-              // already up-to-date
-              return;
-            }
-          } catch {}
+        // If we have cached connections and not forcing, skip network
+        if (!forceRefresh) {
+          const cached = localStorage.getItem(CONNECTION_CACHE_KEY);
+          if (cached) {
+            try {
+              const parsed = JSON.parse(cached) as {
+                timestamp: number;
+                connections: Record<number, ServerConnectionStatus>;
+              };
+              if (
+                parsed &&
+                Date.now() - (parsed.timestamp || 0) < CACHE_DURATION
+              ) {
+                // already up-to-date
+                return;
+              }
+            } catch {}
+          }
         }
-      }
 
-      const result = await fetchJsonWithTimeout(
-        "/api/server-status/batch",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ serverIds }),
-        },
-        5000,
-      );
-
-      if (result.ok && result.json) {
-        const statuses: ServerConnectionStatus[] = result.json;
-        const statusMap = statuses.reduce(
-          (acc, status) => {
-            acc[status.serverId] = status;
-            return acc;
+        const result = await fetchJsonWithTimeout(
+          "/api/server-status/batch",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ serverIds }),
           },
-          {} as Record<number, ServerConnectionStatus>,
+          5000,
         );
-        // Compare shallowly to avoid unnecessary updates
-        const keysA = Object.keys(connectionStatuses);
-        const keysB = Object.keys(statusMap);
-        let changed = false;
-        if (keysA.length !== keysB.length) changed = true;
-        else {
-          for (const k of keysB) {
-            const a = connectionStatuses[Number(k)];
-            const b = statusMap[Number(k)];
-            if (!a || a.ok !== b.ok || a.connectUrl !== b.connectUrl) {
-              changed = true;
-              break;
+
+        if (result.ok && result.json) {
+          const statuses: ServerConnectionStatus[] = result.json;
+          const statusMap = statuses.reduce(
+            (acc, status) => {
+              acc[status.serverId] = status;
+              return acc;
+            },
+            {} as Record<number, ServerConnectionStatus>,
+          );
+          // Compare shallowly to avoid unnecessary updates
+          const keysA = Object.keys(connectionStatuses);
+          const keysB = Object.keys(statusMap);
+          let changed = false;
+          if (keysA.length !== keysB.length) changed = true;
+          else {
+            for (const k of keysB) {
+              const a = connectionStatuses[Number(k)];
+              const b = statusMap[Number(k)];
+              if (!a || a.ok !== b.ok || a.connectUrl !== b.connectUrl) {
+                changed = true;
+                break;
+              }
             }
           }
-        }
-        if (changed) {
-          setConnectionStatuses(statusMap);
-          try {
-            localStorage.setItem(
-              CONNECTION_CACHE_KEY,
-              JSON.stringify({ timestamp: Date.now(), connections: statusMap }),
-            );
-          } catch (e) {
-            // ignore localStorage errors
+          if (changed) {
+            setConnectionStatuses(statusMap);
+            try {
+              localStorage.setItem(
+                CONNECTION_CACHE_KEY,
+                JSON.stringify({
+                  timestamp: Date.now(),
+                  connections: statusMap,
+                }),
+              );
+            } catch (e) {
+              // ignore localStorage errors
+            }
+          }
+        } else {
+          // If timeout happened, avoid noisy logs
+          if (result.error?.message && result.error.message !== "timeout") {
+            console.error("Failed to check server connections:", result.error);
           }
         }
-      } else {
-        // If timeout happened, avoid noisy logs
-        if (result.error?.message && result.error.message !== "timeout") {
-          console.error("Failed to check server connections:", result.error);
-        }
+      } catch (error) {
+        console.error("Failed to check server connections:", error);
       }
-    } catch (error) {
-      console.error("Failed to check server connections:", error);
-    }
-  }, [serverData, connectionStatuses]);
-
+    },
+    [serverData, connectionStatuses],
+  );
 
   // Initialize data: immediately show cache and prefetch fresh data so buttons are ready
   useEffect(() => {
@@ -429,7 +505,9 @@ export default function ServerStatus() {
 
     let onOnline: (() => void) | null = null;
 
-    const fullstoryPresent = typeof (window as any).FS !== "undefined" || /fullstory/.test(navigator.userAgent || "");
+    const fullstoryPresent =
+      typeof (window as any).FS !== "undefined" ||
+      /fullstory/.test(navigator.userAgent || "");
     const startDelay = fullstoryPresent ? 5000 : 0;
 
     if (navigator.onLine) {
@@ -477,7 +555,7 @@ export default function ServerStatus() {
 
     const connectionStatus = connectionStatuses[server.id];
 
-      if (!connectionStatus) {
+    if (!connectionStatus) {
       // According to UX requirement, do not perform network fetches on user click.
       toast({
         title: "Статус подключения неизвестен",
@@ -588,14 +666,25 @@ export default function ServerStatus() {
                   <span className="text-gaming-text font-semibold">
                     {server.reserved && server.reserved > 0 ? (
                       <>
-                        {Math.max(server.maxPlayers - server.players - (server.reserved || 0), 0)}
-                        <span className="text-yellow-400 ml-1">(+{server.reserved})</span>
+                        {Math.max(
+                          server.maxPlayers -
+                            server.players -
+                            (server.reserved || 0),
+                          0,
+                        )}
+                        <span className="text-yellow-400 ml-1">
+                          (+{server.reserved})
+                        </span>
                       </>
                     ) : (
-                      <>{server.players}/{server.maxPlayers}</>
+                      <>
+                        {server.players}/{server.maxPlayers}
+                      </>
                     )}
                     {server.queue > 0 && (
-                      <span className="text-yellow-400 ml-1">(+{server.queue})</span>
+                      <span className="text-yellow-400 ml-1">
+                        (+{server.queue})
+                      </span>
                     )}
                   </span>
                 </div>

@@ -41,10 +41,18 @@ export default function Header() {
           <div className="hidden md:flex items-center">
             <nav className="flex items-center relative z-10">
               <div className="flex items-center space-x-8 mr-4">
-                <Link to="/" className={getLinkClassName("/")}>Главная</Link>
-                <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
-                <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
-                <Link to="/rules" className={getLinkClassName("/rules")}>Правила</Link>
+                <Link to="/" className={getLinkClassName("/")}>
+                  Главная
+                </Link>
+                <Link to="/news" className={getLinkClassName("/news")}>
+                  Новости
+                </Link>
+                <Link to="/guides" className={getLinkClassName("/guides")}>
+                  Гайды
+                </Link>
+                <Link to="/rules" className={getLinkClassName("/rules")}>
+                  Правила
+                </Link>
               </div>
             </nav>
 
@@ -109,8 +117,18 @@ export default function Header() {
               aria-label="Menu"
             >
               {mobileOpen ? (
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
                 <svg
@@ -135,21 +153,71 @@ export default function Header() {
         {mobileOpen && (
           <div className="md:hidden mt-2 pb-4">
             <div className="flex flex-col space-y-2 px-2">
-              <Link to="/" onClick={() => setMobileOpen(false)} className={getLinkClassName("/")}>Главная</Link>
-              <Link to="/news" onClick={() => setMobileOpen(false)} className={getLinkClassName("/news")}>Новости</Link>
-              <Link to="/guides" onClick={() => setMobileOpen(false)} className={getLinkClassName("/guides")}>Гайды</Link>
-              <Link to="/rules" onClick={() => setMobileOpen(false)} className={getLinkClassName("/rules")}>Правила</Link>
+              <Link
+                to="/"
+                onClick={() => setMobileOpen(false)}
+                className={getLinkClassName("/")}
+              >
+                Главная
+              </Link>
+              <Link
+                to="/news"
+                onClick={() => setMobileOpen(false)}
+                className={getLinkClassName("/news")}
+              >
+                Новости
+              </Link>
+              <Link
+                to="/guides"
+                onClick={() => setMobileOpen(false)}
+                className={getLinkClassName("/guides")}
+              >
+                Гайды
+              </Link>
+              <Link
+                to="/rules"
+                onClick={() => setMobileOpen(false)}
+                className={getLinkClassName("/rules")}
+              >
+                Правила
+              </Link>
 
               <div className="h-px bg-gaming-border my-2" />
 
-              <a href="https://squadcalc.rgs-squad.ru" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Squad Calc</a>
-              <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Обжаловать бан</a>
+              <a
+                href="https://squadcalc.rgs-squad.ru"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md"
+              >
+                Squad Calc
+              </a>
+              <a
+                href="https://discord.gg/HXne8JVJ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md"
+              >
+                Обжаловать бан
+              </a>
 
               <div className="pt-2 border-t border-gaming-border mt-2">
                 <Link to="/vip" onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">Стать VIP</Button>
+                  <Button className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">
+                    Стать VIP
+                  </Button>
                 </Link>
-                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В разработке', description: 'Функция авторизации находится в разработке' }); }}>
+                <Button
+                  variant="ghost"
+                  className="w-full mt-2 text-gaming-text"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    toast({
+                      title: "В разработке",
+                      description: "Функция авторизации находится в разработке",
+                    });
+                  }}
+                >
                   <User className="w-4 h-4 mr-1" /> Войти
                 </Button>
               </div>
