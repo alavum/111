@@ -12,6 +12,7 @@ interface Server {
   map: string;
   gameMode: string;
   status: "online" | "offline" | "maintenance";
+  reserved?: number;
 }
 
 interface ServerConnectionStatus {
@@ -29,9 +30,10 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "Loading...",
-    gameMode: "Checking...",
+    map: "—",
+    gameMode: "—",
     status: "maintenance",
+    reserved: 0,
   },
   {
     id: 2,
@@ -39,9 +41,10 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "Offline",
-    gameMode: "Offline",
+    map: "—",
+    gameMode: "—",
     status: "offline",
+    reserved: 0,
   },
   {
     id: 3,
@@ -49,9 +52,10 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "Offline",
-    gameMode: "Offline",
+    map: "—",
+    gameMode: "—",
     status: "offline",
+    reserved: 0,
   },
   {
     id: 4,
@@ -59,9 +63,10 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "Offline",
-    gameMode: "Offline",
+    map: "—",
+    gameMode: "—",
     status: "offline",
+    reserved: 0,
   },
 ];
 
@@ -323,7 +328,7 @@ export default function ServerStatus() {
         } else {
           toast({
             title: "Подключение недоступно",
-            description: "Сервер временно недоступен для подключения",
+            description: "Серве�� временно недоступен для подключения",
             variant: "destructive",
           });
         }
