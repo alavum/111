@@ -164,19 +164,39 @@ export default function ServerStatus() {
             const existingServer = serverData.find(
               (s) => s.id === rconServer.serverId,
             );
+
+            const totalSlots = Number(
+              rconServer.maxPlayers ?? existingServer?.maxPlayers ?? 100,
+            );
+            const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
+            const reserved = Math.max(0, Number(
+              rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
+            ));
+
+            // Queue: prefer explicit field, otherwise compute conservatively
+            const queue = Number(rconServer.queue ?? Math.max(0, players - totalSlots) ?? 0);
+
+            const map = rconServer.map ?? existingServer?.map ?? "—";
+            const gameMode = rconServer.gameMode ?? existingServer?.gameMode ?? "—";
+
+            // Normalize status: accept only known values, otherwise derive from players or fallback to previous
+            let status = (rconServer.status as Server["status"]) ?? undefined;
+            if (status !== "online" && status !== "offline" && status !== "maintenance") {
+              if (players > 0) status = "online";
+              else if (existingServer?.status) status = existingServer.status;
+              else status = "offline";
+            }
+
             return {
               id: rconServer.serverId,
-              name:
-                existingServer?.name || `RSGS Server ${rconServer.serverId}`,
-              players: rconServer.players || 0,
-              maxPlayers: rconServer.maxPlayers || 100,
-              queue: Math.max(
-                0,
-                (rconServer.players || 0) - (rconServer.maxPlayers || 100),
-              ),
-              map: rconServer.map || "Unknown",
-              gameMode: rconServer.gameMode || "Unknown",
-              status: rconServer.status as Server["status"],
+              name: existingServer?.name || `RSGS Server ${rconServer.serverId}`,
+              players,
+              maxPlayers: totalSlots,
+              queue,
+              map,
+              gameMode,
+              status,
+              reserved,
             };
           });
 
@@ -193,7 +213,8 @@ export default function ServerStatus() {
                 x.queue !== y.queue ||
                 x.map !== y.map ||
                 x.gameMode !== y.gameMode ||
-                x.status !== y.status
+                x.status !== y.status ||
+                (x.reserved || 0) !== (y.reserved || 0)
               )
                 return false;
             }
