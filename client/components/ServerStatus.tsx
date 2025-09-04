@@ -332,7 +332,7 @@ export default function ServerStatus() {
         const parsed = JSON.parse(cached) as CacheData & { connections?: any };
         const now = Date.now();
         // reuse regardless of age; we'll revalidate immediately
-        if (parsed && parsed.data) {
+        if (parsed && (parsed.connections || parsed.connections === null)) {
           const statusMap = (parsed as any).connections as Record<number, ServerConnectionStatus>;
           if (statusMap) {
             setConnectionStatuses(statusMap);
