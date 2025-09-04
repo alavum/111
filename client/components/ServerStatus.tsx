@@ -152,6 +152,11 @@ export default function ServerStatus() {
     }, timeout);
 
     try {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        clearTimeout(id);
+        return { ok: false, status: 0, json: null, error: new Error("offline") } as any;
+      }
+
       const res = await fetch(input, { ...(init || {}), signal: controller.signal });
       clearTimeout(id);
       if (!res.ok) return { ok: false, status: res.status, json: null };
