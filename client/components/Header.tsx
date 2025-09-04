@@ -48,7 +48,7 @@ export default function Header() {
               </div>
             </nav>
 
-            <div className="flex items-center border-l border-gaming-border pl-1 ml-2 space-x-6">
+            <div className="flex items-center border-l border-gaming-border pl-4 ml-4 space-x-6">
               <a
                 href="https://squadcalc.rgs-squad.ru"
                 target="_blank"
@@ -149,7 +149,7 @@ export default function Header() {
                 <Link to="/vip" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">Стать VIP</Button>
                 </Link>
-                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В разработке', description: 'Функция авторизации находится в разработке' }); }}>
+                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В р��зработке', description: 'Функция авторизации находится в разработке' }); }}>
                   <User className="w-4 h-4 mr-1" /> Войти
                 </Button>
               </div>
