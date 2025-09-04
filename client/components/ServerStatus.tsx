@@ -137,6 +137,22 @@ export default function ServerStatus() {
     return false;
   }, []);
 
+  // Helper: fetch JSON with AbortController timeout and graceful failure
+  const fetchJsonWithTimeout = async (input: RequestInfo, init?: RequestInit, timeout = 8000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+      const res = await fetch(input, { ...(init || {}), signal: controller.signal });
+      clearTimeout(id);
+      if (!res.ok) return { ok: false, status: res.status, json: null };
+      const json = await res.json();
+      return { ok: true, status: res.status, json };
+    } catch (err) {
+      clearTimeout(id);
+      return { ok: false, status: 0, json: null, error: err } as any;
+    }
+  };
+
   // Fetch RCON data with background updates
   const fetchRconData = useCallback(
     async (forceRefresh = false, showLoading = true) => {
@@ -153,115 +169,108 @@ export default function ServerStatus() {
       if (showLoading) setIsLoadingRcon(true);
 
       try {
-        const response = await fetch("/api/rcon-status", {
-          signal: AbortSignal.timeout(8000), // 8 second timeout
+        const result = await fetchJsonWithTimeout("/api/rcon-status", undefined, 8000);
+        if (!result.ok || !result.json) {
+          if (showLoading) {
+            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверов", variant: "destructive" });
+          }
+          return;
+        }
+
+        const rconData = result.json;
+
+        const updatedServers = rconData.map((rconServer: any) => {
+          const existingServer = serverData.find(
+            (s) => s.id === rconServer.serverId,
+          );
+
+          // Read candidate fields for total slots (support multiple RCON shapes)
+          const reportedMax = Number(rconServer.maxPlayers ?? rconServer.slots ?? rconServer.totalSlots ?? NaN);
+          const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
+          const reserved = Math.max(0, Number(
+            rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
+          ));
+
+          // Construct a robust totalSlots: prefer a sensible reportedMax, but ensure it's at least players+reserved and at least existing known value, fallback 100
+          const candidateReported = !isNaN(reportedMax) && reportedMax > 0 ? reportedMax : NaN;
+          const existingMax = existingServer?.maxPlayers ?? NaN;
+          let totalSlots = 100;
+          if (!isNaN(candidateReported) && !isNaN(existingMax)) {
+            totalSlots = Math.max(candidateReported, existingMax, players + reserved, 100);
+          } else if (!isNaN(candidateReported)) {
+            totalSlots = Math.max(candidateReported, players + reserved, 100);
+          } else if (!isNaN(existingMax)) {
+            totalSlots = Math.max(existingMax, players + reserved, 100);
+          } else {
+            totalSlots = Math.max(players + reserved, 100);
+          }
+
+          // Queue: prefer explicit field, otherwise compute conservatively
+          const explicitQueue = Number(rconServer.queue ?? NaN);
+          const queue = !isNaN(explicitQueue) ? Math.max(0, explicitQueue) : Math.max(0, players - (totalSlots - reserved));
+
+          const map = rconServer.map ?? existingServer?.map ?? "—";
+          const gameMode = rconServer.gameMode ?? existingServer?.gameMode ?? "—";
+
+          // Normalize status: accept only known values, otherwise derive from players or fallback to previous
+          let status = (rconServer.status as Server["status"]) ?? undefined;
+          if (status !== "online" && status !== "offline" && status !== "maintenance") {
+            if (players > 0) status = "online";
+            else if (existingServer?.status) status = existingServer.status;
+            else status = "offline";
+          }
+
+          return {
+            id: rconServer.serverId,
+            name: existingServer?.name || `RSGS Server ${rconServer.serverId}`,
+            players,
+            maxPlayers: totalSlots,
+            queue,
+            map,
+            gameMode,
+            status,
+            reserved,
+          };
         });
 
-                if (response.ok) {
-          const rconData = await response.json();
+        // Only update UI if data actually changed to avoid flashing/loading
+        const isEqual = (a: Server[], b: Server[]) => {
+          if (a.length !== b.length) return false;
+          for (let i = 0; i < a.length; i++) {
+            const x = a[i];
+            const y = b[i];
+            if (
+              x.id !== y.id ||
+              x.players !== y.players ||
+              x.maxPlayers !== y.maxPlayers ||
+              x.queue !== y.queue ||
+              x.map !== y.map ||
+              x.gameMode !== y.gameMode ||
+              x.status !== y.status ||
+              (x.reserved || 0) !== (y.reserved || 0)
+            )
+              return false;
+          }
+          return true;
+        };
 
-          const updatedServers = rconData.map((rconServer: any) => {
-            const existingServer = serverData.find(
-              (s) => s.id === rconServer.serverId,
-            );
-
-            // Read candidate fields for total slots (support multiple RCON shapes)
-            const reportedMax = Number(rconServer.maxPlayers ?? rconServer.slots ?? rconServer.totalSlots ?? NaN);
-            const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
-            const reserved = Math.max(0, Number(
-              rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
-            ));
-
-            // Construct a robust totalSlots: prefer a sensible reportedMax, but ensure it's at least players+reserved and at least existing known value, fallback 100
-            const candidateReported = !isNaN(reportedMax) && reportedMax > 0 ? reportedMax : NaN;
-            const existingMax = existingServer?.maxPlayers ?? NaN;
-            let totalSlots = 100;
-            if (!isNaN(candidateReported) && !isNaN(existingMax)) {
-              totalSlots = Math.max(candidateReported, existingMax, players + reserved, 100);
-            } else if (!isNaN(candidateReported)) {
-              totalSlots = Math.max(candidateReported, players + reserved, 100);
-            } else if (!isNaN(existingMax)) {
-              totalSlots = Math.max(existingMax, players + reserved, 100);
-            } else {
-              totalSlots = Math.max(players + reserved, 100);
-            }
-
-            // Queue: prefer explicit field, otherwise compute conservatively
-            const explicitQueue = Number(rconServer.queue ?? NaN);
-            const queue = !isNaN(explicitQueue) ? Math.max(0, explicitQueue) : Math.max(0, players - (totalSlots - reserved));
-
-            const map = rconServer.map ?? existingServer?.map ?? "—";
-            const gameMode = rconServer.gameMode ?? existingServer?.gameMode ?? "—";
-
-            // Normalize status: accept only known values, otherwise derive from players or fallback to previous
-            let status = (rconServer.status as Server["status"]) ?? undefined;
-            if (status !== "online" && status !== "offline" && status !== "maintenance") {
-              if (players > 0) status = "online";
-              else if (existingServer?.status) status = existingServer.status;
-              else status = "offline";
-            }
-
-            return {
-              id: rconServer.serverId,
-              name: existingServer?.name || `RSGS Server ${rconServer.serverId}`,
-              players,
-              maxPlayers: totalSlots,
-              queue,
-              map,
-              gameMode,
-              status,
-              reserved,
-            };
-          });
-
-          // Only update UI if data actually changed to avoid flashing/loading
-          const isEqual = (a: Server[], b: Server[]) => {
-            if (a.length !== b.length) return false;
-            for (let i = 0; i < a.length; i++) {
-              const x = a[i];
-              const y = b[i];
-              if (
-                x.id !== y.id ||
-                x.players !== y.players ||
-                x.maxPlayers !== y.maxPlayers ||
-                x.queue !== y.queue ||
-                x.map !== y.map ||
-                x.gameMode !== y.gameMode ||
-                x.status !== y.status ||
-                (x.reserved || 0) !== (y.reserved || 0)
-              )
-                return false;
-            }
-            return true;
+        if (!isEqual(serverData, updatedServers)) {
+          setServerData(updatedServers);
+          // Cache the data
+          const cacheData: CacheData = {
+            data: updatedServers,
+            timestamp: now,
           };
-
-          if (!isEqual(serverData, updatedServers)) {
-            setServerData(updatedServers);
-            // Cache the data
-            const cacheData: CacheData = {
-              data: updatedServers,
-              timestamp: now,
-            };
-            localStorage.setItem(
-              "server_status_cache",
-              JSON.stringify(cacheData),
-            );
-          }
-
-          // Always update last fetch time to avoid excessive refetching, but UI is only updated when data changed
-          setLastFetchTime(now);
+          localStorage.setItem(
+            "server_status_cache",
+            JSON.stringify(cacheData),
+          );
         }
+
+        // Always update last fetch time to avoid excessive refetching, but UI is only updated when data changed
+        setLastFetchTime(now);
       } catch (error) {
-        if (error instanceof Error && error.name !== "AbortError") {
-          console.error("Failed to fetch RCON data:", error);
-          if (showLoading) {
-            toast({
-              title: "Ошибка загрузки",
-              description: "Не удалось обновить данные серверов",
-              variant: "destructive",
-            });
-          }
-        }
+        console.error("Failed to fetch RCON data:", error);
       } finally {
         if (showLoading) setIsLoadingRcon(false);
       }
