@@ -116,20 +116,17 @@ export default function ServerStatus() {
   const [isLoadingRcon, setIsLoadingRcon] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
 
-  // Load cached data on mount
+  // Load cached data on mount (stale-while-revalidate): always show cache immediately if present
   const loadCachedData = useCallback(() => {
     try {
       const cached = localStorage.getItem("server_status_cache");
       if (cached) {
         const cacheData: CacheData = JSON.parse(cached);
-        const now = Date.now();
-
-        if (now - cacheData.timestamp < CACHE_DURATION) {
-          console.log("Loading cached server data");
-          setServerData(cacheData.data);
-          setLastFetchTime(cacheData.timestamp);
-          return true;
-        }
+        console.log("Loading cached server data (stale-while-revalidate)");
+        setServerData(cacheData.data);
+        // set lastFetchTime from cache so fetchRconData can decide to revalidate
+        setLastFetchTime(cacheData.timestamp || 0);
+        return true;
       }
     } catch (error) {
       console.error("Failed to load cached data:", error);
