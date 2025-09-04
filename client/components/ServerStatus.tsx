@@ -376,22 +376,33 @@ export default function ServerStatus() {
     const hasCachedData = loadCachedData();
 
     // Defer network calls slightly to avoid running inside other scripts' message handlers (FullStory)
-    const initialDelay = 1000; // give injected scripts (FullStory) time to initialize
+    // Schedule revalidation on idle for faster perceived load (stale-while-revalidate)
+    const scheduleRevalidate = (fn: () => void, timeout = 500) => {
+      if (typeof (window as any).requestIdleCallback === "function") {
+        try {
+          (window as any).requestIdleCallback(fn, { timeout });
+          return;
+        } catch (e) {
+          // fallthrough
+        }
+      }
+      setTimeout(fn, 200);
+    };
+
     if (hasCachedData) {
-      setTimeout(() => {
+      scheduleRevalidate(() => {
         if (navigator.onLine) fetchRconData(true, false);
-      }, initialDelay);
+      }, 1000);
     } else {
-      // small delay so we're not executing inside the same sync handler as other injected scripts
-      setTimeout(() => {
+      scheduleRevalidate(() => {
         if (navigator.onLine) fetchRconData(true, true);
-      }, initialDelay);
+      }, 1000);
     }
 
-    // Defer connection checks to later to avoid potential wrappers from fullstory or extensions
-    setTimeout(() => {
+    // Schedule connection checks on idle
+    scheduleRevalidate(() => {
       if (navigator.onLine) checkServerConnections();
-    }, initialDelay + 250);
+    }, 1200);
   }, []);
 
   // Auto-refresh interval
