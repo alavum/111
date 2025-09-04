@@ -37,34 +37,35 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Navigation Menu */}
-          <nav className="hidden md:flex items-center">
-            <div className="flex items-center space-x-8">
-              <Link to="/" className={getLinkClassName("/")}>Главная</Link>
-              <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
-              <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
-              <Link to="/rules" className={getLinkClassName("/rules") + ' pr-0'}>Правила</Link>
-            </div>
-          </nav>
+          {/* Middle navigation group (main links + external links) */}
+          <div className="hidden md:flex items-center">
+            <nav className="flex items-center">
+              <div className="flex items-center space-x-8">
+                <Link to="/" className={getLinkClassName("/")}>Главная</Link>
+                <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
+                <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
+                <Link to="/rules" className={getLinkClassName("/rules") + ' pr-0'}>Правила</Link>
+              </div>
+            </nav>
 
-          {/* External quick links separated to the right on desktop */}
-          <div className="hidden md:flex items-center border-l border-gaming-border pl-1 space-x-6">
-            <a
-              href="https://squadcalc.rgs-squad.ru"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
-            >
-              Squad Calc
-            </a>
-            <a
-              href="https://discord.gg/HXne8JVJ"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
-            >
-              Обжаловать бан
-            </a>
+            <div className="flex items-center border-l border-gaming-border pl-1 ml-2 space-x-6">
+              <a
+                href="https://squadcalc.rgs-squad.ru"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              >
+                Squad Calc
+              </a>
+              <a
+                href="https://discord.gg/HXne8JVJ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
+              >
+                Обжаловать бан
+              </a>
+            </div>
           </div>
 
           {/* Right Side Actions */}
