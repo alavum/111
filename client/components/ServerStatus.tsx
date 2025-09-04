@@ -463,11 +463,16 @@ export default function ServerStatus() {
                     <span>Игроки</span>
                   </div>
                   <span className="text-gaming-text font-semibold">
-                    {server.players}/{server.maxPlayers}
+                    {server.reserved && server.reserved > 0 ? (
+                      <>
+                        {Math.max(server.maxPlayers - server.players - (server.reserved || 0), 0)}
+                        <span className="text-yellow-400 ml-1">(+{server.reserved})</span>
+                      </>
+                    ) : (
+                      <>{server.players}/{server.maxPlayers}</>
+                    )}
                     {server.queue > 0 && (
-                      <span className="text-yellow-400 ml-1">
-                        (+{server.queue})
-                      </span>
+                      <span className="text-yellow-400 ml-1">(+{server.queue})</span>
                     )}
                   </span>
                 </div>
@@ -475,7 +480,7 @@ export default function ServerStatus() {
                   <div
                     className="h-2 rounded-full bg-gaming-accent"
                     style={{
-                      width: `${Math.min((server.players / server.maxPlayers) * 100, 100)}%`,
+                      width: `${Math.min(((server.players + (server.reserved || 0)) / server.maxPlayers) * 100, 100)}%`,
                     }}
                   />
                 </div>
