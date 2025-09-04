@@ -48,7 +48,7 @@ export default function Header() {
           </nav>
 
           {/* External quick links separated to the right on desktop */}
-          <div className="hidden md:flex items-center ml-6 border-l border-gaming-border pl-4 space-x-4">
+          <div className="hidden md:flex items-center ml-2 border-l border-gaming-border pl-3 space-x-2">
             <a
               href="https://squadcalc.rgs-squad.ru"
               target="_blank"
