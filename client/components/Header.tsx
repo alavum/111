@@ -43,7 +43,7 @@ export default function Header() {
               <Link to="/" className={getLinkClassName("/")}>Главная</Link>
               <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
               <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
-              <Link to="/rules" className={getLinkClassName("/rules")}>Правила</Link>
+              <Link to="/rules" className={getLinkClassName("/rules") + ' pr-1'}>Правила</Link>
             </div>
           </nav>
 
