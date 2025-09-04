@@ -249,7 +249,22 @@ export default function ServerStatus() {
           },
           {} as Record<number, ServerConnectionStatus>,
         );
-        setConnectionStatuses(statusMap);
+        // Compare shallowly to avoid unnecessary updates
+        const keysA = Object.keys(connectionStatuses);
+        const keysB = Object.keys(statusMap);
+        let changed = false;
+        if (keysA.length !== keysB.length) changed = true;
+        else {
+          for (const k of keysB) {
+            const a = connectionStatuses[Number(k)];
+            const b = statusMap[Number(k)];
+            if (!a || a.ok !== b.ok || a.connectUrl !== b.connectUrl) {
+              changed = true;
+              break;
+            }
+          }
+        }
+        if (changed) setConnectionStatuses(statusMap);
       }
     } catch (error) {
       console.error("Failed to check server connections:", error);
