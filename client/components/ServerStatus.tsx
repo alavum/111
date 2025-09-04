@@ -321,10 +321,50 @@ export default function ServerStatus() {
     [lastFetchTime, serverData],
   );
 
-  // Check server connection statuses
-  const checkServerConnections = useCallback(async () => {
+  // Connection cache key
+  const CONNECTION_CACHE_KEY = "server_connection_cache";
+
+  // Load cached connection statuses
+  const loadCachedConnections = useCallback((): boolean => {
+    try {
+      const cached = localStorage.getItem(CONNECTION_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as CacheData & { connections?: any };
+        const now = Date.now();
+        // reuse regardless of age; we'll revalidate immediately
+        if (parsed && parsed.data) {
+          const statusMap = (parsed as any).connections as Record<number, ServerConnectionStatus>;
+          if (statusMap) {
+            setConnectionStatuses(statusMap);
+            return true;
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load cached connections:", err);
+    }
+    return false;
+  }, []);
+
+  // Check server connection statuses (batch). Optionally skip if cache is fresh and not forceRefresh.
+  const checkServerConnections = useCallback(async (forceRefresh = false) => {
     try {
       const serverIds = serverData.map((s) => s.id);
+
+      // If we have cached connections and not forcing, skip network
+      if (!forceRefresh) {
+        const cached = localStorage.getItem(CONNECTION_CACHE_KEY);
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached) as { timestamp: number; connections: Record<number, ServerConnectionStatus> };
+            if (parsed && Date.now() - (parsed.timestamp || 0) < CACHE_DURATION) {
+              // already up-to-date
+              return;
+            }
+          } catch {}
+        }
+      }
+
       const result = await fetchJsonWithTimeout(
         "/api/server-status/batch",
         {
@@ -359,7 +399,17 @@ export default function ServerStatus() {
             }
           }
         }
-        if (changed) setConnectionStatuses(statusMap);
+        if (changed) {
+          setConnectionStatuses(statusMap);
+          try {
+            localStorage.setItem(
+              CONNECTION_CACHE_KEY,
+              JSON.stringify({ timestamp: Date.now(), connections: statusMap }),
+            );
+          } catch (e) {
+            // ignore localStorage errors
+          }
+        }
       } else {
         // If timeout happened, avoid noisy logs
         if (result.error?.message && result.error.message !== "timeout") {
@@ -369,7 +419,8 @@ export default function ServerStatus() {
     } catch (error) {
       console.error("Failed to check server connections:", error);
     }
-  }, [serverData]);
+  }, [serverData, connectionStatuses]);
+
 
   // Initialize data
   useEffect(() => {
