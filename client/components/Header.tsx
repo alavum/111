@@ -44,7 +44,7 @@ export default function Header() {
                 <Link to="/" className={getLinkClassName("/")}>Главная</Link>
                 <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
                 <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
-                <Link to="/rules" className={getLinkClassName("/rules") + ' pr-3'}>Правила</Link>
+                <Link to="/rules" className={getLinkClassName("/rules") + ' pr-4'}>Правила</Link>
               </div>
             </nav>
 
@@ -149,7 +149,7 @@ export default function Header() {
                 <Link to="/vip" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">Стать VIP</Button>
                 </Link>
-                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В р��зработке', description: 'Функция авторизации находится в разработке' }); }}>
+                <Button variant="ghost" className="w-full mt-2 text-gaming-text" onClick={() => { setMobileOpen(false); toast({ title: 'В разработке', description: 'Функция авторизации находится в разработке' }); }}>
                   <User className="w-4 h-4 mr-1" /> Войти
                 </Button>
               </div>
