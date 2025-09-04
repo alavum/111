@@ -48,7 +48,7 @@ export default function Header() {
               </div>
             </nav>
 
-            <div className="flex items-center border-l border-gaming-border pl-4 ml-4 space-x-6">
+            <div className="flex items-center border-l border-gaming-border pl-4 ml-0 space-x-6">
               <a
                 href="https://squadcalc.rgs-squad.ru"
                 target="_blank"
@@ -63,7 +63,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
               >
-                Обжаловать бан
+                Обжало��ать бан
               </a>
             </div>
           </div>
