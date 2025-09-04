@@ -282,15 +282,18 @@ export default function ServerStatus() {
   const checkServerConnections = useCallback(async () => {
     try {
       const serverIds = serverData.map((s) => s.id);
-      const response = await fetch("/api/server-status/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ serverIds }),
-        signal: AbortSignal.timeout(5000),
-      });
+      const result = await fetchJsonWithTimeout(
+        "/api/server-status/batch",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ serverIds }),
+        },
+        5000,
+      );
 
-      if (response.ok) {
-        const statuses: ServerConnectionStatus[] = await response.json();
+      if (result.ok && result.json) {
+        const statuses: ServerConnectionStatus[] = result.json;
         const statusMap = statuses.reduce(
           (acc, status) => {
             acc[status.serverId] = status;
@@ -379,7 +382,7 @@ export default function ServerStatus() {
       } catch (error) {
         toast({
           title: "Ошибка подключения",
-          description: "Не удалось проверить статус подключения к серверу",
+          description: "Н�� удалось проверить статус подключения к серверу",
           variant: "destructive",
         });
       } finally {
