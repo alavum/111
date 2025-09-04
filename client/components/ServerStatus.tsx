@@ -215,7 +215,7 @@ export default function ServerStatus() {
           }
 
           if (showLoading) {
-            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверо��", variant: "destructive" });
+            toast({ title: "Ошибка загрузки", description: "Не удалось обновить данные серверов", variant: "destructive" });
           }
           return;
         }
@@ -470,47 +470,14 @@ export default function ServerStatus() {
 
     const connectionStatus = connectionStatuses[server.id];
 
-    if (!connectionStatus) {
-      setLoadingConnections((prev) => ({ ...prev, [server.id]: true }));
-
-      try {
-        const res = await fetchJsonWithTimeout(`/api/server-status/${server.id}`, undefined, 5000);
-        if (!res.ok || !res.json) {
-          const errMsg = res.error?.message || "";
-          if (errMsg === "timeout") {
-            toast({ title: "Таймаут", description: "Проверка подключения заняла слишком много времени", variant: "destructive" });
-            return;
-          }
-
-          toast({
-            title: "Подключение недоступно",
-            description: "Сервер временно недоступен для подключения",
-            variant: "destructive",
-          });
-          return;
-        }
-        const status: ServerConnectionStatus = res.json;
-
-        setConnectionStatuses((prev) => ({ ...prev, [server.id]: status }));
-
-        if (status.ok && status.connectUrl) {
-          window.open(status.connectUrl, "_blank");
-        } else {
-          toast({
-            title: "Подключение недоступно",
-            description: "Сервер временно недоступен для подключения",
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        toast({
-          title: "Ошибка подключения",
-          description: "Не удалось проверить статус подключения к серве��у",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingConnections((prev) => ({ ...prev, [server.id]: false }));
-      }
+      if (!connectionStatus) {
+      // According to UX requirement, do not perform network fetches on user click.
+      toast({
+        title: "Статус подключения неизвестен",
+        description:
+          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
+        variant: "destructive",
+      });
       return;
     }
 
