@@ -338,17 +338,22 @@ export default function ServerStatus() {
     const hasCachedData = loadCachedData();
 
     // Defer network calls slightly to avoid running inside other scripts' message handlers (FullStory)
+    const initialDelay = 1000; // give injected scripts (FullStory) time to initialize
     if (hasCachedData) {
-      setTimeout(() => fetchRconData(true, false), 200);
+      setTimeout(() => {
+        if (navigator.onLine) fetchRconData(true, false);
+      }, initialDelay);
     } else {
       // small delay so we're not executing inside the same sync handler as other injected scripts
-      setTimeout(() => fetchRconData(true, true), 200);
+      setTimeout(() => {
+        if (navigator.onLine) fetchRconData(true, true);
+      }, initialDelay);
     }
 
-    // Defer connection checks to next tick to avoid potential wrappers from fullstory or extensions
+    // Defer connection checks to later to avoid potential wrappers from fullstory or extensions
     setTimeout(() => {
-      checkServerConnections();
-    }, 250);
+      if (navigator.onLine) checkServerConnections();
+    }, initialDelay + 250);
   }, []);
 
   // Auto-refresh interval
@@ -382,7 +387,7 @@ export default function ServerStatus() {
         if (!res.ok || !res.json) {
           toast({
             title: "Подключение недоступно",
-            description: "Сервер в��еменно недоступен для подключения",
+            description: "Сервер временно недоступен для подключения",
             variant: "destructive",
           });
           return;
