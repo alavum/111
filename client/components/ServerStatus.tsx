@@ -165,16 +165,18 @@ export default function ServerStatus() {
               (s) => s.id === rconServer.serverId,
             );
 
-            const totalSlots = Number(
-              rconServer.maxPlayers ?? existingServer?.maxPlayers ?? 100,
-            );
+            // Prefer valid positive maxPlayers reported by RCON; fall back to existing or default
+            const reportedMax = Number(rconServer.maxPlayers ?? NaN);
+            const totalSlots = reportedMax > 0 ? reportedMax : (existingServer?.maxPlayers ?? 100);
+
             const players = Math.max(0, Number(rconServer.players ?? existingServer?.players ?? 0));
             const reserved = Math.max(0, Number(
               rconServer.reservedSlots ?? rconServer.reserved ?? rconServer.reservedPlayers ?? existingServer?.reserved ?? 0,
             ));
 
             // Queue: prefer explicit field, otherwise compute conservatively
-            const queue = Number(rconServer.queue ?? Math.max(0, players - totalSlots) ?? 0);
+            const explicitQueue = Number(rconServer.queue ?? NaN);
+            const queue = !isNaN(explicitQueue) ? Math.max(0, explicitQueue) : Math.max(0, players - (totalSlots - reserved));
 
             const map = rconServer.map ?? existingServer?.map ?? "—";
             const gameMode = rconServer.gameMode ?? existingServer?.gameMode ?? "—";
