@@ -39,7 +39,7 @@ export default function Header() {
 
           {/* Navigation Menu */}
           <nav className="hidden md:flex items-center">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-8">
               <Link to="/" className={getLinkClassName("/")}>Главная</Link>
               <Link to="/news" className={getLinkClassName("/news")}>Новости</Link>
               <Link to="/guides" className={getLinkClassName("/guides")}>Гайды</Link>
