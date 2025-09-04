@@ -137,8 +137,11 @@ export default function Header() {
               <Link to="/" onClick={() => setMobileOpen(false)} className={getLinkClassName("/")}>Главная</Link>
               <Link to="/news" onClick={() => setMobileOpen(false)} className={getLinkClassName("/news")}>Новости</Link>
               <Link to="/guides" onClick={() => setMobileOpen(false)} className={getLinkClassName("/guides")}>Гайды</Link>
-              <a href="https://squadcalc.rgs-squad.ru" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Squad Calc</a>
               <Link to="/rules" onClick={() => setMobileOpen(false)} className={getLinkClassName("/rules")}>Правила</Link>
+
+              <div className="h-px bg-gaming-border my-2" />
+
+              <a href="https://squadcalc.rgs-squad.ru" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Squad Calc</a>
               <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="text-gaming-text hover:text-gaming-accent transition-colors font-medium px-3 py-2 rounded-md">Обжаловать бан</a>
 
               <div className="pt-2 border-t border-gaming-border mt-2">
