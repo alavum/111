@@ -429,14 +429,21 @@ export default function ServerStatus() {
 
     let onOnline: (() => void) | null = null;
 
+    const fullstoryPresent = typeof (window as any).FS !== "undefined" || /fullstory/.test(navigator.userAgent || "");
+    const startDelay = fullstoryPresent ? 5000 : 0;
+
     if (navigator.onLine) {
-      // Start background revalidation immediately (do not block render)
-      fetchRconData(true, false).catch(() => {});
-      checkServerConnections(true).catch(() => {});
-    } else {
-      onOnline = () => {
+      // Start background revalidation after a short delay to avoid conflict with injected scripts
+      setTimeout(() => {
         fetchRconData(true, false).catch(() => {});
         checkServerConnections(true).catch(() => {});
+      }, startDelay);
+    } else {
+      onOnline = () => {
+        setTimeout(() => {
+          fetchRconData(true, false).catch(() => {});
+          checkServerConnections(true).catch(() => {});
+        }, startDelay);
         if (onOnline) window.removeEventListener("online", onOnline);
       };
       window.addEventListener("online", onOnline);
