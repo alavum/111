@@ -5,33 +5,8 @@ const footerSections = [
   {
     title: "Интересное",
     links: [
-      { label: "Пользователи", href: "/users" },
       { label: "Новости", href: "/news" },
       { label: "Стать VIP", href: "/vip" },
-    ],
-  },
-  {
-    title: "Новинки",
-    links: [
-      { label: "Гайды", href: "/guides" },
-      { label: "Безопасность игр", href: "/security" },
-    ],
-  },
-  {
-    title: "Инструменты",
-    links: [
-      { label: "Squad Calc", href: "/squad-calc" },
-      { label: "Калькулятор", href: "/calculator" },
-      { label: "Карты", href: "/maps" },
-      { label: "Оружие", href: "/weapons" },
-    ],
-  },
-  {
-    title: "Игрения",
-    links: [
-      { label: "Ютуберы", href: "/youtubers" },
-      { label: "Модераторы", href: "/moderators" },
-      { label: "Анализаторы", href: "/analytics" },
     ],
   },
   {
