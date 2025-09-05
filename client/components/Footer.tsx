@@ -58,7 +58,7 @@ export default function Footer() {
           {/* Left: Logo + small info */}
           <div className="flex flex-col items-start">
             <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-20 h-20 md:w-24 md:h-24 object-contain -mt-1" />
-            <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">Сообщество и игровые серверы RSGS.</p>
+            <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">Игровое сообщество и серверы тактических симуляторов RSGS.</p>
 
             <div className="mt-4 flex items-center space-x-3">
               {socialLinks.map((social) => (
@@ -81,8 +81,8 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold text-gaming-text mb-3">Интересное</h4>
               <ul className="space-y-2 text-sm">
-                <li className="group">
-                  <span className="text-gaming-text-muted">Недельная статистика</span>
+                <li className="group inline-flex items-center cursor-default">
+                  <span className="text-gaming-text-muted transition-opacity duration-150 group-hover:opacity-50">Недельная статистика</span>
                   <span className="ml-2 text-xs text-gaming-text-muted hidden group-hover:inline">(недоступно)</span>
                 </li>
                 <li>
