@@ -177,7 +177,7 @@ export default function NewsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`border-gaming-border text-gaming-text hover:bg-gaming-bg ${
+                      className={`border-gaming-border text-gaming-text hover:bg-transparent hover:text-inherit ${
                         selectedCategory !== "Все"
                           ? "bg-gaming-accent text-black"
                           : ""
