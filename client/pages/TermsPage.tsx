@@ -14,16 +14,13 @@ export default function TermsPage() {
 
   const fetchTerms = async () => {
     try {
-      const response = await fetch('/api/terms');
-      if (response.ok) {
-        const data = await response.json();
-        setTerms(data);
-      } else {
-        setTerms({ content: getDefaultTerms(), lastUpdated: new Date().toISOString() });
-      }
+      const { safeFetchJSON } = await import('@/lib/api');
+      const data = await safeFetchJSON('/api/terms', {}, 7000);
+      if (data) setTerms(data);
+      else setTerms({ content: getDefaultTerms(), lastUpdated: new Date().toISOString() });
     } catch (error) {
       console.error('Error fetching terms:', error);
-      setTerms(getDefaultTerms());
+      setTerms({ content: getDefaultTerms(), lastUpdated: new Date().toISOString() });
     } finally {
       setLoading(false);
     }
@@ -62,7 +59,7 @@ export default function TermsPage() {
 - Использование читов, ботов или модификаций игры
 - Намеренное нанесение вреда союзникам (Team Kill)
 - Оскорбления, угрозы и дискриминация других игроков
-- Спам в чате или голосовой связи
+- Спам в чате или голосовой свя��и
 - Попытки взлома или нарушения безопасности серверов
 - Прод��жа или передача игровых аккаунтов третьим лицам
 - Использование багов и эксплойтов для получения преимуществ
@@ -82,7 +79,7 @@ export default function TermsPage() {
 ## Ответственность сторон
 
 ### Ответственность администрации
-- Поддержание работоспособности серверов
+- Поддержани�� работоспособности серверов
 - Обеспечение базовой модерации
 - Защита персональных данных пользователей
 - Предоставление технической поддержки
