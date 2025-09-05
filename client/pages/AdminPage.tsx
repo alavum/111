@@ -805,13 +805,11 @@ export default function AdminPage() {
                       >
                         Содержимое
                       </Label>
-                      <Textarea
+                      <AdminRichEditor
                         id="privacyContent"
                         value={privacy.content}
-                        onChange={(e) =>
-                          setPrivacy({ ...privacy, content: e.target.value })
-                        }
-                        className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
+                        onChange={(val) => setPrivacy({ ...privacy, content: val })}
+                        className="min-h-[300px]"
                       />
                     </div>
                     <Button
@@ -871,7 +869,7 @@ export default function AdminPage() {
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Сохран��ть усл��вия
+                      Сохранить усл��вия
                     </Button>
                   </CardContent>
                 </Card>
