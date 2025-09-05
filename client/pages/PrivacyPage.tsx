@@ -5,7 +5,7 @@ import { Shield } from "lucide-react";
 import { renderRichText } from '@/lib/markdown';
 
 export default function PrivacyPage() {
-  const [privacy, setPrivacy] = useState("");
+  const [privacy, setPrivacy] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
 
 ### Игровые данные
 - Steam ID для идентификации игроков
-- Игровая статистика и достижения
+- Игровая статистика и достижени��
 - История матчей и результаты
 - Настройки профиля игрока
 
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
 
 ## Ваши права
 
-**Право на информацию** - Вы можете запроси��ь информацию о том, какие данные мы собираем о вас
+**Право на информацию** - Вы можете запросить информацию о том, какие данные мы собираем о вас
 
 **Право на исправление** - Вы можете запросить исправление неточных или неполных данных
 
