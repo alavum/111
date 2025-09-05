@@ -59,7 +59,7 @@ export default function Footer() {
           {/* Left: Logo + small info */}
           <div className="flex flex-col items-start">
             <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-20 h-20 md:w-24 md:h-24 object-contain -mt-1" />
-            <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">Официальные серверы и сообщество тактических симуляторов RSGS.</p>
+            <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">Сообщество и игровые серверы RSGS.</p>
 
             <div className="mt-4 flex items-center space-x-3">
               {socialLinks.map((social) => (
@@ -77,9 +77,25 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Middle: Navigation columns */}
+          {/* Middle: Interest + Navigation columns */}
           <div className="flex flex-col md:pl-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold text-gaming-text mb-3">Интересное</h4>
+              <ul className="space-y-2 text-sm">
+                <li className="group">
+                  <span className="text-gaming-text-muted">Недельная статистика</span>
+                  <span className="ml-2 text-xs text-gaming-text-muted hidden group-hover:inline">(недоступно)</span>
+                </li>
+                <li>
+                  <Link to="/news" className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm">Новости</Link>
+                </li>
+                <li>
+                  <Link to="/vip" className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm">Стать VIP</Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 mt-6">
               <div>
                 <h4 className="font-semibold text-gaming-text mb-3">Инструменты</h4>
                 <ul className="space-y-2">
@@ -98,25 +114,14 @@ export default function Footer() {
                 </ul>
               </div>
             </div>
-
-            {/* Additional footer navigation links */}
-            <div className="mt-6">
-              <h4 className="font-semibold text-gaming-text mb-3">Полезное</h4>
-              <div className="flex flex-wrap gap-4 text-sm">
-                {bottomLinks.map((link) => (
-                  <Link key={link.label} to={link.href} className="text-gaming-text-muted hover:text-gaming-accent transition-colors">{link.label}</Link>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Right: Provider info */}
+          {/* Right: Provider info (smaller) */}
           <div className="flex flex-col">
-            <h3 className="font-semibold text-gaming-text mb-4">Поставщик услуг</h3>
-            <div className="bg-gaming-card border border-gaming-border rounded-md p-4">
+            <h3 className="text-sm font-semibold text-gaming-text mb-3">Поставщик услуг</h3>
+            <div className="bg-gaming-card border border-gaming-border rounded-md p-3 text-sm">
               <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
-              <p className="text-gaming-text-muted text-sm mt-1">ИНН: 862203594392</p>
-              <p className="text-gaming-text-muted text-sm mt-3">Оказание услуг и обслуживание серверов RSGS.</p>
+              <p className="text-gaming-text-muted text-xs mt-1">ИНН: 862203594392</p>
             </div>
           </div>
         </div>
