@@ -14,16 +14,17 @@ export default function PrivacyPage() {
 
   const fetchPrivacy = async () => {
     try {
-      const response = await fetch('/api/privacy');
-      if (response.ok) {
-        const data = await response.json();
+      const { safeFetchJSON } = await import('@/lib/api');
+      const data = await safeFetchJSON('/api/privacy', {}, 7000);
+      if (data) {
         setPrivacy(data);
       } else {
+        console.warn('Privacy fetch returned no data, using default');
         setPrivacy({ content: getDefaultPrivacy(), lastUpdated: new Date().toISOString() });
       }
     } catch (error) {
       console.error('Error fetching privacy policy:', error);
-      setPrivacy(getDefaultPrivacy());
+      setPrivacy({ content: getDefaultPrivacy(), lastUpdated: new Date().toISOString() });
     } finally {
       setLoading(false);
     }
