@@ -176,6 +176,10 @@ export default function ServerStatus() {
         });
       } catch (syncErr) {
         clearTimeout(id);
+        // Normalize common synchronous fetch errors
+        if (syncErr instanceof Error && /failed to fetch/i.test(syncErr.message)) {
+          return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+        }
         return { ok: false, status: 0, json: null, error: syncErr } as any;
       }
 
