@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { renderRichText } from '@/lib/markdown';
 
 interface NewsArticle {
   id: number;
