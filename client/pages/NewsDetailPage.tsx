@@ -76,16 +76,7 @@ export default function NewsDetailPage() {
   };
 
   const formatContent = (content: string) => {
-    return content.split('\n').map((paragraph, index) => {
-      if (paragraph.trim()) {
-        return (
-          <p key={index} className="text-gaming-text mb-4 leading-relaxed">
-            {paragraph}
-          </p>
-        );
-      }
-      return <br key={index} />;
-    });
+    return renderRichText(content);
   };
 
   const getCategoryColor = (category: string) => {
