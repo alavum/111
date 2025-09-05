@@ -19,6 +19,7 @@ import {
   Trash2,
   Server,
 } from "lucide-react";
+import AdminRichEditor from '@/components/AdminRichEditor';
 import { toast } from "@/hooks/use-toast";
 
 interface NewsArticle {
@@ -870,7 +871,7 @@ export default function AdminPage() {
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Сохранить усл��вия
+                      Сохран��ть усл��вия
                     </Button>
                   </CardContent>
                 </Card>
