@@ -117,25 +117,23 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gaming-border pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
-              <div className="flex flex-wrap gap-4">
-                {bottomLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    to={link.href}
-                    className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-4">
+              {bottomLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-              <div className="mt-4 md:mt-0 md:ml-6">
-                <div className="bg-gaming-card border border-gaming-border rounded-md p-3 text-sm">
-                  <p className="text-gaming-text-muted text-xs mb-1">Услуги предоставляет</p>
-                  <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
-                  <p className="text-gaming-text-muted text-xs mt-1">ИНН: 862203594392</p>
-                </div>
+            <div className="mt-4 md:mt-0 md:ml-8">
+              <div className="bg-gaming-card border border-gaming-border rounded-md p-3 text-sm">
+                <p className="text-gaming-text-muted text-xs mb-1">Услуги предоставляет</p>
+                <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
+                <p className="text-gaming-text-muted text-xs mt-1">ИНН: 862203594392</p>
               </div>
             </div>
 
