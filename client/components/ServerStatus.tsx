@@ -177,8 +177,16 @@ export default function ServerStatus() {
       } catch (syncErr) {
         clearTimeout(id);
         // Normalize common synchronous fetch errors
-        if (syncErr instanceof Error && /failed to fetch/i.test(syncErr.message)) {
-          return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+        if (
+          syncErr instanceof Error &&
+          /failed to fetch/i.test(syncErr.message)
+        ) {
+          return {
+            ok: false,
+            status: 0,
+            json: null,
+            error: new Error("network"),
+          } as any;
         }
         return { ok: false, status: 0, json: null, error: syncErr } as any;
       }
@@ -201,8 +209,16 @@ export default function ServerStatus() {
           } as any;
         }
         // Normalize common network errors to a consistent error message to avoid noisy stack traces
-        if (asyncErr instanceof Error && /failed to fetch/i.test(asyncErr.message)) {
-          return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+        if (
+          asyncErr instanceof Error &&
+          /failed to fetch/i.test(asyncErr.message)
+        ) {
+          return {
+            ok: false,
+            status: 0,
+            json: null,
+            error: new Error("network"),
+          } as any;
         }
         return { ok: false, status: 0, json: null, error: asyncErr } as any;
       }
@@ -278,7 +294,10 @@ export default function ServerStatus() {
           );
 
           // Detect partial/invalid map indicators (common during map rotations)
-          const rawMap = typeof rconServer.map === "string" ? rconServer.map.trim() : rconServer.map;
+          const rawMap =
+            typeof rconServer.map === "string"
+              ? rconServer.map.trim()
+              : rconServer.map;
           const mapIsInvalid =
             !rawMap ||
             /^unknown$/i.test(String(rawMap)) ||
@@ -336,8 +355,12 @@ export default function ServerStatus() {
             ? Math.max(0, explicitQueue)
             : Math.max(0, players - (totalSlots - reserved));
 
-          const map = mapIsInvalid ? existingServer?.map ?? "—" : String(rconServer.map ?? existingServer?.map ?? "—");
-          const gameMode = mapIsInvalid ? existingServer?.gameMode ?? "—" : rconServer.gameMode ?? existingServer?.gameMode ?? "—";
+          const map = mapIsInvalid
+            ? (existingServer?.map ?? "—")
+            : String(rconServer.map ?? existingServer?.map ?? "—");
+          const gameMode = mapIsInvalid
+            ? (existingServer?.gameMode ?? "—")
+            : (rconServer.gameMode ?? existingServer?.gameMode ?? "—");
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
@@ -403,11 +426,22 @@ export default function ServerStatus() {
       } catch (error) {
         // Avoid noisy logs for common network issues/timeouts when not user-initiated
         const errMsg = (error as any)?.message || "";
-        if (errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
+        if (
+          errMsg &&
+          errMsg !== "timeout" &&
+          errMsg !== "network" &&
+          errMsg !== "offline"
+        ) {
           console.error("Failed to fetch RCON data:", error);
         }
         // If user initiated (showLoading) show a toast for non-network errors
-        if (showLoading && errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
+        if (
+          showLoading &&
+          errMsg &&
+          errMsg !== "timeout" &&
+          errMsg !== "network" &&
+          errMsg !== "offline"
+        ) {
           toast({
             title: "Ошибка загрузки",
             description: "Не удалось обновить данные серверов",
@@ -526,7 +560,12 @@ export default function ServerStatus() {
         } else {
           // If timeout or network happened, avoid noisy logs
           const errMsg = result.error?.message;
-          if (errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
+          if (
+            errMsg &&
+            errMsg !== "timeout" &&
+            errMsg !== "network" &&
+            errMsg !== "offline"
+          ) {
             console.error("Failed to check server connections:", result.error);
           }
         }
