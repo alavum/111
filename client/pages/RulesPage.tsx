@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield } from "lucide-react";
+import { renderRichText } from '@/lib/markdown';
 
 export default function RulesPage() {
-  const [rules, setRules] = useState("");
+  const [rules, setRules] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,9 +17,9 @@ export default function RulesPage() {
       const response = await fetch('/api/rules');
       if (response.ok) {
         const data = await response.json();
-        setRules(data.content || getDefaultRules());
+        setRules(data);
       } else {
-        setRules(getDefaultRules());
+        setRules({ content: getDefaultRules(), lastUpdated: new Date().toISOString() });
       }
     } catch (error) {
       console.error('Error fetching rules:', error);
@@ -49,7 +50,7 @@ export default function RulesPage() {
 1.1. Запрещено игнорировать указа��ия Командира (если не нарушают правила)
 1.2. Тимкилл, саботаж, уничтожение союзной техники, слив информации
 1.3. Музыка/звуки на предварительной фазе и конце игры, если мешают
-1.4. Оскорбление с целью ухудшить игровой процесс(лёгкие оскорбления прощается на 1 раз)
+1.4. Оскорбление с целью ухудши��ь игровой процесс(лёгкие оскорбления прощается на 1 раз)
 1.5. Провокации и конфликты
 1.6. Спам, оффтоп, флуд
 1.7. Ввод в заблуждение администрации или игроков
@@ -63,7 +64,7 @@ export default function RulesPage() {
 2.3. Командиры обязаны выполнять приказы CMD
 2.4. Передача роли Командира отряда без согласия запрещена
 2.5. Поддержка: до 3 чел. (ПТУР, миномёты, логистика), без тандема, 3 отряд на сторону
-2.6. Строители: до 5 чел., без тандема, 1 отряд на сторону
+2.6. Строители: до 5 чел., без тандема, 1 отряд на ��торону
 2.7. Пехота может брать лёгкую технику(легко бронированную) и crewman-технику при отсутствии претензий от техотряда
 
 **Правила игры ДРГ (3.1 - 3.4):**
@@ -109,42 +110,7 @@ export default function RulesPage() {
   };
 
   const formatText = (text: string) => {
-    return text.split('\n').map((line, index) => {
-      if (line.startsWith('**') && line.endsWith('**')) {
-        // Bold headers
-        return (
-          <h3 key={index} className="text-xl font-bold text-gaming-accent mt-6 mb-3">
-            {line.replace(/\*\*/g, '')}
-          </h3>
-        );
-      } else if (line.match(/^\d+\.\d+\./)) {
-        // Numbered rules
-        return (
-          <p key={index} className="text-gaming-text mb-2 pl-4">
-            <span className="font-semibold text-gaming-accent">{line.match(/^\d+\.\d+\./)?.[0]}</span>
-            {line.replace(/^\d+\.\d+\./, '')}
-          </p>
-        );
-      } else if (line.startsWith('●')) {
-        // Bullet points
-        return (
-          <p key={index} className="text-gaming-text mb-2 pl-4">
-            <span className="text-gaming-accent mr-2">●</span>
-            {line.substring(1).trim()}
-          </p>
-        );
-      } else if (line.trim()) {
-        // Regular text
-        return (
-          <p key={index} className="text-gaming-text mb-2">
-            {line}
-          </p>
-        );
-      } else {
-        // Empty line
-        return <br key={index} />;
-      }
-    });
+    return renderRichText(text);
   };
 
   if (loading) {
@@ -163,7 +129,7 @@ export default function RulesPage() {
       <Header />
 
       <main className="py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
@@ -181,9 +147,8 @@ export default function RulesPage() {
 
           {/* Rules Content */}
           <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <div className="prose prose-invert max-w-none">
-              {formatText(rules)}
-            </div>
+            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">Последнее обновление: {rules?.lastUpdated ? new Date(rules.lastUpdated).toLocaleDateString('ru-RU') : '—'}</div>
+            <div className="prose prose-lg prose-invert max-w-none">{formatText(rules?.content || '')}</div>
           </div>
 
           {/* Footer Info */}
