@@ -59,7 +59,7 @@ export default function PrivacyPage() {
 
 ## Как мы используем ваши данные
 
-Собранные данные используются исключительно для следующих целей:
+Собранные данные используются исключительно для сл��дующих целей:
 
 1. Обеспечение функционирования игровых серверов
 2. Модерация и поддержание порядка в игре
@@ -106,56 +106,11 @@ export default function PrivacyPage() {
 Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
   };
 
+  import { renderRichText } from '@/lib/markdown';
+
+  // renderRichText handles headings, lists, inline bold/italic, links and simple tables
   const formatText = (text: string) => {
-    return text.split('\n').map((line, index) => {
-      if (line.startsWith('# ')) {
-        return (
-          <h1 key={index} className="text-3xl font-bold text-gaming-accent mb-6">
-            {line.substring(2)}
-          </h1>
-        );
-      } else if (line.startsWith('## ')) {
-        return (
-          <h2 key={index} className="text-2xl font-bold text-gaming-text mt-8 mb-4">
-            {line.substring(3)}
-          </h2>
-        );
-      } else if (line.startsWith('### ')) {
-        return (
-          <h3 key={index} className="text-xl font-semibold text-gaming-accent mt-6 mb-3">
-            {line.substring(4)}
-          </h3>
-        );
-      } else if (line.match(/^\d+\./)) {
-        return (
-          <p key={index} className="text-gaming-text mb-2 pl-4">
-            <span className="font-semibold text-gaming-accent">{line.match(/^\d+\./)?.[0]}</span>
-            {line.replace(/^\d+\./, '')}
-          </p>
-        );
-      } else if (line.startsWith('- ')) {
-        return (
-          <p key={index} className="text-gaming-text mb-2 pl-4">
-            <span className="text-gaming-accent mr-2">•</span>
-            {line.substring(2)}
-          </p>
-        );
-      } else if (line.startsWith('**') && line.endsWith('**')) {
-        return (
-          <p key={index} className="text-gaming-text mb-2">
-            <span className="font-bold text-gaming-accent">{line.replace(/\*\*/g, '')}</span>
-          </p>
-        );
-      } else if (line.trim()) {
-        return (
-          <p key={index} className="text-gaming-text mb-3 leading-relaxed">
-            {line}
-          </p>
-        );
-      } else {
-        return <br key={index} />;
-      }
-    });
+    return renderRichText(text);
   };
 
   if (loading) {
@@ -174,7 +129,7 @@ export default function PrivacyPage() {
       <Header />
 
       <main className="py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
@@ -192,8 +147,9 @@ export default function PrivacyPage() {
 
           {/* Content */}
           <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <div className="prose prose-invert max-w-none">
-              {formatText(privacy)}
+            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">Последнее обновление: {privacy?.lastUpdated ? new Date(privacy.lastUpdated).toLocaleDateString('ru-RU') : '—'}</div>
+            <div className="prose prose-lg prose-invert max-w-none">
+              {formatText(privacy?.content || '')}
             </div>
           </div>
         </div>

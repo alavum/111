@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { z } from "zod";
 
 // Setup multer for news image uploads
 const newsImageStorage = multer.diskStorage({
@@ -22,85 +23,88 @@ const newsImageStorage = multer.diskStorage({
 const newsImageUpload = multer({
   storage: newsImageStorage,
   limits: {
-    fileSize: 9 * 1024 * 1024, // 9MB limit (Netlify limit ~10MB)
+    fileSize: 9 * 1024 * 1024, // 9MB limit
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(
-        new Error(
-          "Только изображения разрешены! Формат файла должен быть image/*",
-        ),
-      );
+      cb(new Error("Только изображения разрешены! Формат файла должен быть image/*"));
     }
   },
 });
 
 // File-based storage for persistence
-const newsDataFile = "data/news-articles.json";
+const dataDir = "data";
+const newsDataFile = path.join(dataDir, "news-articles.json");
+const rulesDataFile = path.join(dataDir, "rules.json");
+const privacyDataFile = path.join(dataDir, "privacy.json");
+const termsDataFile = path.join(dataDir, "terms.json");
 
 // Ensure data directory exists
-if (!fs.existsSync("data")) {
-  fs.mkdirSync("data", { recursive: true });
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Load news articles from file or use defaults
-let newsArticles = (() => {
+// Load JSON helper
+function safeLoadJson(filePath: string, fallback: any) {
   try {
-    if (fs.existsSync(newsDataFile)) {
-      const data = fs.readFileSync(newsDataFile, "utf8");
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, "utf8");
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error("Error loading news data:", error);
+    console.error(`Error loading ${filePath}:`, error);
   }
+  return fallback;
+}
 
-  // Default news articles
-  return [
-    {
-      id: 1,
-      title: "Новый сервер RSGS Invasion",
-      content: "Мы запустили новый сервер со специальным режимом Invasion...",
-      author: "Admin",
-      date: new Date().toISOString(),
-      published: true,
-      image: "/api/placeholder/600/350",
-      excerpt: "Новый игровой режим с уникальными механиками",
-      category: "Обновления",
-      slug: "new-invasion-server",
-    },
-    {
-      id: 2,
-      title: "Обновление с��рверных правил",
-      content: "Обновлены правила поведения на серверах...",
-      author: "Moderator",
-      date: new Date(Date.now() - 86400000).toISOString(),
-      published: true,
-      image: "/api/placeholder/600/350",
-      excerpt: "Важные изменения в правилах сервера",
-      category: "Правила",
-      slug: "rules-update",
-    },
-  ];
-})();
-
-// Save news articles to file
-const saveNewsArticles = () => {
+// Save JSON helper
+function safeSaveJson(filePath: string, payload: any) {
   try {
-    fs.writeFileSync(newsDataFile, JSON.stringify(newsArticles, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(payload, null, 2));
   } catch (error) {
-    console.error("Error saving news data:", error);
+    console.error(`Error saving ${filePath}:`, error);
   }
-};
+}
 
-let rules = {
+// Load news articles from file or use defaults
+let newsArticles = safeLoadJson(newsDataFile, [
+  {
+    id: 1,
+    title: "Новый сервер RSGS Invasion",
+    content: "Мы запустили новый сервер со специальным режимом Invasion...",
+    author: "Admin",
+    date: new Date().toISOString(),
+    published: true,
+    image: "/api/placeholder/600/350",
+    excerpt: "Новый игровой режим с уникальными механиками",
+    category: "Обновления",
+    slug: "new-invasion-server",
+  },
+  {
+    id: 2,
+    title: "Обновление серверных правил",
+    content: "Обновлены правила поведения на серверах...",
+    author: "Moderator",
+    date: new Date(Date.now() - 86400000).toISOString(),
+    published: true,
+    image: "/api/placeholder/600/350",
+    excerpt: "Важные изменения в правилах сервера",
+    category: "Правила",
+    slug: "rules-update",
+  },
+]);
+
+const saveNewsArticles = () => safeSaveJson(newsDataFile, newsArticles);
+
+// Default content for rules/privacy/terms (will be saved if files don't exist)
+const defaultRules = {
   id: 1,
   title: "Игровые правила RSGS",
-  content: `
-# Основные правила сервера
+  content: `# Основные правила сервера
 
-## 1. Общие правила пове��ения
+## 1. Общие правила поведения
 - Уважайте других игроков
 - Запрещены оскорбления и токсичное поведение
 - Используйте микрофон для командной игры
@@ -108,24 +112,23 @@ let rules = {
 ## 2. Игровые правила
 - Следуйте указаниям Squad Leader
 - Не покидайте отряд без разрешения
-- Запрещено мешать сою��ным командам
+- Запрещено мешать союзным командам
 
 ## 3. Наказания
 - Предупреждение
 - Временный бан
 - Постоянный бан
-  `,
+`,
   lastUpdated: new Date().toISOString(),
 };
 
-let privacyPolicy = {
+const defaultPrivacy = {
   id: 1,
   title: "Политика конфиденциальности",
-  content: `
-# Политика конфиденциальности RSGS
+  content: `# Политика конфиденциальности RSGS
 
 ## Сбор информации
-Мы ��обираем следующие данные:
+Мы собираем следующие данные:
 - Steam ID для идентификации игроков
 - Игровая статистика
 - Сообщения в чате (для модерации)
@@ -138,35 +141,43 @@ let privacyPolicy = {
 
 ## Защита данных
 Мы принимаем меры для защиты ваших данных...
-  `,
+`,
   lastUpdated: new Date().toISOString(),
 };
 
-let terms = {
+const defaultTerms = {
   id: 1,
   title: "Пользовательское соглашение (Офферта)",
-  content: `
-# Пользовательское соглашение
+  content: `# Пользовательское соглашение
 
 ## 1. Предмет соглашения
-Настоящее соглаше��ие регулирует отношения между администрацией RSGS и пользователями серверов.
+Настоящее соглашение регулирует отношения между администрацией RSGS и пользователями серверов.
 
-## 2. П��ава и обязанности пользователей
+## 2. Права и обязанности пользователей
 - Соблюдение правил сервера
 - Уважительное отношение к другим игрокам
 - Запрет на использование читов и модификаций
-
-## 3. Ответственность
-- Администрация не несет ответственность за действия игроков
-- Пользователи несут полную ответственность за свои действия
-
-## 4. VIP статус
-- VIP статус предоставляется на платной основе
-- Включает дополнительные привилегии
-- Не подлежит возврату после использования
-  `,
+`,
   lastUpdated: new Date().toISOString(),
 };
+
+let rules = safeLoadJson(rulesDataFile, defaultRules);
+let privacyPolicy = safeLoadJson(privacyDataFile, defaultPrivacy);
+let terms = safeLoadJson(termsDataFile, defaultTerms);
+
+// Save helpers for content
+const saveRules = () => safeSaveJson(rulesDataFile, rules);
+const savePrivacy = () => safeSaveJson(privacyDataFile, privacyPolicy);
+const saveTerms = () => safeSaveJson(termsDataFile, terms);
+
+// Validate input schemas using zod
+const newsCreateSchema = z.object({
+  title: z.string().min(1).max(300),
+  content: z.string().min(1),
+  author: z.string().optional(),
+  excerpt: z.string().optional(),
+  category: z.string().optional(),
+});
 
 // News endpoints
 export const getNews: RequestHandler = (req, res) => {
@@ -181,8 +192,6 @@ export const getAllNews: RequestHandler = (_req, res) => {
 
 export const getNewsById: RequestHandler = (req, res) => {
   const param = req.params.id;
-
-  // Try to find by ID first (if param is numeric)
   const numericId = parseInt(param);
   let article;
 
@@ -190,7 +199,6 @@ export const getNewsById: RequestHandler = (req, res) => {
     article = newsArticles.find((a) => a.id === numericId && a.published);
   }
 
-  // If not found by ID, try to find by slug
   if (!article) {
     article = newsArticles.find((a) => a.slug === param && a.published);
   }
@@ -203,98 +211,90 @@ export const getNewsById: RequestHandler = (req, res) => {
 };
 
 export const createNews: RequestHandler = (req, res) => {
-  const { title, content, author, excerpt, category } = req.body;
-  const image = req.file;
+  try {
+    const parsed = newsCreateSchema.parse(req.body);
+    const { title, content, author, excerpt, category } = parsed;
+    const image = (req as any).file;
 
-  if (!title || !content) {
-    return res
-      .status(400)
-      .json({ error: "Заголовок и содержимое обязательны" });
+    // Generate slug from title
+    const slugBase = title
+      .toLowerCase()
+      .replace(/[^а-яa-z0-9\s]/g, "")
+      .replace(/\s+/g, "-")
+      .substring(0, 50);
+
+    const imageUrl = image ? `/uploads/news-images/${image.filename}` : "/api/placeholder/600/350";
+
+    const newArticle = {
+      id: newsArticles.length ? Math.max(...newsArticles.map((a) => a.id)) + 1 : 1,
+      title,
+      content,
+      author: author || "Admin",
+      date: new Date().toISOString(),
+      published: true,
+      image: imageUrl,
+      excerpt: excerpt || (content.substring(0, 150) + "..."),
+      category: category || "Общее",
+      slug: `${slugBase}-${Date.now()}`,
+    };
+
+    newsArticles.push(newArticle);
+    saveNewsArticles();
+    res.status(201).json(newArticle);
+  } catch (err) {
+    console.error('createNews validation error', err);
+    return res.status(400).json({ error: 'Некорректные данные новости' });
   }
-
-  // Generate slug from title
-  const slug = title
-    .toLowerCase()
-    .replace(/[^а-яa-z0-9\s]/g, "")
-    .replace(/\s+/g, "-")
-    .substring(0, 50);
-
-  const imageUrl = image
-    ? `/uploads/news-images/${image.filename}`
-    : "/api/placeholder/600/350";
-
-  const newArticle = {
-    id: newsArticles.length
-      ? Math.max(...newsArticles.map((a) => a.id)) + 1
-      : 1,
-    title,
-    content,
-    author: author || "Admin",
-    date: new Date().toISOString(),
-    published: true,
-    image: imageUrl,
-    excerpt: excerpt || content.substring(0, 150) + "...",
-    category: category || "Общее",
-    slug: `${slug}-${Date.now()}`,
-  };
-
-  newsArticles.push(newArticle);
-  saveNewsArticles();
-  res.status(201).json(newArticle);
 };
 
 // Upload middleware for news images
 export const uploadNewsImage = newsImageUpload.single("image");
 
 export const updateNews: RequestHandler = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { title, content, published, excerpt, category } = req.body as any;
-  const image = req.file;
+  try {
+    const id = parseInt(req.params.id);
+    const { title, content, published, excerpt, category } = req.body as any;
+    const image = (req as any).file;
 
-  const articleIndex = newsArticles.findIndex((a) => a.id === id);
-  if (articleIndex === -1) {
-    return res.status(404).json({ error: "Новость не найдена" });
-  }
-
-  if (title) {
-    newsArticles[articleIndex].title = title;
-    // Update slug if title changed
-    const slug = title
-      .toLowerCase()
-      .replace(/[^а-яa-z0-9\s]/g, "")
-      .replace(/\s+/g, "-")
-      .substring(0, 50);
-    newsArticles[articleIndex].slug =
-      `${slug}-${newsArticles[articleIndex].id}`;
-  }
-  if (content) newsArticles[articleIndex].content = content;
-  if (typeof published !== "undefined") {
-    const pub =
-      typeof published === "string" ? published === "true" : Boolean(published);
-    newsArticles[articleIndex].published = pub;
-  }
-  if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
-  if (category) newsArticles[articleIndex].category = category;
-
-  // Update image if new one is uploaded
-  if (image) {
-    // Delete old image file if it exists and is not a placeholder
-    const oldImage = newsArticles[articleIndex].image;
-    if (
-      oldImage &&
-      !oldImage.includes("placeholder") &&
-      oldImage.startsWith("/uploads/")
-    ) {
-      const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
+    const articleIndex = newsArticles.findIndex((a) => a.id === id);
+    if (articleIndex === -1) {
+      return res.status(404).json({ error: "Новость не найдена" });
     }
-    newsArticles[articleIndex].image = `/uploads/news-images/${image.filename}`;
-  }
 
-  saveNewsArticles();
-  res.json(newsArticles[articleIndex]);
+    if (title) {
+      newsArticles[articleIndex].title = title;
+      const slug = title
+        .toLowerCase()
+        .replace(/[^а-яa-z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
+        .substring(0, 50);
+      newsArticles[articleIndex].slug = `${slug}-${newsArticles[articleIndex].id}`;
+    }
+    if (content) newsArticles[articleIndex].content = content;
+    if (typeof published !== "undefined") {
+      const pub = typeof published === "string" ? published === "true" : Boolean(published);
+      newsArticles[articleIndex].published = pub;
+    }
+    if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
+    if (category) newsArticles[articleIndex].category = category;
+
+    if (image) {
+      const oldImage = newsArticles[articleIndex].image;
+      if (oldImage && !oldImage.includes("placeholder") && oldImage.startsWith("/uploads/")) {
+        const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      newsArticles[articleIndex].image = `/uploads/news-images/${image.filename}`;
+    }
+
+    saveNewsArticles();
+    res.json(newsArticles[articleIndex]);
+  } catch (err) {
+    console.error('updateNews error', err);
+    res.status(400).json({ error: 'Ошибка обновления новости' });
+  }
 };
 
 export const deleteNews: RequestHandler = (req, res) => {
@@ -316,12 +316,13 @@ export const getRules: RequestHandler = (req, res) => {
 };
 
 export const updateRules: RequestHandler = (req, res) => {
-  const { title, content } = req.body;
+  const { title, content } = req.body as any;
 
-  if (title) rules.title = title;
-  if (content) rules.content = content;
+  if (title) rules.title = String(title).substring(0, 5000);
+  if (content) rules.content = String(content).substring(0, 100000);
   rules.lastUpdated = new Date().toISOString();
 
+  saveRules();
   res.json(rules);
 };
 
@@ -331,12 +332,13 @@ export const getPrivacyPolicy: RequestHandler = (req, res) => {
 };
 
 export const updatePrivacyPolicy: RequestHandler = (req, res) => {
-  const { title, content } = req.body;
+  const { title, content } = req.body as any;
 
-  if (title) privacyPolicy.title = title;
-  if (content) privacyPolicy.content = content;
+  if (title) privacyPolicy.title = String(title).substring(0, 5000);
+  if (content) privacyPolicy.content = String(content).substring(0, 200000);
   privacyPolicy.lastUpdated = new Date().toISOString();
 
+  savePrivacy();
   res.json(privacyPolicy);
 };
 
@@ -346,11 +348,12 @@ export const getTerms: RequestHandler = (req, res) => {
 };
 
 export const updateTerms: RequestHandler = (req, res) => {
-  const { title, content } = req.body;
+  const { title, content } = req.body as any;
 
-  if (title) terms.title = title;
-  if (content) terms.content = content;
+  if (title) terms.title = String(title).substring(0, 5000);
+  if (content) terms.content = String(content).substring(0, 200000);
   terms.lastUpdated = new Date().toISOString();
 
+  saveTerms();
   res.json(terms);
 };

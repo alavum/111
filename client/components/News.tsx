@@ -75,7 +75,7 @@ export default function News() {
               (a: NewsItem, b: NewsItem) =>
                 new Date(b.date).getTime() - new Date(a.date).getTime(),
             )
-            .slice(0, 6);
+            .slice(0, 3);
 
           console.log("Filtered published news:", publishedNews);
 
