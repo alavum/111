@@ -276,10 +276,29 @@ export default function ServerStatus() {
               rconServer.totalSlots ??
               NaN,
           );
-          const players = Math.max(
-            0,
-            Number(rconServer.players ?? existingServer?.players ?? 0),
-          );
+
+          // Detect partial/invalid map indicators (common during map rotations)
+          const rawMap = typeof rconServer.map === "string" ? rconServer.map.trim() : rconServer.map;
+          const mapIsInvalid =
+            !rawMap ||
+            /^unknown$/i.test(String(rawMap)) ||
+            /connection failed/i.test(String(rawMap));
+
+          // Decide players: if response looks partial (invalid map) and reported players === 0 but we have a previous non-zero value,
+          // keep previous players to avoid flashing 0 during rotations.
+          const playersReported = rconServer.players;
+          const players = (() => {
+            const p = Number(playersReported ?? existingServer?.players ?? 0);
+            if (
+              (playersReported === 0 || playersReported === "0") &&
+              existingServer &&
+              existingServer.players > 0 &&
+              mapIsInvalid
+            ) {
+              return existingServer.players;
+            }
+            return Math.max(0, Number.isNaN(p) ? 0 : p);
+          })();
           const reserved = Math.max(
             0,
             Number(
@@ -317,9 +336,8 @@ export default function ServerStatus() {
             ? Math.max(0, explicitQueue)
             : Math.max(0, players - (totalSlots - reserved));
 
-          const map = rconServer.map ?? existingServer?.map ?? "—";
-          const gameMode =
-            rconServer.gameMode ?? existingServer?.gameMode ?? "—";
+          const map = mapIsInvalid ? existingServer?.map ?? "—" : String(rconServer.map ?? existingServer?.map ?? "—");
+          const gameMode = mapIsInvalid ? existingServer?.gameMode ?? "—" : rconServer.gameMode ?? existingServer?.gameMode ?? "—";
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
