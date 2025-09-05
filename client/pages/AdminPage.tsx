@@ -243,7 +243,7 @@ export default function AdminPage() {
       }
     } catch (error) {
       toast({
-        title: "Ошибка создания",
+        title: "Ошибка ��оздания",
         description: "Не удалось создать новость",
         variant: "destructive",
       });
@@ -433,18 +433,12 @@ export default function AdminPage() {
                     <Label htmlFor="newsContent" className="text-gaming-text">
                       Содержимое
                     </Label>
-                    <Textarea
+                    <AdminRichEditor
                       id="newsContent"
                       value={newNews.content}
-                      onChange={(e) =>
-                        setNewNews((prev) => ({
-                          ...prev,
-                          content: e.target.value,
-                        }))
-                      }
-                      className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
-                      placeholder="Введите содержимое новости"
-                    />
+                      onChange={(val) => setNewNews((prev) => ({ ...prev, content: val }))}
+                      className="min-h-[120px]"
+                      />
                   </div>
                   <div>
                     <Label htmlFor="newsExcerpt" className="text-gaming-text">
