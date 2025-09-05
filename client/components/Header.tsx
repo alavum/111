@@ -29,11 +29,8 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gaming-accent rounded-md flex items-center justify-center">
-                <span className="text-black font-bold text-xl">R</span>
-              </div>
-              <span className="text-gaming-text font-bold text-xl">RSGS</span>
+            <Link to="/" className="flex items-center">
+              <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-10 h-10 object-contain" />
             </Link>
           </div>
 
