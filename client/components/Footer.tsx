@@ -49,22 +49,18 @@ export default function Footer() {
     <footer className="bg-gaming-card border-t border-gaming-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-8">
-          {/* Logo Section */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <div className="flex items-center space-x-3 mb-4">
-              <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-16 h-16 md:w-20 md:h-20 object-contain mt-1" />
-            </div>
-
-            {/* Social Links */}
-            <div className="flex space-x-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 items-start">
+          {/* Left: Logo + Social */}
+          <div className="flex flex-col items-start">
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-20 h-20 md:w-24 md:h-24 object-contain -mt-1" />
+            <div className="mt-4 flex items-center space-x-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gaming-text-muted hover:text-gaming-accent transition-colors"
+                  className="text-gaming-text-muted hover:text-gaming-accent transition-colors p-2 rounded-md bg-gaming-card/50"
                   aria-label={social.name}
                 >
                   {social.icon}
@@ -73,37 +69,40 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Footer Sections */}
-          {footerSections.map((section) => (
-            <div key={section.title}>
-              <h3 className="font-semibold text-gaming-text mb-4">
-                {section.title}
-              </h3>
-              <ul className="space-y-2">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    {link.external ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm"
-                      >
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link
-                        to={link.href}
-                        className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm"
-                      >
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
+          {/* Middle: Links */}
+          <div className="flex flex-col">
+            <h3 className="font-semibold text-gaming-text mb-4">Навигация</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {footerSections.flatMap((s) => s.links).map((link) => (
+                <div key={link.label}>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link to={link.href} className="text-gaming-text-muted hover:text-gaming-accent transition-colors text-sm">
+                      {link.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Right: Provider info */}
+          <div className="flex flex-col">
+            <h3 className="font-semibold text-gaming-text mb-4">Поставщик услуг</h3>
+            <div className="bg-gaming-card border border-gaming-border rounded-md p-4">
+              <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
+              <p className="text-gaming-text-muted text-sm mt-1">ИНН: 862203594392</p>
+              <p className="text-gaming-text-muted text-sm mt-3">Оказание услуг и обслуживание серверов RSGS.</p>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Section */}
