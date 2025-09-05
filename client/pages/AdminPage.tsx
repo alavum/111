@@ -287,7 +287,7 @@ export default function AdminPage() {
     } catch (error) {
       toast({
         title: "Ошибка обновления",
-        description: "Не удалось обнови��ь новость",
+        description: "Не удалось об��овить новость",
         variant: "destructive",
       });
     }
@@ -847,13 +847,11 @@ export default function AdminPage() {
                       >
                         Содержимое
                       </Label>
-                      <Textarea
+                      <AdminRichEditor
                         id="termsContent"
                         value={terms.content}
-                        onChange={(e) =>
-                          setTerms({ ...terms, content: e.target.value })
-                        }
-                        className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
+                        onChange={(val) => setTerms({ ...terms, content: val })}
+                        className="min-h-[300px]"
                       />
                     </div>
                     <Button
