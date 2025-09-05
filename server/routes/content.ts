@@ -170,6 +170,12 @@ const saveRules = () => safeSaveJson(rulesDataFile, rules);
 const savePrivacy = () => safeSaveJson(privacyDataFile, privacyPolicy);
 const saveTerms = () => safeSaveJson(termsDataFile, terms);
 
+// Ensure default files exist (write fallback if file missing)
+if (!fs.existsSync(rulesDataFile)) saveRules();
+if (!fs.existsSync(privacyDataFile)) savePrivacy();
+if (!fs.existsSync(termsDataFile)) saveTerms();
+if (!fs.existsSync(newsDataFile)) saveNewsArticles();
+
 // Validate input schemas using zod
 const newsCreateSchema = z.object({
   title: z.string().min(1).max(300),

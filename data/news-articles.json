@@ -82,17 +82,5 @@
     "excerpt": "12",
     "category": "Общее",
     "slug": "21-1757061672720"
-  },
-  {
-    "id": 9,
-    "title": "312",
-    "content": "****132****\r\n| Header 1 | Header 2 |\r\n| --- | --- |\r\n| Cell 1 | Cell 2 |\r\n",
-    "author": "Admin",
-    "date": "2025-09-05T08:56:10.473Z",
-    "published": true,
-    "image": "/api/placeholder/600/350",
-    "excerpt": "231",
-    "category": "Общее",
-    "slug": "312-1757062570473"
   }
 ]
