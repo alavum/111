@@ -72,7 +72,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
               >
-                Обжало��ать бан
+                Обжаловать бан
               </a>
             </div>
           </div>
