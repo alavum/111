@@ -55,10 +55,6 @@ export default function Footer() {
             <div className="flex items-center space-x-3 mb-4">
               <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-16 h-16 md:w-20 md:h-20 object-contain mt-1" />
             </div>
-            <p className="text-gaming-text-muted text-sm mb-4">
-              Лучшее игровое сообщество для тактических военных симуляторов.
-              Присоединяйтесь к нашим серверам Squad.
-            </p>
 
             {/* Social Links */}
             <div className="flex space-x-3">
