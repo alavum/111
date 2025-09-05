@@ -5,7 +5,7 @@ const footerSections = [
   {
     title: "Инструменты",
     links: [
-      { label: "Squad Calc", href: "/squad-calc" },
+      { label: "Squad Calc", href: "https://squadcalc.rgs-squad.ru", external: true },
     ],
   },
   {
@@ -67,9 +67,9 @@ export default function Footer() {
             <h4 className="font-semibold text-gaming-text mb-3">Интересное</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <button className="group inline-flex items-center space-x-2 text-gaming-text-muted transition-opacity duration-150 focus:outline-none">
-                  <span className="group-hover:opacity-50">Недельная статистика</span>
-                  <span className="ml-2 text-xs text-gaming-text-muted hidden group-hover:inline">(недоступ��о)</span>
+                <button className="group relative inline-flex items-center space-x-2 text-gaming-text-muted transition" aria-disabled>
+                  <span className="transition-opacity duration-150 group-hover:opacity-60">Недельная статистика</span>
+                  <span className="ml-2 hidden group-hover:inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">недоступно</span>
                 </button>
               </li>
               <li>
@@ -86,7 +86,7 @@ export default function Footer() {
             <h4 className="font-semibold text-gaming-text mb-3">Инструменты</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/squad-calc" className="text-gaming-text-muted hover:text-gaming-accent transition-colors">Squad Calc</a>
+                <a href="https://squadcalc.rgs-squad.ru" target="_blank" rel="noopener noreferrer" className="text-gaming-text-muted hover:text-gaming-accent transition-colors">Squad Calc</a>
               </li>
             </ul>
 
