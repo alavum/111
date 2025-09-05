@@ -113,8 +113,10 @@ export default function NewsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredNews = filteredNews.filter((item) => item.featured);
-  const regularNews = filteredNews.filter((item) => !item.featured);
+  // Sort filtered news by date (newest first)
+  filteredNews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const featuredNews: NewsItem[] = [];
+  const regularNews = filteredNews;
 
   if (loading) {
     return (
