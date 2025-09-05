@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { FileText } from "lucide-react";
-import { renderRichText } from '@/lib/markdown';
+import { renderRichText } from "@/lib/markdown";
 
 export default function TermsPage() {
   const [terms, setTerms] = useState<any>(null);
@@ -14,13 +14,20 @@ export default function TermsPage() {
 
   const fetchTerms = async () => {
     try {
-      const { safeFetchJSON } = await import('@/lib/api');
-      const data = await safeFetchJSON('/api/terms', {}, 7000);
+      const { safeFetchJSON } = await import("@/lib/api");
+      const data = await safeFetchJSON("/api/terms", {}, 7000);
       if (data) setTerms(data);
-      else setTerms({ content: getDefaultTerms(), lastUpdated: new Date().toISOString() });
+      else
+        setTerms({
+          content: getDefaultTerms(),
+          lastUpdated: new Date().toISOString(),
+        });
     } catch (error) {
-      console.error('Error fetching terms:', error);
-      setTerms({ content: getDefaultTerms(), lastUpdated: new Date().toISOString() });
+      console.error("Error fetching terms:", error);
+      setTerms({
+        content: getDefaultTerms(),
+        lastUpdated: new Date().toISOString(),
+      });
     } finally {
       setLoading(false);
     }
@@ -98,7 +105,7 @@ export default function TermsPage() {
 
 По вопросам соглашения обращайтесь: [Discord](https://discord.gg/HXne8JVJ)
 
-Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
+Последнее обновление: ${new Date().toLocaleDateString("ru-RU")}`;
   };
 
   const formatText = (text: string) => {
@@ -139,8 +146,15 @@ export default function TermsPage() {
 
           {/* Content */}
           <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">Последнее обновление: {terms?.lastUpdated ? new Date(terms.lastUpdated).toLocaleDateString('ru-RU') : '—'}</div>
-            <div className="prose prose-lg prose-invert max-w-none">{formatText(terms?.content || '')}</div>
+            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">
+              Последнее обновление:{" "}
+              {terms?.lastUpdated
+                ? new Date(terms.lastUpdated).toLocaleDateString("ru-RU")
+                : "—"}
+            </div>
+            <div className="prose prose-lg prose-invert max-w-none">
+              {formatText(terms?.content || "")}
+            </div>
           </div>
         </div>
       </main>

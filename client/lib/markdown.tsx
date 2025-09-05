@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 // Lightweight rich text renderer supporting headings, lists, inline bold/italic and simple tables.
 export function renderRichText(text: string) {
   if (!text) return null;
 
-  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
   const nodes: React.ReactNode[] = [];
 
   let i = 0;
@@ -12,15 +12,20 @@ export function renderRichText(text: string) {
     const line = lines[i];
 
     // Table block detection: consecutive lines containing '|'
-    if (line.includes('|') && line.trim().length > 0) {
+    if (line.includes("|") && line.trim().length > 0) {
       const tableLines = [];
-      while (i < lines.length && lines[i].includes('|')) {
+      while (i < lines.length && lines[i].includes("|")) {
         if (lines[i].trim()) tableLines.push(lines[i]);
         i++;
       }
 
       if (tableLines.length > 0) {
-        const rows = tableLines.map((l) => l.split('|').map((c) => c.trim()).filter((c) => c.length > 0));
+        const rows = tableLines.map((l) =>
+          l
+            .split("|")
+            .map((c) => c.trim())
+            .filter((c) => c.length > 0),
+        );
         const header = rows[0];
         const body = rows.slice(1);
 
@@ -30,7 +35,10 @@ export function renderRichText(text: string) {
               <thead>
                 <tr>
                   {header.map((cell, idx) => (
-                    <th key={idx} className="px-4 py-2 font-medium text-gaming-text-muted border-b border-gaming-border">
+                    <th
+                      key={idx}
+                      className="px-4 py-2 font-medium text-gaming-text-muted border-b border-gaming-border"
+                    >
                       {renderInline(cell)}
                     </th>
                   ))}
@@ -40,7 +48,10 @@ export function renderRichText(text: string) {
                 {body.map((r, ridx) => (
                   <tr key={ridx} className="odd:bg-gaming-card">
                     {r.map((cell, cidx) => (
-                      <td key={cidx} className="px-4 py-2 border-b border-gaming-border">
+                      <td
+                        key={cidx}
+                        className="px-4 py-2 border-b border-gaming-border"
+                      >
                         {renderInline(cell)}
                       </td>
                     ))}
@@ -56,7 +67,7 @@ export function renderRichText(text: string) {
     }
 
     // Heading
-    if (line.startsWith('# ')) {
+    if (line.startsWith("# ")) {
       nodes.push(
         <h1 key={i} className="text-3xl font-bold text-gaming-accent my-4">
           {renderInline(line.substring(2))}
@@ -65,7 +76,7 @@ export function renderRichText(text: string) {
       i++;
       continue;
     }
-    if (line.startsWith('## ')) {
+    if (line.startsWith("## ")) {
       nodes.push(
         <h2 key={i} className="text-2xl font-bold text-gaming-text my-3">
           {renderInline(line.substring(3))}
@@ -74,7 +85,7 @@ export function renderRichText(text: string) {
       i++;
       continue;
     }
-    if (line.startsWith('### ')) {
+    if (line.startsWith("### ")) {
       nodes.push(
         <h3 key={i} className="text-xl font-semibold text-gaming-accent my-2">
           {renderInline(line.substring(4))}
@@ -88,10 +99,12 @@ export function renderRichText(text: string) {
     const numberedMatch = line.match(/^(\d+(?:\.\d+)*)\.?\s*(.*)/);
     if (numberedMatch) {
       const number = numberedMatch[1];
-      const rest = numberedMatch[2] || '';
+      const rest = numberedMatch[2] || "";
       nodes.push(
         <p key={i} className="text-gaming-text mb-2 pl-4">
-          <span className="font-semibold text-gaming-accent mr-2">{number}.</span>
+          <span className="font-semibold text-gaming-accent mr-2">
+            {number}.
+          </span>
           {renderInline(rest)}
         </p>,
       );
@@ -100,8 +113,8 @@ export function renderRichText(text: string) {
     }
 
     // Bullets
-    if (line.trim().startsWith('-') || line.trim().startsWith('●')) {
-      const content = line.replace(/^[-●]\s*/, '');
+    if (line.trim().startsWith("-") || line.trim().startsWith("●")) {
+      const content = line.replace(/^[-●]\s*/, "");
       nodes.push(
         <p key={i} className="text-gaming-text mb-2 pl-4">
           <span className="text-gaming-accent mr-2">•</span>
@@ -152,14 +165,28 @@ function renderInline(text: string) {
 
     if (match[1]) {
       // bold
-      elements.push(<strong key={index++} className="font-semibold text-gaming-accent">{match[2]}</strong>);
+      elements.push(
+        <strong key={index++} className="font-semibold text-gaming-accent">
+          {match[2]}
+        </strong>,
+      );
     } else if (match[3]) {
       // italic
-      elements.push(<em key={index++} className="italic">{match[4]}</em>);
+      elements.push(
+        <em key={index++} className="italic">
+          {match[4]}
+        </em>,
+      );
     } else if (match[5]) {
       // link
       elements.push(
-        <a key={index++} href={match[7]} target="_blank" rel="noopener noreferrer" className="text-gaming-accent underline">
+        <a
+          key={index++}
+          href={match[7]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gaming-accent underline"
+        >
           {match[6]}
         </a>,
       );

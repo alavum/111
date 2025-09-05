@@ -114,7 +114,9 @@ export default function NewsPage() {
   });
 
   // Sort filtered news by date (newest first)
-  filteredNews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  filteredNews.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
   const featuredNews: NewsItem[] = [];
   const regularNews = filteredNews;
 

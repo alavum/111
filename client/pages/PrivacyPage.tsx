@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield } from "lucide-react";
-import { renderRichText } from '@/lib/markdown';
+import { renderRichText } from "@/lib/markdown";
 
 export default function PrivacyPage() {
   const [privacy, setPrivacy] = useState<any>(null);
@@ -14,17 +14,23 @@ export default function PrivacyPage() {
 
   const fetchPrivacy = async () => {
     try {
-      const { safeFetchJSON } = await import('@/lib/api');
-      const data = await safeFetchJSON('/api/privacy', {}, 7000);
+      const { safeFetchJSON } = await import("@/lib/api");
+      const data = await safeFetchJSON("/api/privacy", {}, 7000);
       if (data) {
         setPrivacy(data);
       } else {
-        console.warn('Privacy fetch returned no data, using default');
-        setPrivacy({ content: getDefaultPrivacy(), lastUpdated: new Date().toISOString() });
+        console.warn("Privacy fetch returned no data, using default");
+        setPrivacy({
+          content: getDefaultPrivacy(),
+          lastUpdated: new Date().toISOString(),
+        });
       }
     } catch (error) {
-      console.error('Error fetching privacy policy:', error);
-      setPrivacy({ content: getDefaultPrivacy(), lastUpdated: new Date().toISOString() });
+      console.error("Error fetching privacy policy:", error);
+      setPrivacy({
+        content: getDefaultPrivacy(),
+        lastUpdated: new Date().toISOString(),
+      });
     } finally {
       setLoading(false);
     }
@@ -105,7 +111,7 @@ export default function PrivacyPage() {
 
 Мы можем обновлять данную политику конфиденциальности по мере необходимости. Все изменения будут опубликованы на этой страни��е.
 
-Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
+Последнее обновление: ${new Date().toLocaleDateString("ru-RU")}`;
   };
 
   // renderRichText handles headings, lists, inline bold/italic, links and simple tables
@@ -147,9 +153,14 @@ export default function PrivacyPage() {
 
           {/* Content */}
           <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">Последнее обновление: {privacy?.lastUpdated ? new Date(privacy.lastUpdated).toLocaleDateString('ru-RU') : '—'}</div>
+            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">
+              Последнее обновление:{" "}
+              {privacy?.lastUpdated
+                ? new Date(privacy.lastUpdated).toLocaleDateString("ru-RU")
+                : "—"}
+            </div>
             <div className="prose prose-lg prose-invert max-w-none">
-              {formatText(privacy?.content || '')}
+              {formatText(privacy?.content || "")}
             </div>
           </div>
         </div>

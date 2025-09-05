@@ -19,7 +19,7 @@ import {
   Trash2,
   Server,
 } from "lucide-react";
-import AdminRichEditor from '@/components/AdminRichEditor';
+import AdminRichEditor from "@/components/AdminRichEditor";
 import { toast } from "@/hooks/use-toast";
 
 interface NewsArticle {
@@ -436,9 +436,11 @@ export default function AdminPage() {
                     <AdminRichEditor
                       id="newsContent"
                       value={newNews.content}
-                      onChange={(val) => setNewNews((prev) => ({ ...prev, content: val }))}
+                      onChange={(val) =>
+                        setNewNews((prev) => ({ ...prev, content: val }))
+                      }
                       className="min-h-[120px]"
-                      />
+                    />
                   </div>
                   <div>
                     <Label htmlFor="newsExcerpt" className="text-gaming-text">
@@ -745,11 +747,11 @@ export default function AdminPage() {
                         Содержимое
                       </Label>
                       <AdminRichEditor
-                      id="rulesContent"
-                      value={rules.content}
-                      onChange={(val) => setRules({ ...rules, content: val })}
-                      className="min-h-[300px]"
-                    />
+                        id="rulesContent"
+                        value={rules.content}
+                        onChange={(val) => setRules({ ...rules, content: val })}
+                        className="min-h-[300px]"
+                      />
                     </div>
                     <Button
                       onClick={() => handleUpdateContent("rules", rules)}
@@ -800,7 +802,9 @@ export default function AdminPage() {
                       <AdminRichEditor
                         id="privacyContent"
                         value={privacy.content}
-                        onChange={(val) => setPrivacy({ ...privacy, content: val })}
+                        onChange={(val) =>
+                          setPrivacy({ ...privacy, content: val })
+                        }
                         className="min-h-[300px]"
                       />
                     </div>

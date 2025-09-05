@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield } from "lucide-react";
-import { renderRichText } from '@/lib/markdown';
+import { renderRichText } from "@/lib/markdown";
 
 export default function RulesPage() {
   const [rules, setRules] = useState<any>(null);
@@ -14,13 +14,20 @@ export default function RulesPage() {
 
   const fetchRules = async () => {
     try {
-      const { safeFetchJSON } = await import('@/lib/api');
-      const data = await safeFetchJSON('/api/rules', {}, 7000);
+      const { safeFetchJSON } = await import("@/lib/api");
+      const data = await safeFetchJSON("/api/rules", {}, 7000);
       if (data) setRules(data);
-      else setRules({ content: getDefaultRules(), lastUpdated: new Date().toISOString() });
+      else
+        setRules({
+          content: getDefaultRules(),
+          lastUpdated: new Date().toISOString(),
+        });
     } catch (error) {
-      console.error('Error fetching rules:', error);
-      setRules({ content: getDefaultRules(), lastUpdated: new Date().toISOString() });
+      console.error("Error fetching rules:", error);
+      setRules({
+        content: getDefaultRules(),
+        lastUpdated: new Date().toISOString(),
+      });
     } finally {
       setLoading(false);
     }
@@ -144,8 +151,15 @@ export default function RulesPage() {
 
           {/* Rules Content */}
           <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">Последнее обновление: {rules?.lastUpdated ? new Date(rules.lastUpdated).toLocaleDateString('ru-RU') : '—'}</div>
-            <div className="prose prose-lg prose-invert max-w-none">{formatText(rules?.content || '')}</div>
+            <div className="flex justify-end text-gaming-text-muted text-sm mb-2">
+              Последнее обновление:{" "}
+              {rules?.lastUpdated
+                ? new Date(rules.lastUpdated).toLocaleDateString("ru-RU")
+                : "—"}
+            </div>
+            <div className="prose prose-lg prose-invert max-w-none">
+              {formatText(rules?.content || "")}
+            </div>
           </div>
 
           {/* Footer Info */}
@@ -155,8 +169,8 @@ export default function RulesPage() {
                 Обжалование наказаний
               </h3>
               <p className="text-gaming-text-muted mb-4">
-                Считаете, что получили несправедливое наказание? 
-                Обратитесь к администрации через Discord.
+                Считаете, что получили несправедливое наказание? Обратитесь к
+                администрации через Discord.
               </p>
               <a
                 href="https://discord.gg/HXne8JVJ"

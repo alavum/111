@@ -29,7 +29,11 @@ const newsImageUpload = multer({
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Только изображения разрешены! Формат файла должен быть image/*"));
+      cb(
+        new Error(
+          "Только изображения разрешены! Формат файла должен быть image/*",
+        ),
+      );
     }
   },
 });
@@ -229,17 +233,21 @@ export const createNews: RequestHandler = (req, res) => {
       .replace(/\s+/g, "-")
       .substring(0, 50);
 
-    const imageUrl = image ? `/uploads/news-images/${image.filename}` : "/api/placeholder/600/350";
+    const imageUrl = image
+      ? `/uploads/news-images/${image.filename}`
+      : "/api/placeholder/600/350";
 
     const newArticle = {
-      id: newsArticles.length ? Math.max(...newsArticles.map((a) => a.id)) + 1 : 1,
+      id: newsArticles.length
+        ? Math.max(...newsArticles.map((a) => a.id)) + 1
+        : 1,
       title,
       content,
       author: author || "Admin",
       date: new Date().toISOString(),
       published: true,
       image: imageUrl,
-      excerpt: excerpt || (content.substring(0, 150) + "..."),
+      excerpt: excerpt || content.substring(0, 150) + "...",
       category: category || "Общее",
       slug: `${slugBase}-${Date.now()}`,
     };
@@ -248,8 +256,8 @@ export const createNews: RequestHandler = (req, res) => {
     saveNewsArticles();
     res.status(201).json(newArticle);
   } catch (err) {
-    console.error('createNews validation error', err);
-    return res.status(400).json({ error: 'Некорректные данные новости' });
+    console.error("createNews validation error", err);
+    return res.status(400).json({ error: "Некорректные данные новости" });
   }
 };
 
@@ -274,11 +282,15 @@ export const updateNews: RequestHandler = (req, res) => {
         .replace(/[^а-яa-z0-9\s]/g, "")
         .replace(/\s+/g, "-")
         .substring(0, 50);
-      newsArticles[articleIndex].slug = `${slug}-${newsArticles[articleIndex].id}`;
+      newsArticles[articleIndex].slug =
+        `${slug}-${newsArticles[articleIndex].id}`;
     }
     if (content) newsArticles[articleIndex].content = content;
     if (typeof published !== "undefined") {
-      const pub = typeof published === "string" ? published === "true" : Boolean(published);
+      const pub =
+        typeof published === "string"
+          ? published === "true"
+          : Boolean(published);
       newsArticles[articleIndex].published = pub;
     }
     if (excerpt) newsArticles[articleIndex].excerpt = excerpt;
@@ -286,20 +298,25 @@ export const updateNews: RequestHandler = (req, res) => {
 
     if (image) {
       const oldImage = newsArticles[articleIndex].image;
-      if (oldImage && !oldImage.includes("placeholder") && oldImage.startsWith("/uploads/")) {
+      if (
+        oldImage &&
+        !oldImage.includes("placeholder") &&
+        oldImage.startsWith("/uploads/")
+      ) {
         const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
       }
-      newsArticles[articleIndex].image = `/uploads/news-images/${image.filename}`;
+      newsArticles[articleIndex].image =
+        `/uploads/news-images/${image.filename}`;
     }
 
     saveNewsArticles();
     res.json(newsArticles[articleIndex]);
   } catch (err) {
-    console.error('updateNews error', err);
-    res.status(400).json({ error: 'Ошибка обновления новости' });
+    console.error("updateNews error", err);
+    res.status(400).json({ error: "Ошибка обновления новости" });
   }
 };
 

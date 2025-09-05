@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { renderRichText } from '@/lib/markdown';
+import { renderRichText } from "@/lib/markdown";
 
 interface NewsArticle {
   id: number;
@@ -32,22 +32,23 @@ export default function NewsDetailPage() {
   const fetchArticle = async (slug: string) => {
     try {
       setLoading(true);
-      
+
       // Try to get article by slug or ID
       const response = await fetch(`/api/news/${slug}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setArticle(data);
       } else if (response.status === 404) {
         // If not found by slug, try to get all news and find by slug
-        const allNewsResponse = await fetch('/api/news');
+        const allNewsResponse = await fetch("/api/news");
         if (allNewsResponse.ok) {
           const allNews = await allNewsResponse.json();
-          const foundArticle = allNews.find((news: NewsArticle) => 
-            generateSlug(news.title) === slug || news.id.toString() === slug
+          const foundArticle = allNews.find(
+            (news: NewsArticle) =>
+              generateSlug(news.title) === slug || news.id.toString() === slug,
           );
-          
+
           if (foundArticle) {
             setArticle(foundArticle);
           } else {
@@ -60,7 +61,7 @@ export default function NewsDetailPage() {
         setError("Ошибка загрузки новости");
       }
     } catch (error) {
-      console.error('Error fetching article:', error);
+      console.error("Error fetching article:", error);
       setError("Ошибка загрузки новости");
     } finally {
       setLoading(false);
@@ -70,9 +71,9 @@ export default function NewsDetailPage() {
   const generateSlug = (title: string): string => {
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9а-я]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[^a-z0-9а-я]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   };
 
   const formatContent = (content: string) => {
@@ -139,8 +140,8 @@ export default function NewsDetailPage() {
           {/* Back Button */}
           <div className="mb-8">
             <Link to="/news">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-gaming-border text-gaming-text hover:bg-gaming-card"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -167,20 +168,22 @@ export default function NewsDetailPage() {
               {/* Meta Information */}
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 {article.category && (
-                  <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}`}>
+                  <span
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}`}
+                  >
                     <Tag className="w-3 h-3 mr-1 inline" />
                     {article.category}
                   </span>
                 )}
-                
+
                 <div className="flex items-center text-gaming-text-muted text-sm">
                   <Calendar className="w-4 h-4 mr-2" />
-                  {new Date(article.date).toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                  {new Date(article.date).toLocaleDateString("ru-RU", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </div>
 
