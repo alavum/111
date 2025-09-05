@@ -52,28 +52,14 @@ const bottomLinks = [
 export default function Footer() {
   return (
     <footer className="bg-gaming-card border-t border-gaming-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 items-start">
           {/* Column 1: Logo + description + socials */}
           <div className="flex flex-col items-start">
-            <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-24 h-24 md:w-28 md:h-28 object-contain -mt-1" />
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-20 h-20 md:w-24 md:h-24 object-contain -mt-1" />
             <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">Игр��вое сообщество и серверы тактических симуляторов RSGS.</p>
 
-            <div className="mt-4 flex items-center space-x-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gaming-text-muted hover:text-gaming-accent transition-colors p-2 rounded-md bg-gaming-card/50"
-                  aria-label={social.name}
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Column 2: Интересное */}
@@ -129,7 +115,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gaming-border pt-8">
+        <div className="border-t border-gaming-border pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
               <div className="flex flex-wrap gap-4">
