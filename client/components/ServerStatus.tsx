@@ -196,6 +196,10 @@ export default function ServerStatus() {
             error: new Error("timeout"),
           } as any;
         }
+        // Normalize common network errors to a consistent error message to avoid noisy stack traces
+        if (asyncErr instanceof Error && /failed to fetch/i.test(asyncErr.message)) {
+          return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+        }
         return { ok: false, status: 0, json: null, error: asyncErr } as any;
       }
 
@@ -375,7 +379,19 @@ export default function ServerStatus() {
         // Always update last fetch time to avoid excessive refetching, but UI is only updated when data changed
         setLastFetchTime(now);
       } catch (error) {
-        console.error("Failed to fetch RCON data:", error);
+        // Avoid noisy logs for common network issues/timeouts when not user-initiated
+        const errMsg = (error as any)?.message || "";
+        if (errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
+          console.error("Failed to fetch RCON data:", error);
+        }
+        // If user initiated (showLoading) show a toast for non-network errors
+        if (showLoading && errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
+          toast({
+            title: "Ошибка загрузки",
+            description: "Не удалось обновить данные серверов",
+            variant: "destructive",
+          });
+        }
       } finally {
         if (showLoading) setIsLoadingRcon(false);
       }
@@ -486,8 +502,9 @@ export default function ServerStatus() {
             }
           }
         } else {
-          // If timeout happened, avoid noisy logs
-          if (result.error?.message && result.error.message !== "timeout") {
+          // If timeout or network happened, avoid noisy logs
+          const errMsg = result.error?.message;
+          if (errMsg && errMsg !== "timeout" && errMsg !== "network" && errMsg !== "offline") {
             console.error("Failed to check server connections:", result.error);
           }
         }
