@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import { Youtube, MessageCircle, Music } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerSections = [
   {
-    title: "Интересное",
+    title: "Инструменты",
     links: [
-      { label: "Новости", href: "/news" },
-      { label: "Стать VIP", href: "/vip" },
+      { label: "Squad Calc", href: "/squad-calc" },
+    ],
+  },
+  {
+    title: "Новичкам",
+    links: [
+      { label: "Гайды", href: "/guides" },
     ],
   },
   {
