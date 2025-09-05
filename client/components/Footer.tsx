@@ -77,11 +77,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-8">
           {/* Logo Section */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gaming-accent rounded-md flex items-center justify-center">
-                <span className="text-black font-bold text-xl">R</span>
-              </div>
-              <span className="text-gaming-text font-bold text-xl">RSGS</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800" alt="RSGS" className="w-16 h-16 md:w-20 md:h-20 object-contain mt-1" />
             </div>
             <p className="text-gaming-text-muted text-sm mb-4">
               Лучшее игровое сообщество для тактических военных симуляторов.
