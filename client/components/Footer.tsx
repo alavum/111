@@ -132,6 +132,7 @@ export default function Footer() {
 
               <div className="mt-4 md:mt-0 md:ml-6">
                 <div className="bg-gaming-card border border-gaming-border rounded-md p-3 text-sm">
+                  <p className="text-gaming-text-muted text-xs mb-1">Услуги предоставляет</p>
                   <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
                   <p className="text-gaming-text-muted text-xs mt-1">ИНН: 862203594392</p>
                 </div>
