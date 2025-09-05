@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield } from "lucide-react";
+import { renderRichText } from '@/lib/markdown';
 
 export default function PrivacyPage() {
   const [privacy, setPrivacy] = useState("");
@@ -84,7 +85,7 @@ export default function PrivacyPage() {
 
 ## Ваши права
 
-**Право на информацию** - Вы можете запросить информацию о том, какие данные мы собираем о вас
+**Право на информацию** - Вы можете запроси��ь информацию о том, какие данные мы собираем о вас
 
 **Право на исправление** - Вы можете запросить исправление неточных или неполных данных
 
@@ -105,8 +106,6 @@ export default function PrivacyPage() {
 
 Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
   };
-
-  import { renderRichText } from '@/lib/markdown';
 
   // renderRichText handles headings, lists, inline bold/italic, links and simple tables
   const formatText = (text: string) => {
