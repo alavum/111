@@ -17,9 +17,9 @@ export default function PrivacyPage() {
       const response = await fetch('/api/privacy');
       if (response.ok) {
         const data = await response.json();
-        setPrivacy(data.content || getDefaultPrivacy());
+        setPrivacy(data);
       } else {
-        setPrivacy(getDefaultPrivacy());
+        setPrivacy({ content: getDefaultPrivacy(), lastUpdated: new Date().toISOString() });
       }
     } catch (error) {
       console.error('Error fetching privacy policy:', error);
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
 
 ## Введение
 
-Данная Политика конфиденциальности описывает, как Russian Squad Game Servers (RSGS) собирает, использует и защищает информацию, которую вы предоставляете при использовании наших игровых серверов и веб-сайта.
+Данн��я Политика конфиденциальности описывает, как Russian Squad Game Servers (RSGS) собирает, использует и защищает информацию, которую вы предоставляете при использовании наших игровых серверов и веб-сайта.
 
 Используя наши услуги, вы соглашаетесь с условиями данной политики конфиденциальности.
 
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
 - IP-адрес для подключения к серверу
 - Системная информация для оптимизации
 - Логи подключений и отключений
-- Данные о производительности
+- Дан��ые о производительности
 
 ## Как мы используем ваши данные
 
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
 
 ## Изменения в политике
 
-Мы можем обновлять данную политику конфиденциальности по мере необходимости. Все изменения будут опубликованы на этой странице.
+Мы можем обновлять данную политику конфиденциальности по мере необходимости. Все изменения будут опубликованы на этой страни��е.
 
 Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}`;
   };
