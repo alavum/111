@@ -11,7 +11,7 @@ interface Server {
   queue: number;
   map: string;
   gameMode: string;
-  status: "online" | "offline" | "maintenance";
+  status: "online" | "offline";
   reserved?: number;
 }
 
@@ -32,7 +32,7 @@ const initialServers: Server[] = [
     queue: 0,
     map: "—",
     gameMode: "—",
-    status: "maintenance",
+    status: "offline",
     reserved: 0,
   },
   {
@@ -76,8 +76,6 @@ function getStatusColor(status: Server["status"]) {
       return "text-green-400";
     case "offline":
       return "text-red-400";
-    case "maintenance":
-      return "text-yellow-400";
     default:
       return "text-gaming-text-muted";
   }
@@ -89,8 +87,6 @@ function getStatusDot(status: Server["status"]) {
       return "bg-green-400";
     case "offline":
       return "bg-red-400";
-    case "maintenance":
-      return "bg-yellow-400";
     default:
       return "bg-gaming-text-muted";
   }
