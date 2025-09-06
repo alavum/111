@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Copy, CreditCard, Upload, CheckCircle } from "lucide-react";
+import { CreditCard, Upload, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface VipPlan {
@@ -43,7 +43,6 @@ export default function VipPaymentModal({
   const [playerData, setPlayerData] = useState({
     steamId: "",
     discordId: "",
-    comment: "",
   });
   const [step, setStep] = useState(1);
   const [uploading, setUploading] = useState(false);
@@ -71,39 +70,7 @@ export default function VipPaymentModal({
     return null;
   };
 
-  const handleCopyCard = async (cardNumber: string) => {
-    try {
-      await navigator.clipboard.writeText(cardNumber.replace(/\s/g, ""));
-      toast({
-        title: "Скопировано!",
-        description: "Номер карты скопи��ован в буфер обмена",
-        duration: 2000,
-      });
-    } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось скопировать номер карты",
-        variant: "destructive",
-      });
-    }
-  };
 
-  const handleScreenshotUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "Файл слишком большой",
-          description: "Максимальный размер файла: 5MB",
-          variant: "destructive",
-        });
-        return;
-      }
-      setPlayerData((prev) => ({ ...prev, screenshot: file }));
-    }
-  };
 
   const handleSubmitPayment = async () => {
     if (!playerData.steamId) {
@@ -120,7 +87,6 @@ export default function VipPaymentModal({
       const formData = new FormData();
       formData.append("steamId", playerData.steamId);
       formData.append("discordId", playerData.discordId || "");
-      formData.append("comment", playerData.comment || "");
       formData.append(
         "plan",
         JSON.stringify({
@@ -162,8 +128,6 @@ export default function VipPaymentModal({
     setPlayerData({
       steamId: "",
       discordId: "",
-      screenshot: null,
-      comment: "",
     });
     onClose();
   };
@@ -182,7 +146,7 @@ export default function VipPaymentModal({
         <div className="flex-1 overflow-y-auto px-1">
           {step === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4 space-y-3">
+              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4 space-y-3 flex flex-col justify-between h-full">
                 <h3 className="font-semibold text-gaming-text mb-2 text-sm">
                   Выбранный план:
                 </h3>
@@ -237,7 +201,7 @@ export default function VipPaymentModal({
               </div>
 
 
-              <div className="space-y-3">
+              <div className="space-y-3 flex flex-col justify-between h-full">
                 <h3 className="font-semibold text-gaming-text text-sm">
                   Данные игрока:
                 </h3>
@@ -284,27 +248,6 @@ export default function VipPaymentModal({
                   />
                 </div>
 
-                <div>
-                  <Label
-                    htmlFor="comment"
-                    className="text-gaming-text text-sm"
-                  >
-                    Комментарий
-                  </Label>
-                  <Textarea
-                    id="comment"
-                    value={playerData.comment}
-                    onChange={(e) =>
-                      setPlayerData((prev) => ({
-                        ...prev,
-                        comment: e.target.value,
-                      }))
-                    }
-                    placeholder="Дополнительная информация (необязательно)"
-                    className="bg-gaming-bg border-gaming-border text-gaming-text"
-                    rows={2}
-                  />
-                </div>
               </div>
 
               <div className="flex items-center justify-between pt-3 lg:col-span-2">
