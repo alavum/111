@@ -147,52 +147,80 @@ function renderInline(text: string) {
   let remaining = text;
   let index = 0;
 
-  const pattern = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
+  const mdPattern = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
+  const urlPattern = /(https?:\/\/[^\s)]+)/i;
 
   while (remaining.length > 0) {
-    const match = remaining.match(pattern);
-    if (!match) {
+    const mdMatch = remaining.match(mdPattern);
+    const urlMatch = remaining.match(urlPattern);
+
+    // If neither markdown nor url found, push rest
+    if (!mdMatch && !urlMatch) {
       elements.push(remaining);
       break;
     }
 
-    const mIndex = match.index || 0;
-    if (mIndex > 0) {
-      elements.push(remaining.slice(0, mIndex));
-      remaining = remaining.slice(mIndex);
+    // Determine earliest match
+    const mdIndex = mdMatch?.index ?? Infinity;
+    const urlIndex = urlMatch?.index ?? Infinity;
+
+    if (mdIndex > 0 || urlIndex > 0) {
+      const firstIndex = Math.min(mdIndex, urlIndex);
+      elements.push(remaining.slice(0, firstIndex));
+      remaining = remaining.slice(firstIndex);
       continue;
     }
 
-    if (match[1]) {
-      // bold
-      elements.push(
-        <strong key={index++} className="font-semibold text-gaming-accent">
-          {match[2]}
-        </strong>,
-      );
-    } else if (match[3]) {
-      // italic
-      elements.push(
-        <em key={index++} className="italic">
-          {match[4]}
-        </em>,
-      );
-    } else if (match[5]) {
-      // link
+    if (mdMatch && mdMatch.index === 0) {
+      // markdown match at start
+      if (mdMatch[1]) {
+        elements.push(
+          <strong key={index++} className="font-semibold text-gaming-accent">
+            {mdMatch[2]}
+          </strong>,
+        );
+      } else if (mdMatch[3]) {
+        elements.push(
+          <em key={index++} className="italic">{mdMatch[4]}</em>,
+        );
+      } else if (mdMatch[5]) {
+        elements.push(
+          <a
+            key={index++}
+            href={mdMatch[7]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gaming-accent underline"
+          >
+            {mdMatch[6]}
+          </a>,
+        );
+      }
+
+      remaining = remaining.slice(mdMatch[0].length);
+      continue;
+    }
+
+    if (urlMatch && urlMatch.index === 0) {
+      const url = urlMatch[0];
       elements.push(
         <a
           key={index++}
-          href={match[7]}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           className="text-gaming-accent underline"
         >
-          {match[6]}
+          {url}
         </a>,
       );
+      remaining = remaining.slice(url.length);
+      continue;
     }
 
-    remaining = remaining.slice(match[0].length);
+    // Safety fallback
+    elements.push(remaining);
+    break;
   }
 
   return elements;
