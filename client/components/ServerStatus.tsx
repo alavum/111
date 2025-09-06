@@ -41,7 +41,7 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "—",
+    map: "��",
     gameMode: "—",
     status: "offline",
     reserved: 0,
@@ -111,6 +111,8 @@ export default function ServerStatus() {
   >({});
   const [isLoadingRcon, setIsLoadingRcon] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
+  // Track consecutive invalid map responses per server to avoid overreacting to single transient failures
+  const invalidCountsRef = useRef<Record<number, number>>({});
 
   // Load cached data on mount (stale-while-revalidate): always show cache immediately if present
   const loadCachedData = useCallback(() => {
@@ -290,26 +292,24 @@ export default function ServerStatus() {
           );
 
           // Detect partial/invalid map indicators (common during map rotations)
-          const rawMap =
-            typeof rconServer.map === "string"
-              ? rconServer.map.trim()
-              : rconServer.map;
-          const mapIsInvalid =
-            !rawMap ||
-            /^unknown$/i.test(String(rawMap)) ||
-            /connection failed/i.test(String(rawMap));
+          const rawMap = typeof rconServer.map === "string" ? rconServer.map.trim() : rconServer.map;
+          const mapIsInvalid = !rawMap || /^unknown$/i.test(String(rawMap)) || /connection failed/i.test(String(rawMap));
 
-          // Decide players: if response looks partial (invalid map) and reported players === 0 but we have a previous non-zero value,
-          // keep previous players to avoid flashing 0 during rotations.
+          // Update invalid counts and decide whether to treat this response as transient.
+          const sid = Number(rconServer.serverId);
+          if (mapIsInvalid) {
+            invalidCountsRef.current[sid] = (invalidCountsRef.current[sid] || 0) + 1;
+          } else {
+            invalidCountsRef.current[sid] = 0;
+          }
+          // Only consider response unreliable if we got 2 or more consecutive invalid map results — this is a compromise
+          const treatAsInvalid = mapIsInvalid && (invalidCountsRef.current[sid] || 0) >= 2;
+
+          // Decide players: if response looks transient (treatAsInvalid=false) do not keep previous; only keep previous when treatAsInvalid===true
           const playersReported = rconServer.players;
           const players = (() => {
             const p = Number(playersReported ?? existingServer?.players ?? 0);
-            if (
-              (playersReported === 0 || playersReported === "0") &&
-              existingServer &&
-              existingServer.players > 0 &&
-              mapIsInvalid
-            ) {
+            if ((playersReported === 0 || playersReported === "0") && existingServer && existingServer.players > 0 && treatAsInvalid) {
               return existingServer.players;
             }
             return Math.max(0, Number.isNaN(p) ? 0 : p);
@@ -351,12 +351,8 @@ export default function ServerStatus() {
             ? Math.max(0, explicitQueue)
             : Math.max(0, players - (totalSlots - reserved));
 
-          const map = mapIsInvalid
-            ? (existingServer?.map ?? "—")
-            : String(rconServer.map ?? existingServer?.map ?? "—");
-          const gameMode = mapIsInvalid
-            ? (existingServer?.gameMode ?? "—")
-            : (rconServer.gameMode ?? existingServer?.gameMode ?? "—");
+          const map = treatAsInvalid ? (existingServer?.map ?? "—") : String(rconServer.map ?? existingServer?.map ?? "—");
+          const gameMode = treatAsInvalid ? (existingServer?.gameMode ?? "—") : (rconServer.gameMode ?? existingServer?.gameMode ?? "—");
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
@@ -630,7 +626,7 @@ export default function ServerStatus() {
       toast({
         title: "Статус подключения неизвестен",
         description:
-          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
+          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подожд��те несколько секунд при загрузке сайта.",
         variant: "destructive",
       });
       return;
@@ -717,18 +713,18 @@ export default function ServerStatus() {
                   {/* Seed badge placed next to title, semi-transparent site-style */}
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span className="peer text-xs px-2 py-0.5 rounded-full bg-gaming-card/60 border border-gaming-border text-gaming-accent backdrop-blur-sm opacity-90">Seed</span>
+                      <span className="peer text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-[#3b2b1a]/40 via-[#4a3118]/30 to-[#2b1c10]/30 border border-gaming-border text-yellow-200 shadow-sm backdrop-blur-sm">Seed</span>
 
                       {/* Tooltip shown only when hovering the badge (peer-hover) */}
                       <div className="absolute left-0 top-full mt-2 w-72 max-w-[320px] z-50 opacity-0 pointer-events-none transition-opacity duration-150 peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                        <div className="bg-[#2b1c10]/95 border border-gaming-border rounded-lg p-3 text-sm text-center shadow">
-                          <div className="inline-flex items-center justify-center bg-[#4a3118] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
+                        <div className="bg-gradient-to-b from-[#3b2b1a] to-[#281a0f] border border-gaming-border rounded-lg p-3 text-sm text-center shadow-lg">
+                          <div className="inline-flex items-center justify-center bg-[#5b3a10] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
                             <svg className="w-3 h-3 mr-2" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#d19b3a"/></svg>
                             Активен Seed режим
                           </div>
                           <p className="text-xs text-gaming-text-muted">Количество начисляемых бонусов увеличено. Заходите на сервер и зарабатывайте на VIP-статус!</p>
                         </div>
-                        <div className="absolute left-4 -top-2 w-3 h-3 transform rotate-45 bg-[#2b1c10]/95 border-l border-t border-gaming-border" />
+                        <div className="absolute left-4 -top-2 w-3 h-3 transform rotate-45 bg-[#281a0f] border-l border-t border-gaming-border" />
                       </div>
                     </div>
                   )}
