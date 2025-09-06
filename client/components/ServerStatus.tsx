@@ -725,11 +725,7 @@ export default function ServerStatus() {
                     className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`}
                   />
                   <span className={`text-sm ${getStatusColor(server.status)}`}>
-                    {server.status === "online"
-                      ? "Online"
-                      : server.status === "offline"
-                        ? "Offline"
-                        : "Maintenance"}
+                    {server.status === "online" ? "Online" : "Offline"}
                   </span>
                 </div>
               </div>
