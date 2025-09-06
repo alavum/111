@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { Users, MapPin, Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ const initialServers: Server[] = [
     players: 0,
     maxPlayers: 100,
     queue: 0,
-    map: "��",
+    map: "—",
     gameMode: "—",
     status: "offline",
     reserved: 0,
@@ -626,7 +627,7 @@ export default function ServerStatus() {
       toast({
         title: "Статус подключения неизвестен",
         description:
-          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подожд��те несколько секунд при загрузке сайта.",
+          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
         variant: "destructive",
       });
       return;
