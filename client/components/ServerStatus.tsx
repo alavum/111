@@ -781,17 +781,6 @@ export default function ServerStatus() {
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <Gamepad2 className="w-4 h-4 mr-2 mt-0.5 text-gaming-text-muted flex-shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <span className="text-gaming-text-muted text-xs">
-                      Режим:
-                    </span>
-                    <p className="text-gaming-text text-sm">
-                      {server.gameMode}
-                    </p>
-                  </div>
-                </div>
               </div>
 
 
