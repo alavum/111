@@ -98,8 +98,8 @@ interface CacheData {
   timestamp: number;
 }
 
-// Cache duration: 20 seconds
-const CACHE_DURATION = 20 * 1000;
+// Cache duration: 10 seconds (shorter to revalidate more often)
+const CACHE_DURATION = 10 * 1000;
 
 export default function ServerStatus() {
   const [serverData, setServerData] = useState<Server[]>(initialServers);
@@ -569,41 +569,29 @@ export default function ServerStatus() {
     const hasCachedData = loadCachedData();
     const hasCachedConnections = loadCachedConnections();
 
-    let onOnline: (() => void) | null = null;
-
-    const fullstoryPresent =
-      typeof (window as any).FS !== "undefined" ||
-      /fullstory/.test(navigator.userAgent || "");
-    const startDelay = fullstoryPresent ? 5000 : 0;
-
+    // Immediately start background revalidation in parallel for faster loading
     if (navigator.onLine) {
-      // Start background revalidation after a short delay to avoid conflict with injected scripts
-      setTimeout(() => {
-        fetchRconData(true, false).catch(() => {});
-        checkServerConnections(true).catch(() => {});
-      }, startDelay);
+      Promise.allSettled([fetchRconData(true, false), checkServerConnections(true)]).catch(() => {});
     } else {
-      onOnline = () => {
-        setTimeout(() => {
-          fetchRconData(true, false).catch(() => {});
-          checkServerConnections(true).catch(() => {});
-        }, startDelay);
-        if (onOnline) window.removeEventListener("online", onOnline);
+      const onOnline = () => {
+        Promise.allSettled([fetchRconData(true, false), checkServerConnections(true)]).catch(() => {});
+        window.removeEventListener("online", onOnline);
       };
       window.addEventListener("online", onOnline);
     }
 
     return () => {
-      if (onOnline) window.removeEventListener("online", onOnline);
+      // nothing to cleanup here
     };
   }, []);
 
   // Auto-refresh interval
   useEffect(() => {
+    const intervalMs = 15000; // 15s for faster updates
     const interval = setInterval(() => {
-      fetchRconData(true, false); // Background updates
-      checkServerConnections();
-    }, 30000); // Every 30 seconds
+      // Run in parallel for lower wall-clock time
+      Promise.allSettled([fetchRconData(true, false), checkServerConnections()]).catch(() => {});
+    }, intervalMs);
 
     return () => clearInterval(interval);
   }, [fetchRconData, checkServerConnections]);
@@ -713,7 +701,7 @@ export default function ServerStatus() {
                   {/* Seed badge placed next to title, semi-transparent site-style */}
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span className="peer text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-[#3b2b1a]/40 via-[#4a3118]/30 to-[#2b1c10]/30 border border-gaming-border text-yellow-200 shadow-sm backdrop-blur-sm">Seed</span>
+                      <span className="peer text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-card/60 border border-gaming-border text-gaming-accent shadow-[0_4px_12px_rgba(0,0,0,0.25)] backdrop-blur-sm">Seed</span>
 
                       {/* Tooltip shown only when hovering the badge (peer-hover) */}
                       <div className="absolute left-0 top-full mt-2 w-72 max-w-[320px] z-50 opacity-0 pointer-events-none transition-opacity duration-150 peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -730,12 +718,11 @@ export default function ServerStatus() {
                   )}
                 </div>
 
-                <div className="flex items-center">
-                  <div className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`} />
-                  <span className={`text-sm ${getStatusColor(server.status)}`}>
-                    {server.status === "online" ? "Online" : "Offline"}
-                  </span>
+                <div className="flex items-center" aria-hidden>
+                  <div className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)} shadow-sm`} />
                 </div>
+                {/* Accessibility: provide textual status for screen readers */}
+                <span className="sr-only">{server.status === "online" ? "Online" : "Offline"}</span>
               </div>
 
               {/* Player Count */}
