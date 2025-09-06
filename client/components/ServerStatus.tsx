@@ -360,11 +360,7 @@ export default function ServerStatus() {
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
-          if (
-            status !== "online" &&
-            status !== "offline" &&
-            status !== "maintenance"
-          ) {
+          if (status !== "online" && status !== "offline") {
             if (players > 0) status = "online";
             else if (existingServer?.status) status = existingServer.status;
             else status = "offline";
@@ -621,7 +617,7 @@ export default function ServerStatus() {
       toast({
         title: "Сервер недоступен",
         description:
-          "Сервер находится в оффлайне или на техническом обслуживании",
+          "Сервер находится в оффлайне или на техническом обслуживан��и",
         variant: "destructive",
       });
       return;
