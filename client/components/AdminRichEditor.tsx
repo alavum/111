@@ -105,6 +105,19 @@ export default function AdminRichEditor({
         <button
           type="button"
           className="px-3 py-1 bg-gaming-card border border-gaming-border rounded text-sm"
+          onClick={() => {
+            const url = prompt("Вставьте URL (например https://example.com)");
+            if (!url) return;
+            const text = prompt("Текст ссылки", "Ссылка") || "Ссылка";
+            insertAtCursor(`[${text}](${url})`);
+          }}
+        >
+          Link
+        </button>
+
+        <button
+          type="button"
+          className="px-3 py-1 bg-gaming-card border border-gaming-border rounded text-sm"
           onClick={() => insertAtCursor("\n", "\n\n")}
         >
           BR
