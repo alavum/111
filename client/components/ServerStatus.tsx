@@ -643,7 +643,7 @@ export default function ServerStatus() {
         title: "Подключение недоступно",
         description:
           connectionStatus.error ||
-          "Сервер временно недоступен для подключения",
+          "Сер��ер временно недоступен для подключения",
         variant: "destructive",
       });
     }
@@ -709,13 +709,35 @@ export default function ServerStatus() {
             >
               {/* Server Header */}
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gaming-text">
-                  {server.name}
-                </h3>
+                <div className="flex items-center space-x-3 min-w-0">
+                  <h3 className="font-semibold text-gaming-text truncate">
+                    {server.name}
+                  </h3>
+
+                  {/* Seed badge placed next to title, semi-transparent site-style */}
+                  {String(server.gameMode || "").toLowerCase().includes("seed") && (
+                    <div className="relative inline-flex items-center group">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gaming-accent/30 text-gaming-accent border border-gaming-border backdrop-blur-sm opacity-80">
+                        Seed
+                      </span>
+
+                      {/* Tooltip shown on badge hover */}
+                      <div className="absolute left-0 top-full mt-2 w-64 z-50 pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+                        <div className="bg-[#2b1c10] border border-gaming-border rounded-lg p-3 text-sm text-center shadow">
+                          <div className="inline-flex items-center justify-center bg-[#4a3118] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
+                            <svg className="w-3 h-3 mr-2" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#d19b3a"/></svg>
+                            Активен Seed режим
+                          </div>
+                          <p className="text-xs text-gaming-text-muted">Количество начисляемых бонусов увеличено. Заходите на сервер и зарабатывайте на VIP-ста��ус!</p>
+                        </div>
+                        <div className="absolute left-4 -top-2 w-3 h-3 transform rotate-45 bg-[#2b1c10] border-l border-t border-gaming-border" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex items-center">
-                  <div
-                    className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`}
-                  />
+                  <div className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)}`} />
                   <span className={`text-sm ${getStatusColor(server.status)}`}>
                     {server.status === "online" ? "Online" : "Offline"}
                   </span>
@@ -791,30 +813,6 @@ export default function ServerStatus() {
                 </div>
               </div>
 
-              {/* SEED badge anchored to top-right, tooltip shown below badge to avoid overlap */}
-              {String(server.gameMode || "").toLowerCase().includes("seed") && (
-                <div className="absolute right-3 top-3 flex items-center">
-                  <div className="inline-flex items-center bg-gaming-accent text-black text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-                    <svg className="w-3 h-3 mr-2" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
-                    Seed
-                  </div>
-
-                  {/* Tooltip below badge, limited width, won't span across whole card */}
-                  <div className="relative">
-                    <div className="pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150 absolute right-0 mt-10 w-[260px] z-50">
-                      <div className="bg-[#2b1c10] border border-gaming-border rounded-lg p-3 text-center shadow-lg text-sm">
-                        <div className="inline-flex items-center justify-center bg-[#4a3118] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
-                          <svg className="w-3 h-3 mr-2" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#d19b3a"/></svg>
-                          Активен Seed режим
-                        </div>
-                        <p className="text-xs text-gaming-text-muted">Количество начисляемых бонусов увеличено. Заходите на сервер и зарабатывайте на VIP-статус!</p>
-                      </div>
-                      {/* small caret */}
-                      <div className="absolute right-3 -top-2 w-3 h-3 transform rotate-45 bg-[#2b1c10] border-l border-t border-gaming-border" />
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Connect Button */}
               <button
