@@ -150,29 +150,44 @@ function renderInline(text: string) {
   const mdPattern = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
   const urlPattern = /(https?:\/\/[^\s)]+)/i;
 
+  let safety = 0;
+  const MAX_ITER = 2000;
   while (remaining.length > 0) {
+    if (++safety > MAX_ITER) {
+      elements.push(remaining);
+      break;
+    }
+
     const mdMatch = remaining.match(mdPattern);
     const urlMatch = remaining.match(urlPattern);
 
-    // If neither markdown nor url found, push rest
     if (!mdMatch && !urlMatch) {
       elements.push(remaining);
       break;
     }
 
-    // Determine earliest match
     const mdIndex = mdMatch?.index ?? Infinity;
     const urlIndex = urlMatch?.index ?? Infinity;
 
     if (mdIndex > 0 || urlIndex > 0) {
       const firstIndex = Math.min(mdIndex, urlIndex);
+      if (firstIndex <= 0) {
+        // avoid infinite loop
+        elements.push(remaining);
+        break;
+      }
       elements.push(remaining.slice(0, firstIndex));
       remaining = remaining.slice(firstIndex);
       continue;
     }
 
     if (mdMatch && mdMatch.index === 0) {
-      // markdown match at start
+      const matchText = mdMatch[0] || "";
+      if (!matchText) {
+        elements.push(remaining);
+        break;
+      }
+
       if (mdMatch[1]) {
         elements.push(
           <strong key={index++} className="font-semibold text-gaming-accent">
@@ -180,9 +195,7 @@ function renderInline(text: string) {
           </strong>,
         );
       } else if (mdMatch[3]) {
-        elements.push(
-          <em key={index++} className="italic">{mdMatch[4]}</em>,
-        );
+        elements.push(<em key={index++} className="italic">{mdMatch[4]}</em>);
       } else if (mdMatch[5]) {
         elements.push(
           <a
@@ -197,12 +210,16 @@ function renderInline(text: string) {
         );
       }
 
-      remaining = remaining.slice(mdMatch[0].length);
+      remaining = remaining.slice(matchText.length);
       continue;
     }
 
     if (urlMatch && urlMatch.index === 0) {
-      const url = urlMatch[0];
+      const url = urlMatch[0] || "";
+      if (!url) {
+        elements.push(remaining);
+        break;
+      }
       elements.push(
         <a
           key={index++}
@@ -218,7 +235,6 @@ function renderInline(text: string) {
       continue;
     }
 
-    // Safety fallback
     elements.push(remaining);
     break;
   }
