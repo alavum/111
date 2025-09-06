@@ -45,22 +45,20 @@ export default function VipPaymentModal({
     discordId: "",
     comment: "",
   });
-  const [step, setStep] = useState(1); // 1: payment info, 2: confirmation
+  const [step, setStep] = useState(1);
   const [uploading, setUploading] = useState(false);
 
-  // Calculate price based on months
   const calculatePrice = () => {
     if (!selectedPlan?.basePrice) return 0;
     const basePrice = selectedPlan.basePrice;
     let totalPrice = basePrice * selectedMonths;
 
-    // Apply discounts
     if (selectedMonths >= 12) {
-      totalPrice = totalPrice * 0.78; // 22% discount
+      totalPrice = totalPrice * 0.78;
     } else if (selectedMonths >= 6) {
-      totalPrice = totalPrice * 0.83; // 17% discount
+      totalPrice = totalPrice * 0.83;
     } else if (selectedMonths >= 3) {
-      totalPrice = totalPrice * 0.89; // 11% discount
+      totalPrice = totalPrice * 0.89;
     }
 
     return Math.round(totalPrice);
@@ -96,7 +94,6 @@ export default function VipPaymentModal({
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        // 5MB limit
         toast({
           title: "Файл слишком большой",
           description: "Максимальный размер файла: 5MB",
@@ -120,7 +117,6 @@ export default function VipPaymentModal({
 
     setUploading(true);
     try {
-      // Create FormData to send player info and selected plan
       const formData = new FormData();
       formData.append("steamId", playerData.steamId);
       formData.append("discordId", playerData.discordId || "");
@@ -152,7 +148,7 @@ export default function VipPaymentModal({
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось отправить заявку. Попробуйте позже.",
+        description: "Не удалось отправить заявку. Попроб��йте позже.",
         variant: "destructive",
       });
     } finally {
@@ -186,7 +182,6 @@ export default function VipPaymentModal({
         <div className="flex-1 overflow-y-auto px-1">
           {step === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Selected Plan */}
               <div className="bg-gaming-bg border border-gaming-border rounded-lg p-4 space-y-3">
                 <h3 className="font-semibold text-gaming-text mb-2 text-sm">
                   Выбранный план:
@@ -202,7 +197,6 @@ export default function VipPaymentModal({
                   </div>
                 </div>
 
-                {/* Duration Selection */}
                 <div>
                   <Label className="text-gaming-text text-xs">
                     Срок действия:
@@ -243,7 +237,6 @@ export default function VipPaymentModal({
               </div>
 
 
-              {/* Player Data Form */}
               <div className="space-y-3">
                 <h3 className="font-semibold text-gaming-text text-sm">
                   Данные игрока:
@@ -314,7 +307,6 @@ export default function VipPaymentModal({
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="flex items-center justify-between pt-3 lg:col-span-2">
                 <Button
                   onClick={resetModal}
@@ -346,7 +338,6 @@ export default function VipPaymentModal({
               </div>
             </div>
           ) : (
-            // Step 2: Confirmation
             <div className="text-center py-6">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
               <h3 className="text-xl font-bold text-gaming-text mb-3">
