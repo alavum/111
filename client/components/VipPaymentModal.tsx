@@ -33,28 +33,16 @@ interface VipPaymentModalProps {
   selectedPlan: VipPlan | null;
 }
 
-const paymentMethods = [
-  {
-    id: "yukassa",
-    name: "ЮKassa",
-    icon: "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F085c41bea03e41bd98a089b641edb7f7?format=webp&width=800",
-    cardNumber: "Онлайн-оплата",
-    cardHolder: "ЮKassa (безопасные платежи)",
-    description: "Оплата картой через ЮKassa",
-  },
-];
 
 export default function VipPaymentModal({
   isOpen,
   onClose,
   selectedPlan,
 }: VipPaymentModalProps) {
-  const [selectedMethod, setSelectedMethod] = useState("yukassa");
   const [selectedMonths, setSelectedMonths] = useState(1);
   const [playerData, setPlayerData] = useState({
     steamId: "",
     discordId: "",
-    screenshot: null as File | null,
     comment: "",
   });
   const [step, setStep] = useState(1); // 1: payment info, 2: confirmation
@@ -121,16 +109,10 @@ export default function VipPaymentModal({
   };
 
   const handleSubmitPayment = async () => {
-    if (
-      !playerData.steamId ||
-      (selectedMethod === "tbank" && !playerData.screenshot)
-    ) {
+    if (!playerData.steamId) {
       toast({
         title: "Заполните обязательные поля",
-        description:
-          selectedMethod === "tbank"
-            ? "Steam ID и скриншот перевода обязательны"
-            : "Steam ID обязателен",
+        description: "Steam ID обязателен",
         variant: "destructive",
       });
       return;
@@ -138,12 +120,11 @@ export default function VipPaymentModal({
 
     setUploading(true);
     try {
-      // Create FormData to send file
+      // Create FormData to send player info and selected plan
       const formData = new FormData();
       formData.append("steamId", playerData.steamId);
       formData.append("discordId", playerData.discordId || "");
       formData.append("comment", playerData.comment || "");
-      formData.append("screenshot", playerData.screenshot);
       formData.append(
         "plan",
         JSON.stringify({
@@ -153,7 +134,6 @@ export default function VipPaymentModal({
           discount: getDiscountText(),
         }),
       );
-      formData.append("paymentMethod", selectedMethod);
 
       const response = await fetch("/api/vip-applications", {
         method: "POST",
@@ -163,8 +143,8 @@ export default function VipPaymentModal({
       if (response.ok) {
         setStep(2);
         toast({
-          title: "Заявка отправлена!",
-          description: "Ва��а заявка на VIP статус принята к рассмотрению",
+          title: "Заявка принята",
+          description: "Инструкции по оплате будут отправлены вам после проверки",
         });
       } else {
         throw new Error("Server error");
@@ -262,77 +242,6 @@ export default function VipPaymentModal({
                 </div>
               </div>
 
-              {/* Payment Method */}
-              <div>
-                <h3 className="font-semibold text-gaming-text mb-3 text-sm">
-                  Способ оплаты:
-                </h3>
-                <div className="space-y-2">
-                  {paymentMethods.map((method) => (
-                    <div
-                      key={method.id}
-                      className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                        selectedMethod === method.id
-                          ? "border-gaming-accent bg-gaming-accent/10"
-                          : "border-gaming-border hover:border-gaming-accent/50"
-                      }`}
-                      onClick={() => setSelectedMethod(method.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <img
-                            src={method.icon}
-                            alt={method.name}
-                            className="w-8 h-8 rounded"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                              e.currentTarget.nextElementSibling!.style.display =
-                                "block";
-                            }}
-                          />
-                          <span className="text-xl hidden">💳</span>
-                          <div>
-                            <p className="font-semibold text-gaming-text text-sm">
-                              {method.name}
-                            </p>
-                            <p className="text-gaming-text-muted text-xs">
-                              {method.description}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-mono text-gaming-text text-sm">
-                            {method.cardNumber}
-                          </p>
-                          <p className="text-gaming-text-muted text-xs">
-                            {method.cardHolder}
-                          </p>
-                          {method.id === "yukassa" && (
-                            <div className="mt-2 text-gaming-accent text-xs">
-                              Банковские карты, электронные кошельки
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Payment Instructions */}
-              <div className="bg-gaming-bg border border-gaming-border rounded-lg p-3">
-                <h4 className="font-semibold text-gaming-accent mb-2 text-sm">
-                  Инструкции по оплате:
-                </h4>
-                <ol className="text-gaming-text-muted text-xs space-y-1">
-                  <li>1. Нажмите "Отправить заявку" для перехода к оплате</li>
-                  <li>2. Оплатите {calculatePrice()} ₽ через ЮKassa</li>
-                  <li>3. Заполните данные игрока в форме ниже</li>
-                  <li>
-                    4. Дождитесь подтверждения (обычно в течение 1-24 часов)
-                  </li>
-                </ol>
-              </div>
 
               {/* Player Data Form */}
               <div className="space-y-3">
@@ -357,7 +266,7 @@ export default function VipPaymentModal({
                     className="bg-gaming-bg border-gaming-border text-gaming-text"
                   />
                   <p className="text-gaming-text-muted text-xs mt-1">
-                    Найти Steam ID можно н�� steamid.io
+                    Найти Steam ID можно на steamid.io
                   </p>
                 </div>
 
@@ -382,73 +291,31 @@ export default function VipPaymentModal({
                   />
                 </div>
 
-                {selectedMethod !== "yukassa" && (
-                  <div>
-                    <Label
-                      htmlFor="screenshot"
-                      className="text-gaming-text text-sm"
-                    >
-                      Скриншот перевода <span className="text-red-400">*</span>
-                    </Label>
-                    <Input
-                      id="screenshot"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleScreenshotUpload}
-                      className="bg-gaming-bg border-gaming-border text-gaming-text"
-                    />
-                    {playerData.screenshot && (
-                      <p className="text-green-400 text-xs mt-1">
-                        ✓ Файл за��ружен: {playerData.screenshot.name}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {selectedMethod !== "yukassa" && (
-                  <div>
-                    <Label
-                      htmlFor="comment"
-                      className="text-gaming-text text-sm"
-                    >
-                      Комментарий
-                    </Label>
-                    <Textarea
-                      id="comment"
-                      value={playerData.comment}
-                      onChange={(e) =>
-                        setPlayerData((prev) => ({
-                          ...prev,
-                          comment: e.target.value,
-                        }))
-                      }
-                      placeholder="Дополнительная информация (необязательно)"
-                      className="bg-gaming-bg border-gaming-border text-gaming-text"
-                      rows={2}
-                    />
-                  </div>
-                )}
+                <div>
+                  <Label
+                    htmlFor="comment"
+                    className="text-gaming-text text-sm"
+                  >
+                    Комментарий
+                  </Label>
+                  <Textarea
+                    id="comment"
+                    value={playerData.comment}
+                    onChange={(e) =>
+                      setPlayerData((prev) => ({
+                        ...prev,
+                        comment: e.target.value,
+                      }))
+                    }
+                    placeholder="Дополнительная информация (необязательно)"
+                    className="bg-gaming-bg border-gaming-border text-gaming-text"
+                    rows={2}
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}
-              <div className="flex space-x-3 pt-3 lg:col-span-2">
-                <Button
-                  onClick={handleSubmitPayment}
-                  className="flex-1 bg-gaming-accent hover:bg-gaming-accent-hover text-black"
-                  disabled={uploading}
-                >
-                  {uploading ? (
-                    <>
-                      <Upload className="w-4 h-4 mr-2 animate-spin" />
-                      Отправка...
-                    </>
-                  ) : (
-                    <>
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Отправить заявку
-                    </>
-                  )}
-                </Button>
+              <div className="flex items-center justify-between pt-3 lg:col-span-2">
                 <Button
                   onClick={resetModal}
                   variant="outline"
@@ -456,6 +323,26 @@ export default function VipPaymentModal({
                 >
                   Отмена
                 </Button>
+
+                <div className="ml-4">
+                  <Button
+                    onClick={handleSubmitPayment}
+                    className="bg-gaming-accent hover:bg-gaming-accent-hover text-black flex items-center"
+                    disabled={uploading}
+                  >
+                    {uploading ? (
+                      <>
+                        <Upload className="w-4 h-4 mr-2 animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Перейти к оплате
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
