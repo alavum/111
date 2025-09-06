@@ -615,7 +615,7 @@ export default function ServerStatus() {
   const handleConnect = async (server: Server) => {
     if (server.status !== "online") {
       toast({
-        title: "Сервер недоступен",
+        title: "С��рвер недоступен",
         description:
           "Сервер находится в оффлайне или на техническом обслуживан��и",
         variant: "destructive",
@@ -683,7 +683,7 @@ export default function ServerStatus() {
             {isLoadingRcon && (
               <div className="flex items-center text-gaming-accent">
                 <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                <span className="text-sm">Обновление...</span>
+                <span className="text-sm">Обнов��ение...</span>
               </div>
             )}
 
@@ -705,7 +705,7 @@ export default function ServerStatus() {
           {serverData.map((server) => (
             <div
               key={server.id}
-              className="bg-gaming-card border border-gaming-border rounded-lg p-4 sm:p-6 hover:bg-gaming-card-hover transition-colors"
+              className="group relative bg-gaming-card border border-gaming-border rounded-lg p-4 sm:p-6 hover:bg-gaming-card-hover transition-colors overflow-visible"
             >
               {/* Server Header */}
               <div className="flex items-center justify-between mb-4">
@@ -790,6 +790,29 @@ export default function ServerStatus() {
                   </div>
                 </div>
               </div>
+
+              {/* SEED badge + hover tooltip */}
+              {String(server.gameMode || "").toLowerCase().includes("seed") && (
+                <div className="absolute right-4 top-4 flex items-center space-x-2">
+                  <div className="inline-flex items-center bg-gaming-accent/90 text-black text-xs font-semibold px-3 py-1 rounded-full">
+                    <svg className="w-3 h-3 mr-2" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
+                    Seed
+                  </div>
+                </div>
+              )}
+
+              {/* Hover panel shown on group hover */}
+              {String(server.gameMode || "").toLowerCase().includes("seed") && (
+                <div className="pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150 absolute left-1/2 transform -translate-x-1/2 -top-40 w-[320px] z-40">
+                  <div className="bg-gradient-to-b from-[#3b2b1a] to-[#281a0f] border border-gaming-border rounded-lg p-4 text-center shadow-lg">
+                    <div className="inline-flex items-center justify-center bg-[#5b3a10] text-yellow-200 font-semibold px-4 py-1 rounded-full mb-3 mx-auto">
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#d19b3a"/></svg>
+                      Активен Seed режим
+                    </div>
+                    <p className="text-sm text-gaming-text-muted">Количество начисляемых бонусов увеличено. Заходите на сервер и зарабатывайте на VIP-статус!</p>
+                  </div>
+                </div>
+              )}
 
               {/* Connect Button */}
               <button
