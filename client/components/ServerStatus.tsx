@@ -138,97 +138,77 @@ export default function ServerStatus() {
     init?: RequestInit,
     timeout = 8000,
   ) => {
-    const controller = new AbortController();
-    // provide a reason when aborting to avoid unhelpful browser errors from some injected scripts
-    const id = setTimeout(() => {
-      try {
-        // Abort with a reason when supported
-        // @ts-ignore
-        controller.abort?.("timeout");
-      } catch (e) {
+    const attempt = async (attemptNum: number): Promise<any> => {
+      const controller = new AbortController();
+      const id = setTimeout(() => {
         try {
-          controller.abort();
-        } catch (_) {}
-      }
-    }, timeout);
+          // @ts-ignore
+          controller.abort?.("timeout");
+        } catch (e) {
+          try {
+            controller.abort();
+          } catch (_) {}
+        }
+      }, timeout);
 
-    try {
-      if (typeof navigator !== "undefined" && !navigator.onLine) {
-        clearTimeout(id);
-        return {
-          ok: false,
-          status: 0,
-          json: null,
-          error: new Error("offline"),
-        } as any;
-      }
-
-      // Some injected scripts (FullStory) monkey-patch fetch and may throw synchronously.
-      // Guard synchronous throw by calling fetch inside try-catch and capturing the returned promise.
-      let fetchPromise: Promise<Response>;
       try {
-        // call the native fetch via globalThis.fetch to reduce risk
-        fetchPromise = (globalThis.fetch as typeof fetch)(input, {
-          ...(init || {}),
-          signal: controller.signal,
-        });
-      } catch (syncErr) {
-        clearTimeout(id);
-        // Normalize common synchronous fetch errors
-        if (
-          syncErr instanceof Error &&
-          /failed to fetch/i.test(syncErr.message)
-        ) {
-          return {
-            ok: false,
-            status: 0,
-            json: null,
-            error: new Error("network"),
-          } as any;
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          clearTimeout(id);
+          return { ok: false, status: 0, json: null, error: new Error("offline") } as any;
         }
-        return { ok: false, status: 0, json: null, error: syncErr } as any;
-      }
 
-      let res: Response;
-      try {
-        res = await fetchPromise;
-      } catch (asyncErr) {
-        clearTimeout(id);
-        // Normalize abort reason to 'timeout' if we aborted
-        if (
-          asyncErr &&
-          (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")
-        ) {
-          return {
-            ok: false,
-            status: 0,
-            json: null,
-            error: new Error("timeout"),
-          } as any;
+        let fetchPromise: Promise<Response>;
+        try {
+          fetchPromise = (globalThis.fetch as typeof fetch)(input, {
+            ...(init || {}),
+            signal: controller.signal,
+          });
+        } catch (syncErr) {
+          clearTimeout(id);
+          if (syncErr instanceof Error && /failed to fetch/i.test(syncErr.message)) {
+            return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+          }
+          return { ok: false, status: 0, json: null, error: syncErr } as any;
         }
-        // Normalize common network errors to a consistent error message to avoid noisy stack traces
-        if (
-          asyncErr instanceof Error &&
-          /failed to fetch/i.test(asyncErr.message)
-        ) {
-          return {
-            ok: false,
-            status: 0,
-            json: null,
-            error: new Error("network"),
-          } as any;
-        }
-        return { ok: false, status: 0, json: null, error: asyncErr } as any;
-      }
 
-      clearTimeout(id);
-      if (!res.ok) return { ok: false, status: res.status, json: null };
-      const json = await res.json();
-      return { ok: true, status: res.status, json };
-    } catch (err: any) {
-      clearTimeout(id);
-      return { ok: false, status: 0, json: null, error: err } as any;
+        let res: Response;
+        try {
+          res = await fetchPromise;
+        } catch (asyncErr) {
+          clearTimeout(id);
+          if (asyncErr && (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")) {
+            return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
+          }
+          if (asyncErr instanceof Error && /failed to fetch/i.test(asyncErr.message)) {
+            return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+          }
+          return { ok: false, status: 0, json: null, error: asyncErr } as any;
+        }
+
+        clearTimeout(id);
+        if (!res.ok) return { ok: false, status: res.status, json: null };
+        const json = await res.json();
+        return { ok: true, status: res.status, json };
+      } catch (err: any) {
+        try {
+          clearTimeout(id);
+        } catch {}
+        return { ok: false, status: 0, json: null, error: err } as any;
+      }
+    };
+
+    const maxAttempts = 2;
+    for (let i = 0; i < maxAttempts; i++) {
+      const res = await attempt(i + 1);
+      if (res.ok || (res.error && (res.error.message === "timeout" || res.error.message === "network" || res.error.message === "offline"))) {
+        return res;
+      }
+      // exponential backoff small delay
+      await new Promise((r) => setTimeout(r, 200 * (i + 1)));
     }
+
+    // last attempt
+    return attempt(maxAttempts);
   };
 
   // Fetch RCON data with background updates
