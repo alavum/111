@@ -154,7 +154,12 @@ export default function ServerStatus() {
       try {
         if (typeof navigator !== "undefined" && !navigator.onLine) {
           clearTimeout(id);
-          return { ok: false, status: 0, json: null, error: new Error("offline") } as any;
+          return {
+            ok: false,
+            status: 0,
+            json: null,
+            error: new Error("offline"),
+          } as any;
         }
 
         let fetchPromise: Promise<Response>;
@@ -165,8 +170,16 @@ export default function ServerStatus() {
           });
         } catch (syncErr) {
           clearTimeout(id);
-          if (syncErr instanceof Error && /failed to fetch/i.test(syncErr.message)) {
-            return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+          if (
+            syncErr instanceof Error &&
+            /failed to fetch/i.test(syncErr.message)
+          ) {
+            return {
+              ok: false,
+              status: 0,
+              json: null,
+              error: new Error("network"),
+            } as any;
           }
           return { ok: false, status: 0, json: null, error: syncErr } as any;
         }
@@ -176,11 +189,27 @@ export default function ServerStatus() {
           res = await fetchPromise;
         } catch (asyncErr) {
           clearTimeout(id);
-          if (asyncErr && (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")) {
-            return { ok: false, status: 0, json: null, error: new Error("timeout") } as any;
+          if (
+            asyncErr &&
+            (asyncErr.name === "AbortError" || String(asyncErr) === "timeout")
+          ) {
+            return {
+              ok: false,
+              status: 0,
+              json: null,
+              error: new Error("timeout"),
+            } as any;
           }
-          if (asyncErr instanceof Error && /failed to fetch/i.test(asyncErr.message)) {
-            return { ok: false, status: 0, json: null, error: new Error("network") } as any;
+          if (
+            asyncErr instanceof Error &&
+            /failed to fetch/i.test(asyncErr.message)
+          ) {
+            return {
+              ok: false,
+              status: 0,
+              json: null,
+              error: new Error("network"),
+            } as any;
           }
           return { ok: false, status: 0, json: null, error: asyncErr } as any;
         }
@@ -200,7 +229,13 @@ export default function ServerStatus() {
     const maxAttempts = 2;
     for (let i = 0; i < maxAttempts; i++) {
       const res = await attempt(i + 1);
-      if (res.ok || (res.error && (res.error.message === "timeout" || res.error.message === "network" || res.error.message === "offline"))) {
+      if (
+        res.ok ||
+        (res.error &&
+          (res.error.message === "timeout" ||
+            res.error.message === "network" ||
+            res.error.message === "offline"))
+      ) {
         return res;
       }
       // exponential backoff small delay
@@ -272,24 +307,37 @@ export default function ServerStatus() {
           );
 
           // Detect partial/invalid map indicators (common during map rotations)
-          const rawMap = typeof rconServer.map === "string" ? rconServer.map.trim() : rconServer.map;
-          const mapIsInvalid = !rawMap || /^unknown$/i.test(String(rawMap)) || /connection failed/i.test(String(rawMap));
+          const rawMap =
+            typeof rconServer.map === "string"
+              ? rconServer.map.trim()
+              : rconServer.map;
+          const mapIsInvalid =
+            !rawMap ||
+            /^unknown$/i.test(String(rawMap)) ||
+            /connection failed/i.test(String(rawMap));
 
           // Update invalid counts and decide whether to treat this response as transient.
           const sid = Number(rconServer.serverId);
           if (mapIsInvalid) {
-            invalidCountsRef.current[sid] = (invalidCountsRef.current[sid] || 0) + 1;
+            invalidCountsRef.current[sid] =
+              (invalidCountsRef.current[sid] || 0) + 1;
           } else {
             invalidCountsRef.current[sid] = 0;
           }
           // Only consider response unreliable if we got 2 or more consecutive invalid map results — this is a compromise
-          const treatAsInvalid = mapIsInvalid && (invalidCountsRef.current[sid] || 0) >= 2;
+          const treatAsInvalid =
+            mapIsInvalid && (invalidCountsRef.current[sid] || 0) >= 2;
 
           // Decide players: if response looks transient (treatAsInvalid=false) do not keep previous; only keep previous when treatAsInvalid===true
           const playersReported = rconServer.players;
           const players = (() => {
             const p = Number(playersReported ?? existingServer?.players ?? 0);
-            if ((playersReported === 0 || playersReported === "0") && existingServer && existingServer.players > 0 && treatAsInvalid) {
+            if (
+              (playersReported === 0 || playersReported === "0") &&
+              existingServer &&
+              existingServer.players > 0 &&
+              treatAsInvalid
+            ) {
               return existingServer.players;
             }
             return Math.max(0, Number.isNaN(p) ? 0 : p);
@@ -331,8 +379,12 @@ export default function ServerStatus() {
             ? Math.max(0, explicitQueue)
             : Math.max(0, players - (totalSlots - reserved));
 
-          const map = treatAsInvalid ? (existingServer?.map ?? "—") : String(rconServer.map ?? existingServer?.map ?? "—");
-          const gameMode = treatAsInvalid ? (existingServer?.gameMode ?? "—") : (rconServer.gameMode ?? existingServer?.gameMode ?? "—");
+          const map = treatAsInvalid
+            ? (existingServer?.map ?? "—")
+            : String(rconServer.map ?? existingServer?.map ?? "—");
+          const gameMode = treatAsInvalid
+            ? (existingServer?.gameMode ?? "—")
+            : (rconServer.gameMode ?? existingServer?.gameMode ?? "—");
 
           // Normalize status: accept only known values, otherwise derive from players or fallback to previous
           let status = (rconServer.status as Server["status"]) ?? undefined;
@@ -551,10 +603,16 @@ export default function ServerStatus() {
 
     // Immediately start background revalidation in parallel for faster loading
     if (navigator.onLine) {
-      Promise.allSettled([fetchRconData(true, false), checkServerConnections(true)]).catch(() => {});
+      Promise.allSettled([
+        fetchRconData(true, false),
+        checkServerConnections(true),
+      ]).catch(() => {});
     } else {
       const onOnline = () => {
-        Promise.allSettled([fetchRconData(true, false), checkServerConnections(true)]).catch(() => {});
+        Promise.allSettled([
+          fetchRconData(true, false),
+          checkServerConnections(true),
+        ]).catch(() => {});
         window.removeEventListener("online", onOnline);
       };
       window.addEventListener("online", onOnline);
@@ -570,7 +628,10 @@ export default function ServerStatus() {
     const intervalMs = 15000; // 15s for faster updates
     const interval = setInterval(() => {
       // Run in parallel for lower wall-clock time
-      Promise.allSettled([fetchRconData(true, false), checkServerConnections()]).catch(() => {});
+      Promise.allSettled([
+        fetchRconData(true, false),
+        checkServerConnections(),
+      ]).catch(() => {});
     }, intervalMs);
 
     return () => clearInterval(interval);
@@ -679,18 +740,32 @@ export default function ServerStatus() {
                   </h3>
 
                   {/* Seed badge placed next to title, semi-transparent site-style */}
-                  {String(server.gameMode || "").toLowerCase().includes("seed") && (
+                  {String(server.gameMode || "")
+                    .toLowerCase()
+                    .includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span className="peer text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-card/60 border border-gaming-border text-gaming-accent shadow-[0_4px_12px_rgba(0,0,0,0.25)] backdrop-blur-sm">Seed</span>
+                      <span className="peer text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-card/60 border border-gaming-border text-gaming-accent shadow-[0_4px_12px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                        Seed
+                      </span>
 
                       {/* Tooltip shown only when hovering the badge (peer-hover) */}
                       <div className="absolute left-0 top-full mt-2 w-72 max-w-[320px] z-50 opacity-0 pointer-events-none transition-opacity duration-150 peer-hover:opacity-100 peer-hover:pointer-events-auto">
                         <div className="bg-gradient-to-b from-[#3b2b1a] to-[#281a0f] border border-gaming-border rounded-lg p-3 text-sm text-center shadow-lg">
                           <div className="inline-flex items-center justify-center bg-[#5b3a10] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
-                            <svg className="w-3 h-3 mr-2" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#d19b3a"/></svg>
+                            <svg
+                              className="w-3 h-3 mr-2"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <circle cx="8" cy="8" r="8" fill="#d19b3a" />
+                            </svg>
                             Активен Seed режим
                           </div>
-                          <p className="text-xs text-gaming-text-muted">Количество начисляемых бонусов увеличено. Заходите на сервер и зарабатывайте на VIP-статус!</p>
+                          <p className="text-xs text-gaming-text-muted">
+                            Количество начисляемых бонусов увеличено. Заходите
+                            на сервер и зарабатывайте на VIP-статус!
+                          </p>
                         </div>
                         <div className="absolute left-4 -top-2 w-3 h-3 transform rotate-45 bg-[#281a0f] border-l border-t border-gaming-border" />
                       </div>
@@ -699,10 +774,14 @@ export default function ServerStatus() {
                 </div>
 
                 <div className="flex items-center" aria-hidden>
-                  <div className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)} shadow-sm`} />
+                  <div
+                    className={`w-2 h-2 rounded-full mr-2 ${getStatusDot(server.status)} shadow-sm`}
+                  />
                 </div>
                 {/* Accessibility: provide textual status for screen readers */}
-                <span className="sr-only">{server.status === "online" ? "Online" : "Offline"}</span>
+                <span className="sr-only">
+                  {server.status === "online" ? "Online" : "Offline"}
+                </span>
               </div>
 
               {/* Player Count */}
@@ -760,9 +839,7 @@ export default function ServerStatus() {
                     </p>
                   </div>
                 </div>
-
               </div>
-
 
               {/* Connect Button */}
               <button
