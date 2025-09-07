@@ -26,7 +26,7 @@ interface ServerConnectionStatus {
 const initialServers: Server[] = [
   {
     id: 1,
-    name: "RSGS Free",
+    name: "RUBEZH Free",
     players: 0,
     maxPlayers: 100,
     queue: 0,
@@ -284,7 +284,7 @@ export default function ServerStatus() {
           if (showLoading) {
             toast({
               title: "Ошибка загрузки",
-              description: "Не удалось обновить данные серверов",
+              description: "Не удалось обновить данн��е серверов",
               variant: "destructive",
             });
           }
@@ -463,7 +463,7 @@ export default function ServerStatus() {
           errMsg !== "offline"
         ) {
           toast({
-            title: "Ошибка загрузки",
+            title: "Ошибка загру��ки",
             description: "Не удалось обновить данные серверов",
             variant: "destructive",
           });
