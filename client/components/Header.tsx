@@ -31,8 +31,8 @@ export default function Header() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800"
-                alt="RSGS"
+                src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
+                alt="РУБЕЖ"
                 className="w-16 h-16 md:w-20 md:h-20 object-contain mt-1 self-center"
               />
             </Link>
