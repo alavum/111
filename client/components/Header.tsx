@@ -33,7 +33,7 @@ export default function Header() {
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
                 alt="РУБЕЖ"
-                className="w-20 h-20 md:w-28 md:h-28 object-contain mt-1 self-center"
+                className="w-28 h-28 md:w-36 md:h-36 object-contain mt-1 self-center"
               />
             </Link>
           </div>
