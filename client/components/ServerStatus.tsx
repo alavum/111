@@ -396,7 +396,7 @@ export default function ServerStatus() {
 
           return {
             id: rconServer.serverId,
-            name: existingServer?.name || `RSGS Server ${rconServer.serverId}`,
+            name: existingServer?.name || `RUBEZH Server ${rconServer.serverId}`,
             players,
             maxPlayers: totalSlots,
             queue,
