@@ -37,7 +37,7 @@ const initialServers: Server[] = [
   },
   {
     id: 2,
-    name: "RSGS #1",
+    name: "RUBEZH #1",
     players: 0,
     maxPlayers: 100,
     queue: 0,
@@ -284,7 +284,7 @@ export default function ServerStatus() {
           if (showLoading) {
             toast({
               title: "Ошибка загрузки",
-              description: "Не удалось обновить данн��е серверов",
+              description: "Не удалось обновить данные серверов",
               variant: "destructive",
             });
           }
@@ -463,7 +463,7 @@ export default function ServerStatus() {
           errMsg !== "offline"
         ) {
           toast({
-            title: "Ошибка загру��ки",
+            title: "Ошибка загрузки",
             description: "Не удалось обновить данные серверов",
             variant: "destructive",
           });
