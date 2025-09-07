@@ -48,7 +48,7 @@ const initialServers: Server[] = [
   },
   {
     id: 3,
-    name: "RSGS Invasion",
+    name: "RUBEZH Invasion",
     players: 0,
     maxPlayers: 100,
     queue: 0,
