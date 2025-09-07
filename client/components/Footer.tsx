@@ -60,12 +60,12 @@ export default function Footer() {
           {/* Column 1: Logo + description + socials */}
           <div className="flex flex-col items-start">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0e31f6f703ab47a08d4c5d915a7270c2?format=webp&width=800"
-              alt="RSGS"
+              src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
+              alt="РУБЕЖ"
               className="w-20 h-20 md:w-24 md:h-24 object-contain -mt-1"
             />
             <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">
-              Игр��вое сообщество и серверы тактических симуляторов RSGS.
+              Игровое сообщество и серверы тактических симуляторов РУБЕЖ.
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export default function Footer() {
             </div>
 
             <div className="text-gaming-text-muted text-sm text-center md:text-right">
-              <p>© 2024 Russian Squad Game Servers</p>
+              <p>© 2024 RUBEZH</p>
               <p className="mt-1">Все права защищены</p>
             </div>
           </div>
