@@ -59,7 +59,7 @@ const initialServers: Server[] = [
   },
   {
     id: 4,
-    name: "RSGS International",
+    name: "RUBEZH International",
     players: 0,
     maxPlayers: 100,
     queue: 0,
