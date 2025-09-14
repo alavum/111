@@ -739,35 +739,32 @@ export default function ServerStatus() {
                     {server.name}
                   </h3>
 
-                  {/* Seed badge placed next to title, semi-transparent site-style */}
-                  {String(server.gameMode || "")
-                    .toLowerCase()
-                    .includes("seed") && (
+                  {/* Seed indicator: show emoji 🌱 and a redesigned info card on hover */}
+                  {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span className="peer text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-card/60 border border-gaming-border text-gaming-accent shadow-[0_4px_12px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-                        Seed
+                      <span
+                        className="peer text-sm select-none"
+                        role="img"
+                        aria-label="Seed mode"
+                      >
+                        🌱
                       </span>
 
-                      {/* Tooltip shown only when hovering the badge (peer-hover) */}
+                      {/* Tooltip/info card shown when hovering the emoji */}
                       <div className="absolute left-0 top-full mt-2 w-72 max-w-[320px] z-50 opacity-0 pointer-events-none transition-opacity duration-150 peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                        <div className="bg-gradient-to-b from-[#3b2b1a] to-[#281a0f] border border-gaming-border rounded-lg p-3 text-sm text-center shadow-lg">
-                          <div className="inline-flex items-center justify-center bg-[#5b3a10] text-yellow-200 font-semibold px-3 py-0.5 rounded-full mb-2 mx-auto">
-                            <svg
-                              className="w-3 h-3 mr-2"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <circle cx="8" cy="8" r="8" fill="#d19b3a" />
-                            </svg>
-                            Активен Seed режим
+                        <div className="bg-gaming-card border border-gaming-border rounded-lg p-3 text-sm shadow-lg">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">🌱</div>
+                            <div className="flex-1">
+                              <div className="font-semibold text-gaming-text">Seed режим активен</div>
+                              <p className="text-xs text-gaming-text-muted mt-1">
+                                На этом сервере включён Seed режим — количество
+                                бонусов увеличено. Заходите и зарабатывайте быстрее
+                                на VIP-статус.
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-xs text-gaming-text-muted">
-                            Количество начисляемых бонусов увеличено. Заходите
-                            на сервер и зарабатывайте на VIP-статус!
-                          </p>
                         </div>
-                        <div className="absolute left-4 -top-2 w-3 h-3 transform rotate-45 bg-[#281a0f] border-l border-t border-gaming-border" />
                       </div>
                     </div>
                   )}
