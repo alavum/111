@@ -79,27 +79,33 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
       </div>
 
       <div>
-        {data.slice(0, 10).map((player) => (
-          <div
-            key={player.rank}
-            className="flex items-center justify-between py-2 px-2 rounded transition-colors group hover:bg-gaming-card-hover"
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <span className={`${player.rank <= 3 ? "text-gaming-accent" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
-              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-xs text-gaming-text">👤</span>
+        {data.slice(0, 10).map((player) => {
+          const hours = Math.floor(player.value / 60);
+          const mins = player.value % 60;
+          return (
+            <div
+              key={player.rank}
+              className="flex items-center justify-between py-1.5 px-2 rounded transition-colors group hover:bg-gaming-card-hover"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className={`${player.rank <= 3 ? "text-gaming-accent" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
+                <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs text-gaming-text">👤</span>
+                </div>
+                <div className="min-w-0">
+                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-gaming-accent font-semibold" : "text-gaming-text"} group-hover:text-gaming-accent`}>{player.name}</div>
+                  {showHours && (
+                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
+                  )}
+                </div>
               </div>
-              <div className="min-w-0">
-                <div className={`text-sm truncate ${player.rank <= 3 ? "text-gaming-accent font-semibold" : "text-gaming-text"}`}>{player.name}</div>
-                {showHours && (
-                  <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
-                )}
-              </div>
-            </div>
 
-            <div className={`${player.rank <= 3 ? "text-gaming-accent font-semibold" : colorClass} text-sm`}>{player.value}</div>
-          </div>
-        ))}
+              {!showHours && (
+                <div className={`${player.rank <= 3 ? "text-gaming-accent font-semibold" : colorClass} text-sm group-hover:text-gaming-accent`}>{player.value}</div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
