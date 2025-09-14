@@ -1,5 +1,3 @@
-import { Trophy, Target, Heart, Shield, Zap } from "lucide-react";
-
 import React from "react";
 import { Trophy } from "lucide-react";
 
@@ -123,7 +121,7 @@ interface StatListProps {
 }
 
 function StatList({ title, data, colorClass }: StatListProps) {
-  const showTopHighlight = title === "Количество убийств" || title === "Поднятий" || title === "Лучший экипаж";
+  const showTopHighlight = title === "Количество убийств" || title === "П��днятий" || title === "Лучший экипаж";
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[220px]">
