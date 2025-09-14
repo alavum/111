@@ -745,7 +745,7 @@ export default function ServerStatus() {
                     <div className="relative inline-flex items-center">
                       <Badge
                         variant="outline"
-                        className="peer text-gaming-accent border-gaming-border bg-transparent uppercase tracking-wider"
+                        className="peer text-gaming-accent border-gaming-border bg-transparent uppercase tracking-wider transition duration-150 ease-in-out hover:bg-gaming-accent/10 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gaming-accent/30"
                       >
                         <span aria-hidden className="mr-1">🌱</span>
                         <span className="text-xs">SEED</span>
