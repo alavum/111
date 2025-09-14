@@ -26,7 +26,7 @@ const mockData = {
   soldiers: [
     { rank: 1, name: "Игрок 1", value: 770 },
     { rank: 2, name: "Игрок 2", value: 458 },
-    { rank: 3, name: "Игрок 3", value: 420 },
+    { rank: 3, name: "��грок 3", value: 420 },
   ],
   gunners: [
     { rank: 1, name: "Игрок 1", value: 370 },
@@ -140,8 +140,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text"}
-                    `}>{player.name}</div>
+                  <div className={`text-sm truncate ${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text"} group-hover:text-gaming-accent`}>{player.name}</div>
                   {/* If this list uses hours, show unit under name */}
                   {(title === "CMD" || title === "Сквадные" || title === "Медики" || title === "Стрелки" || title === "Пулеметчики") && (
                     <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
