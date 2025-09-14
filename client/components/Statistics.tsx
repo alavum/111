@@ -79,7 +79,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
         {React.isValidElement(icon)
           ? React.cloneElement(icon, { className: `w-8 h-8 object-contain ${icon.props.className ?? ""}` })
           : icon}
-        <h3 className={`font-semibold ${colorClass}`}>{title}</h3>
+        <h3 className={`text-center font-bold ${colorClass}`}>{title}</h3>
       </div>
 
       <div>
