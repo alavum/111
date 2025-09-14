@@ -221,7 +221,7 @@ export default function Statistics() {
             />
 
             <StatList
-              title="Лучший игрок"
+              title="Лучший экипаж"
               data={mockData.bestPlayer}
               colorClass="text-gaming-accent"
             />
