@@ -58,7 +58,7 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 items-center">
           {/* Column 1: Logo + description + socials */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col justify-center items-center md:items-start">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
               alt="РУБЕЖ"
