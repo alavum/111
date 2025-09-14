@@ -215,7 +215,7 @@ export default function Statistics() {
             />
 
             <StatList
-              title="Подбития"
+              title="Поднятий"
               data={mockData.damage}
               colorClass="text-gaming-accent"
             />
