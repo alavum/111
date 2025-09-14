@@ -171,7 +171,7 @@ export default function Statistics() {
             Статистика за неделю
           </h2>
           <p className="text-gaming-text-muted">
-            Лучшие игроки по различным показател��м
+            Лучшие игроки по различным показателям
           </p>
         </div>
 
@@ -220,19 +220,19 @@ export default function Statistics() {
             <StatList
               title="Количество убийств"
               data={mockData.kills}
-              colorClass="text-gaming-accent"
+              colorClass="text-yellow-400"
             />
 
             <StatList
               title="Поднятий"
               data={mockData.damage}
-              colorClass="text-gaming-accent"
+              colorClass="text-yellow-400"
             />
 
             <StatList
               title="Лучший экипаж"
               data={mockData.bestPlayer}
-              colorClass="text-gaming-accent"
+              colorClass="text-yellow-400"
             />
           </div>
         </div>
