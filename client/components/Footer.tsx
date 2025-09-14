@@ -62,7 +62,7 @@ export default function Footer() {
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
               alt="РУБЕЖ"
-              className="h-6 md:h-8 w-auto object-contain"
+              className="h-5 md:h-6 w-auto object-contain self-center"
             />
             <p className="text-gaming-text-muted text-sm mt-2 max-w-xs">
               Игровое сообщество и серверы тактических симуляторов РУБЕЖ.
@@ -82,7 +82,7 @@ export default function Footer() {
                     Недельная статистика
                   </span>
                   <span className="ml-2 hidden group-hover:inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">
-                    недоступно
+                    недос��упно
                   </span>
                 </button>
               </li>
