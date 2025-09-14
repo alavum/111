@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { Users, MapPin, Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface Server {
   id: number;
@@ -464,7 +465,7 @@ export default function ServerStatus() {
         ) {
           toast({
             title: "Ошибка загрузки",
-            description: "Не удалось обновить данные серверов",
+            description: "Не удалос�� обновить данные серверов",
             variant: "destructive",
           });
         }
@@ -759,7 +760,7 @@ export default function ServerStatus() {
                             <div className="flex-1">
                               <div className="font-semibold text-gaming-text">Seed режим активен</div>
                               <p className="text-xs text-gaming-text-muted mt-1">
-                                На этом сервере включён Seed режим — колич��ство
+                                На этом сервере включён Seed режим — количество
                                 бонусов увеличено. Заходите и зарабатывайте быстрее
                                 на VIP-статус.
                               </p>
