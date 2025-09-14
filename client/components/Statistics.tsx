@@ -112,34 +112,41 @@ interface StatListProps {
 }
 
 function StatList({ title, data, colorClass }: StatListProps) {
+  const showTopHighlight = title === "Количество убийств" || title === "Поднятий" || title === "Лучший экипаж";
+
   return (
-    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
+    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[380px]">
       <h3 className={`font-semibold text-gaming-text mb-4 ${colorClass}`}>
         {title}
       </h3>
 
-      <div className="space-y-2">
-        {data.map((player) => (
-          <div
-            key={player.rank}
-            className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
-          >
-            <div className="flex items-center gap-3">
-              <span className={`${colorClass} font-bold text-sm w-4`}>
-                {player.rank}.
-              </span>
-              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
-                <span className="text-xs text-gaming-text">👤</span>
+      <div>
+        {data.slice(0, 10).map((player) => {
+          const isTop = player.rank <= 3 && showTopHighlight;
+          return (
+            <div
+              key={player.rank}
+              className={`flex items-center justify-between py-2 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "" : ""}`}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className={`${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
+                <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs text-gaming-text">👤</span>
+                </div>
+                <div className="min-w-0">
+                  <div className={`text-sm truncate ${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text"}
+                    `}>{player.name}</div>
+                  {/* If this list uses hours, show unit under name */}
+                  {(title === "CMD" || title === "Сквадные" || title === "Медики" || title === "Стрелки" || title === "Пулеметчики") && (
+                    <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
+                  )}
+                </div>
               </div>
-              <span className="text-gaming-text text-sm truncate">
-                {player.name}
-              </span>
+
+              <div className={`${isTop ? "text-gaming-accent font-semibold" : colorClass} text-sm`}>{player.value}</div>
             </div>
-            <span className={`${colorClass} font-semibold text-sm`}>
-              {player.value}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
