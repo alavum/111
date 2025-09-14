@@ -149,16 +149,17 @@ export default function News() {
             </div>
           ) : (
             newsItems.map((item) => (
-              <article
+              <Link
                 key={item.id}
-                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
+                to={`/news/${item.id}`}
+                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block"
               >
                 {/* Image */}
                 <div className="relative overflow-hidden">
                   <img
                     src={item.image || "/api/placeholder/400/250"}
                     alt={item.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-48 object-cover group-hover:scale-105 group-hover:grayscale transition-transform duration-300"
                   />
                   <div className="absolute top-4 left-4">
                     <span
@@ -181,7 +182,7 @@ export default function News() {
                   </div>
 
                   <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
-                    <Link to={`/news/${item.id}`}>{item.title}</Link>
+                    {item.title}
                   </h3>
 
                   <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
@@ -189,15 +190,12 @@ export default function News() {
                     {item.content.length > 150 ? "..." : ""}
                   </p>
 
-                  <Link
-                    to={`/news/${item.id}`}
-                    className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
-                  >
+                  <span className="inline-flex items-center text-gaming-accent font-medium text-sm transition-colors">
                     Читать далее
                     <ArrowRight className="w-4 h-4 ml-1" />
-                  </Link>
+                  </span>
                 </div>
-              </article>
+              </Link>
             ))
           )}
         </div>
