@@ -36,7 +36,7 @@ const mockData = {
   kills: [
     { rank: 1, name: "Игрок 1", value: 770 },
     { rank: 2, name: "Игрок 2", value: 458 },
-    { rank: 3, name: "Игр��к 3", value: 420 },
+    { rank: 3, name: "Игрок 3", value: 420 },
     { rank: 4, name: "Игрок 4", value: 401 },
     { rank: 5, name: "Игрок 5", value: 401 },
   ],
@@ -153,7 +153,7 @@ export default function Statistics() {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gaming-text mb-4">
-            Статис��ика за неделю
+            Статистика за неделю
           </h2>
           <p className="text-gaming-text-muted">
             Лучшие игроки по различным показателям
@@ -222,28 +222,6 @@ export default function Statistics() {
           </div>
         </div>
 
-        {/* Development Overlay */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center bg-gaming-bg/10 backdrop-blur-sm">
-          <div className="text-center bg-gaming-card border-2 border-gaming-accent rounded-lg p-6 shadow-2xl mx-4">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-gaming-accent/20 rounded-full text-gaming-accent mb-3">
-              <Trophy className="w-6 h-6" />
-            </div>
-
-            <h3 className="text-xl font-bold text-gaming-text mb-2">
-              В разработке
-            </h3>
-            <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
-              Система статистик�� находится на стадии разработки. Скоро вы
-              сможете видеть подробную статистику игроков.
-            </p>
-
-            <div className="flex items-center justify-center space-x-2 text-gaming-accent">
-              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse delay-75"></div>
-              <div className="w-2 h-2 bg-gaming-accent rounded-full animate-pulse delay-150"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
