@@ -56,7 +56,7 @@ export default function Footer() {
     <footer className="bg-gaming-card border-t border-gaming-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 items-center">
           {/* Column 1: Logo + description + socials */}
           <div className="flex flex-col items-start">
             <img
@@ -82,7 +82,7 @@ export default function Footer() {
                     Недельная статистика
                   </span>
                   <span className="ml-2 hidden group-hover:inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">
-                    недос��упно
+                    недоступно
                   </span>
                 </button>
               </li>
