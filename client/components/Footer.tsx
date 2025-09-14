@@ -58,11 +58,11 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 items-center">
           {/* Column 1: Logo + description + socials */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-center md:items-start">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
               alt="РУБЕЖ"
-              className="h-5 md:h-6 w-auto object-contain self-center"
+              className="block h-5 md:h-6 w-auto object-contain"
             />
             <p className="text-gaming-text-muted text-sm mt-2 max-w-xs">
               Игровое сообщество и серверы тактических симуляторов РУБЕЖ.
