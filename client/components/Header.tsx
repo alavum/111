@@ -29,7 +29,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center h-full">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
                 alt="РУБЕЖ"
@@ -72,7 +72,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="text-gaming-text hover:text-gaming-accent transition-colors font-medium"
               >
-                Обжа��овать бан
+                Обжаловать бан
               </a>
             </div>
           </div>
