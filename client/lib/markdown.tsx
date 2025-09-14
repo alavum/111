@@ -1,5 +1,7 @@
 import React from "react";
 
+import React from "react";
+
 // Lightweight rich text renderer supporting headings, lists, inline bold/italic and simple tables.
 export function renderRichText(text: string) {
   if (!text) return null;
