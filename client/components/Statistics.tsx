@@ -99,7 +99,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
                 <div className="min-w-0">
                   <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
                   {showHours && (
-                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} ми��</div>
+                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
                   )}
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function Statistics() {
             Статистика за неделю
           </h2>
           <p className="text-gaming-text-muted">
-            Лучшие игроки по различным показателям
+            Лучшие игроки по различным показател��м
           </p>
         </div>
 
@@ -189,29 +189,29 @@ export default function Statistics() {
             <StatCard
               title="Сквадные"
               data={mockData.snipers}
-              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9dd369e9884547debcad079c9dd2ad0b?format=webp&width=800" alt="Squad" className="w-5 h-5 object-contain" />}
-              colorClass="text-red-400"
+              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9dd369e9884547debcad079c9dd2ad0b?format=webp&width=800" alt="Squad" className="w-8 h-8 object-contain" />}
+              colorClass="text-yellow-400"
             />
 
             <StatCard
               title="Медики"
               data={mockData.medics}
-              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F4a0730d5b5bd49569e5d41f8609368e3?format=webp&width=800" alt="Medic" className="w-5 h-5 object-contain" />}
-              colorClass="text-green-400"
+              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F4a0730d5b5bd49569e5d41f8609368e3?format=webp&width=800" alt="Medic" className="w-8 h-8 object-contain" />}
+              colorClass="text-yellow-400"
             />
 
             <StatCard
               title="Стрелки"
               data={mockData.soldiers}
-              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F83747ccc5e1f42bbb02bb6f0ca41b92c?format=webp&width=800" alt="Rifleman" className="w-5 h-5 object-contain" />}
-              colorClass="text-blue-400"
+              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F83747ccc5e1f42bbb02bb6f0ca41b92c?format=webp&width=800" alt="Rifleman" className="w-8 h-8 object-contain" />}
+              colorClass="text-yellow-400"
             />
 
             <StatCard
               title="Пулеметчики"
               data={mockData.gunners}
-              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800" alt="Machinegunner" className="w-5 h-5 object-contain" />}
-              colorClass="text-purple-400"
+              icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800" alt="Machinegunner" className="w-8 h-8 object-contain" />}
+              colorClass="text-yellow-400"
             />
           </div>
 
