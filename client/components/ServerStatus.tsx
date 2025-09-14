@@ -465,7 +465,7 @@ export default function ServerStatus() {
         ) {
           toast({
             title: "Ошибка загрузки",
-            description: "Не удалос�� обновить данные серверов",
+            description: "Не удалось обновить данные серверов",
             variant: "destructive",
           });
         }
@@ -743,16 +743,15 @@ export default function ServerStatus() {
                   {/* Seed indicator: show emoji 🌱 and a redesigned info card on hover */}
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span
-                        className="peer inline-flex items-center gap-2 text-xs uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-accent/10 text-gaming-accent border border-gaming-border select-none"
-                        role="img"
-                        aria-label="Seed mode"
+                      <Badge
+                        variant="outline"
+                        className="peer text-gaming-accent border-gaming-border bg-transparent uppercase tracking-wider"
                       >
-                        <span aria-hidden className="text-sm">🌱</span>
-                        <span>SEED</span>
-                      </span>
+                        <span aria-hidden className="mr-1">🌱</span>
+                        <span className="text-xs">SEED</span>
+                      </Badge>
 
-                      {/* Tooltip/info card shown when hovering the emoji */}
+                      {/* Tooltip/info card shown when hovering the badge */}
                       <div className="absolute left-0 top-full mt-2 w-72 max-w-[320px] z-50 opacity-0 pointer-events-none transition-opacity duration-150 peer-hover:opacity-100 peer-hover:pointer-events-auto">
                         <div className="bg-gaming-card border border-gaming-border rounded-lg p-3 text-sm shadow-lg">
                           <div className="flex items-start gap-3">
