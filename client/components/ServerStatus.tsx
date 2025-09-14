@@ -655,7 +655,7 @@ export default function ServerStatus() {
       toast({
         title: "Статус подключения неизвестен",
         description:
-          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите ��есколько секунд при загрузке сайта.",
+          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
         variant: "destructive",
       });
       return;
@@ -743,12 +743,12 @@ export default function ServerStatus() {
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
                       <span
-                        className="peer inline-flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gaming-accent/10 text-gaming-accent border border-gaming-border select-none"
+                        className="peer inline-flex items-center gap-2 text-xs uppercase tracking-wider px-2 py-0.5 rounded-full bg-gaming-accent/10 text-gaming-accent border border-gaming-border select-none"
                         role="img"
                         aria-label="Seed mode"
                       >
                         <span aria-hidden className="text-sm">🌱</span>
-                        <span>Seed</span>
+                        <span>SEED</span>
                       </span>
 
                       {/* Tooltip/info card shown when hovering the emoji */}
@@ -759,7 +759,7 @@ export default function ServerStatus() {
                             <div className="flex-1">
                               <div className="font-semibold text-gaming-text">Seed режим активен</div>
                               <p className="text-xs text-gaming-text-muted mt-1">
-                                На этом сервере включён Seed режим — количество
+                                На этом сервере включён Seed режим — колич��ство
                                 бонусов увеличено. Заходите и зарабатывайте быстрее
                                 на VIP-статус.
                               </p>
