@@ -1,5 +1,7 @@
 import { Trophy, Target, Heart, Shield, Zap } from "lucide-react";
 
+import React from "react";
+
 interface PlayerStat {
   rank: number;
   name: string;
