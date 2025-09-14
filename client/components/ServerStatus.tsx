@@ -655,7 +655,7 @@ export default function ServerStatus() {
       toast({
         title: "Статус подключения неизвестен",
         description:
-          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
+          "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите ��есколько секунд при загрузке сайта.",
         variant: "destructive",
       });
       return;
@@ -742,9 +742,13 @@ export default function ServerStatus() {
                   {/* Seed indicator: show emoji 🌱 and a redesigned info card on hover */}
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span className="peer text-sm select-none inline-flex items-center gap-2" role="img" aria-label="Seed mode">
-                        <span aria-hidden>🌱</span>
-                        <span className="text-xs font-semibold">Seed</span>
+                      <span
+                        className="peer inline-flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gaming-accent/10 text-gaming-accent border border-gaming-border select-none"
+                        role="img"
+                        aria-label="Seed mode"
+                      >
+                        <span aria-hidden className="text-sm">🌱</span>
+                        <span>Seed</span>
                       </span>
 
                       {/* Tooltip/info card shown when hovering the emoji */}
