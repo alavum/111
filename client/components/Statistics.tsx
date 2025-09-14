@@ -126,7 +126,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[220px]">
-      <h3 className={`font-semibold text-gaming-text mb-4 ${colorClass}`}>
+      <h3 className={`text-center font-bold mb-4 ${colorClass}`}>
         {title}
       </h3>
 
