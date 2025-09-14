@@ -17,7 +17,7 @@ const footerSections = [
     links: [{ label: "Гайды", href: "/guides" }],
   },
   {
-    title: "Ссылки",
+    title: "��сылки",
     links: [
       { label: "YouTube", href: "https://youtube.com", external: true },
       { label: "Discord", href: "https://discord.com", external: true },
@@ -177,12 +177,8 @@ export default function Footer() {
                 <p className="text-gaming-text-muted text-xs mb-1">
                   Услуги предоставляет
                 </p>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">
-                    Самозанятый
-                  </span>
-                  <p className="text-gaming-text font-medium m-0">Лебидко Кирилл Алексеевич</p>
-                </div>
+                <p className="text-gaming-accent text-xs font-semibold mb-1">Самозанятый</p>
+                <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
                 <p className="text-gaming-text-muted text-xs mt-1">
                   ИНН: 862203594392
                 </p>
