@@ -177,7 +177,7 @@ export default function Footer() {
                 <p className="text-gaming-text-muted text-xs mb-1">
                   Услуги предоставляет
                 </p>
-                <p className="text-gaming-accent text-xs font-semibold mb-1">Самозанятый</p>
+                <p className="text-gaming-text-muted text-xs mb-1">Самозанятый</p>
                 <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
                 <p className="text-gaming-text-muted text-xs mt-1">
                   ИНН: 862203594392
