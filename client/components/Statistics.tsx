@@ -79,7 +79,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
       </div>
 
       <div>
-        {data.slice(0, 10).map((player) => {
+        {data.slice(0, 5).map((player) => {
           const hours = Math.floor(player.value / 60);
           const mins = player.value % 60;
           return (
@@ -88,12 +88,12 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
               className="flex items-center justify-between py-1.5 px-2 rounded transition-colors group hover:bg-gaming-card-hover"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className={`${player.rank <= 3 ? "text-gaming-accent" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
+                <span className={`${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text-muted"} text-sm w-4`}>{player.rank}.</span>
                 <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-gaming-accent font-semibold" : "text-gaming-text"} group-hover:text-gaming-accent`}>{player.name}</div>
+                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
                   {showHours && (
                     <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
                   )}
@@ -101,7 +101,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
               </div>
 
               {!showHours && (
-                <div className={`${player.rank <= 3 ? "text-gaming-accent font-semibold" : colorClass} text-sm group-hover:text-gaming-accent`}>{player.value}</div>
+                <div className={`${player.rank <= 3 ? "text-white font-bold" : colorClass} text-sm group-hover:text-white`}>{player.value}</div>
               )}
             </div>
           );
@@ -121,26 +121,26 @@ function StatList({ title, data, colorClass }: StatListProps) {
   const showTopHighlight = title === "Количество убийств" || title === "Поднятий" || title === "Лучший экипаж";
 
   return (
-    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[380px]">
+    <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[220px]">
       <h3 className={`font-semibold text-gaming-text mb-4 ${colorClass}`}>
         {title}
       </h3>
 
       <div>
-        {data.slice(0, 10).map((player) => {
+        {data.slice(0, 5).map((player) => {
           const isTop = player.rank <= 3 && showTopHighlight;
           return (
             <div
               key={player.rank}
-              className={`flex items-center justify-between py-1.5 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "bg-gaming-bg/20" : ""}`}
+              className={`flex items-center justify-between py-1.5 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "bg-gaming-bg/10" : ""}`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className={`${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
+                <span className={`${isTop ? "text-white font-bold" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
                 <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text"} group-hover:text-gaming-accent`}>{player.name}</div>
+                  <div className={`text-sm truncate ${isTop ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
                   {/* If this list uses hours, show unit under name */}
                   {(title === "CMD" || title === "Сквадные" || title === "Медики" || title === "Стрелки" || title === "Пулеметчики") && (
                     <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
@@ -148,7 +148,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
                 </div>
               </div>
 
-              <div className={`${isTop ? "text-gaming-accent font-semibold" : colorClass} text-sm`}>{player.value}</div>
+              <div className={`${isTop ? "text-white font-bold" : colorClass} text-sm`}>{player.value}</div>
             </div>
           );
         })}
