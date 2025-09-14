@@ -742,12 +742,9 @@ export default function ServerStatus() {
                   {/* Seed indicator: show emoji 🌱 and a redesigned info card on hover */}
                   {String(server.gameMode || "").toLowerCase().includes("seed") && (
                     <div className="relative inline-flex items-center">
-                      <span
-                        className="peer text-sm select-none"
-                        role="img"
-                        aria-label="Seed mode"
-                      >
-                        🌱
+                      <span className="peer text-sm select-none inline-flex items-center gap-2" role="img" aria-label="Seed mode">
+                        <span aria-hidden>🌱</span>
+                        <span className="text-xs font-semibold">Seed</span>
                       </span>
 
                       {/* Tooltip/info card shown when hovering the emoji */}
