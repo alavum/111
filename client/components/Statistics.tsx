@@ -78,27 +78,26 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
         <h3 className="font-semibold text-gaming-text">{title}</h3>
       </div>
 
-      <div className="space-y-2">
-        {data.map((player) => (
+      <div>
+        {data.slice(0, 10).map((player) => (
           <div
             key={player.rank}
-            className="flex items-center justify-between py-2 px-2 bg-gaming-bg/50 rounded"
+            className="flex items-center justify-between py-2 px-2 rounded transition-colors group hover:bg-gaming-card-hover"
           >
-            <div className="flex items-center gap-3">
-              <span className={`${colorClass} font-bold text-sm w-4`}>
-                {player.rank}.
-              </span>
-              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className={`${player.rank <= 3 ? "text-gaming-accent" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
+              <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-xs text-gaming-text">👤</span>
               </div>
-              <span className="text-gaming-text text-sm truncate">
-                {player.name}
-              </span>
+              <div className="min-w-0">
+                <div className={`text-sm truncate ${player.rank <= 3 ? "text-gaming-accent font-semibold" : "text-gaming-text"}`}>{player.name}</div>
+                {showHours && (
+                  <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
+                )}
+              </div>
             </div>
-            <span className={`${colorClass} font-semibold text-sm`}>
-              {player.value}
-              {showHours ? " ч." : ""}
-            </span>
+
+            <div className={`${player.rank <= 3 ? "text-gaming-accent font-semibold" : colorClass} text-sm`}>{player.value}</div>
           </div>
         ))}
       </div>
