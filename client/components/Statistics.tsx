@@ -152,7 +152,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
                 </div>
               </div>
 
-              <div className={`${isTop ? "text-white font-bold" : colorClass} text-sm`}>{player.value}</div>
+              <div className={`${isTop ? "text-white font-bold" : colorClass + " font-semibold"} text-sm group-hover:text-white`}>{player.value}</div>
             </div>
           );
         })}
