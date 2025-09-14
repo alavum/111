@@ -177,7 +177,12 @@ export default function Footer() {
                 <p className="text-gaming-text-muted text-xs mb-1">
                   Услуги предоставляет
                 </p>
-                <p className="text-gaming-text font-medium">Самозанятый Лебидко Кирилл Алексеевич</p>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">
+                    Самозанятый
+                  </span>
+                  <p className="text-gaming-text font-medium m-0">Лебидко Кирилл Алексеевич</p>
+                </div>
                 <p className="text-gaming-text-muted text-xs mt-1">
                   ИНН: 862203594392
                 </p>
