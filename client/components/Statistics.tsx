@@ -144,7 +144,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${isTop ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
+                  <div className={`text-sm truncate ${isTop ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}>{player.name}</div>
                   {/* If this list uses hours, show unit under name */}
                   {(title === "CMD" || title === "Сквадные" || title === "Медики" || title === "Стрелки" || title === "Пулеметчики") && (
                     <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
