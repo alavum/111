@@ -75,7 +75,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
-      <div className={`flex items-center gap-2 mb-4`}>
+      <div className={`flex flex-col items-center gap-2 mb-4`}>
         {React.isValidElement(icon)
           ? React.cloneElement(icon, { className: `w-8 h-8 object-contain ${icon.props.className ?? ""}` })
           : icon}
