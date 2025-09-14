@@ -7,7 +7,7 @@ import { toast } from "@/hooks/use-toast";
 
 export default function Header() {
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (path: string) => {
     if (path === "/") {
