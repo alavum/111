@@ -75,9 +75,11 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
-      <div className={`flex items-center gap-2 mb-4 ${colorClass}`}>
-        {icon}
-        <h3 className="font-semibold text-gaming-text">{title}</h3>
+      <div className={`flex items-center gap-2 mb-4`}>
+        {React.isValidElement(icon)
+          ? React.cloneElement(icon, { className: `w-8 h-8 object-contain ${icon.props.className ?? ""}` })
+          : icon}
+        <h3 className={`font-semibold ${colorClass}`}>{title}</h3>
       </div>
 
       <div>
@@ -97,7 +99,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
                 <div className="min-w-0">
                   <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
                   {showHours && (
-                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
+                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} ми��</div>
                   )}
                 </div>
               </div>
