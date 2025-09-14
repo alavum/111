@@ -54,17 +54,17 @@ const bottomLinks = [
 export default function Footer() {
   return (
     <footer className="bg-gaming-card border-t border-gaming-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 items-start">
           {/* Column 1: Logo + description + socials */}
           <div className="flex flex-col items-start">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
               alt="РУБЕЖ"
-              className="w-28 h-28 md:w-40 md:h-40 object-contain -mt-1"
+              className="w-20 h-20 md:w-28 md:h-28 object-contain -mt-0"
             />
-            <p className="text-gaming-text-muted text-sm mt-3 max-w-xs">
+            <p className="text-gaming-text-muted text-sm mt-2 max-w-xs">
               Игровое сообщество и серверы тактических симуляторов РУБЕЖ.
             </p>
           </div>
@@ -121,7 +121,7 @@ export default function Footer() {
               </li>
             </ul>
 
-            <h4 className="font-semibold text-gaming-text mb-3 mt-6">
+            <h4 className="font-semibold text-gaming-text mb-3 mt-4">
               Новичкам
             </h4>
             <ul className="space-y-2 text-sm">
@@ -158,7 +158,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gaming-border pt-6">
+        <div className="border-t border-gaming-border pt-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex flex-wrap gap-4">
               {bottomLinks.map((link) => (
@@ -173,13 +173,11 @@ export default function Footer() {
             </div>
 
             <div className="mt-4 md:mt-0 md:ml-8">
-              <div className="bg-gaming-card border border-gaming-border rounded-md p-3 text-sm">
+              <div className="bg-gaming-card border border-gaming-border rounded-md p-2 text-sm">
                 <p className="text-gaming-text-muted text-xs mb-1">
                   Услуги предоставляет
                 </p>
-                <p className="text-gaming-text font-medium">
-                  Лебидко Кирилл Алексеевич
-                </p>
+                <p className="text-gaming-text font-medium">Самозанятый Лебидко Кирилл Алексеевич</p>
                 <p className="text-gaming-text-muted text-xs mt-1">
                   ИНН: 862203594392
                 </p>
