@@ -132,7 +132,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
           return (
             <div
               key={player.rank}
-              className={`flex items-center justify-between py-2 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "" : ""}`}
+              className={`flex items-center justify-between py-1.5 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "bg-gaming-bg/20" : ""}`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span className={`${isTop ? "text-gaming-accent font-semibold" : "text-gaming-text-muted"} font-bold text-sm w-4`}>{player.rank}.</span>
