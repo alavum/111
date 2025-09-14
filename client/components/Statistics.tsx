@@ -36,7 +36,7 @@ const mockData = {
   kills: [
     { rank: 1, name: "Игрок 1", value: 770 },
     { rank: 2, name: "Игрок 2", value: 458 },
-    { rank: 3, name: "Игрок 3", value: 420 },
+    { rank: 3, name: "Игр��к 3", value: 420 },
     { rank: 4, name: "Игрок 4", value: 401 },
     { rank: 5, name: "Игрок 5", value: 401 },
   ],
@@ -153,7 +153,7 @@ export default function Statistics() {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gaming-text mb-4">
-            Статистика за неделю
+            Статис��ика за неделю
           </h2>
           <p className="text-gaming-text-muted">
             Лучшие игроки по различным показателям
@@ -161,7 +161,7 @@ export default function Statistics() {
         </div>
 
         {/* Statistics Content */}
-        <div className="space-y-8 blur-sm">
+        <div className="space-y-8">
           {/* Role-based Statistics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <StatCard
