@@ -17,7 +17,7 @@ const footerSections = [
     links: [{ label: "Гайды", href: "/guides" }],
   },
   {
-    title: "��сылки",
+    title: "Ссылки",
     links: [
       { label: "YouTube", href: "https://youtube.com", external: true },
       { label: "Discord", href: "https://discord.com", external: true },
@@ -62,7 +62,7 @@ export default function Footer() {
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
               alt="РУБЕЖ"
-              className="w-20 h-20 md:w-28 md:h-28 object-contain -mt-0"
+              className="h-12 md:h-16 w-auto object-contain"
             />
             <p className="text-gaming-text-muted text-sm mt-2 max-w-xs">
               Игровое сообщество и серверы тактических симуляторов РУБЕЖ.
