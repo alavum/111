@@ -47,7 +47,7 @@ const mockData = {
     { rank: 2, name: "Игрок 2", value: 301 },
     { rank: 3, name: "Игрок 3", value: 300 },
     { rank: 4, name: "Игрок 4", value: 201 },
-    { rank: 5, name: "Игрок 5", value: 201 },
+    { rank: 5, name: "И��рок 5", value: 201 },
   ],
   bestPlayer: [
     { rank: 1, name: "Игрок 1", value: 193 },
@@ -97,7 +97,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text"} group-hover:text-white`}>{player.name}</div>
+                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}>{player.name}</div>
                   {showHours && (
                     <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
                   )}
