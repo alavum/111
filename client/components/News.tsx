@@ -202,7 +202,7 @@ export default function News() {
 
         {/* Call to Action */}
         <div className="mt-8">
-          <div className="bg-gaming-card border border-gaming-border rounded-lg p-3 w-full flex flex-col sm:flex-row items-center sm:items-stretch gap-3">
+          <div className="bg-gaming-card border border-gaming-border rounded-lg p-3 w-full flex flex-col sm:flex-row items-center sm:items-center gap-3">
             <div className="flex items-center gap-3 flex-1 min-w-0 sm:max-w-3xl">
               <div className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gaming-accent/20 text-gaming-accent">
                 <Calendar className="w-4 h-4" />
