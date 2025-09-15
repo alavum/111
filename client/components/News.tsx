@@ -219,7 +219,7 @@ export default function News() {
                   <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold h-10 px-6 min-w-[120px]">Discord</Button>
                 </a>
                 <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="self-center">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold h-10 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="/icons/youtube.svg" alt="YouTube" className="w-4 h-4"/>YouTube</Button>
+                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold h-10 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9ff06eb01ab24841b18cb9c984941e9d?format=webp&width=800" alt="YouTube" className="w-4 h-4"/>YouTube</Button>
                 </a>
                 <a href="https://www.twitch.tv" target="_blank" rel="noopener noreferrer" className="self-center">
                   <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold h-10 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="/icons/twitch.svg" alt="Twitch" className="w-4 h-4"/>Twitch</Button>
