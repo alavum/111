@@ -202,17 +202,17 @@ export default function News() {
 
         {/* Call to Action */}
         <div className="mt-10">
-          <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 w-full flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+          <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 w-full flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
               <div className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-gaming-accent/20 text-gaming-accent">
                 <Calendar className="w-5 h-5" />
               </div>
-              <div className="text-left">
-                <h4 className="text-lg font-semibold text-gaming-text">Не пропускайте важные новости</h4>
-                <p className="text-gaming-text-muted text-sm">Присоединяйтесь к нашему Discord, чтобы первыми узнавать об обновлениях и событиях.</p>
+              <div className="text-left min-w-0">
+                <h4 className="text-lg font-semibold text-gaming-text truncate">Не пропускайте важные новости</h4>
+                <p className="text-gaming-text-muted text-sm truncate">Присоединяйтесь к нашему Discord, чтобы первыми узнавать об обновлениях и событиях.</p>
               </div>
             </div>
-            <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="ml-4">
+            <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer">
               <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold py-2 px-3">Discord</Button>
             </a>
           </div>
