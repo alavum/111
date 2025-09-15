@@ -81,8 +81,8 @@ export default function Footer() {
                   <span className="transition-opacity duration-150 group-hover:opacity-60">
                     Недельная статистика
                   </span>
-                  <span className="ml-2 hidden group-hover:inline-flex items-center text-xs bg-gaming-accent/10 text-gaming-accent border border-gaming-border rounded-full px-2 py-0.5">
-                    недоступно
+                  <span className="ml-2 hidden group-hover:inline-flex group-focus:inline-flex items-center text-sm bg-gaming-card border border-gaming-border text-gaming-text-muted rounded px-2 py-1">
+                    Недоступно
                   </span>
                 </button>
               </li>
