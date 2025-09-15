@@ -297,24 +297,19 @@ export default function NewsPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
                   {featuredNews.map((item, index) => (
-                    <article
+                    <Link
                       key={item.id}
-                      className={`${
-                        index === 0 ? "md:col-span-2" : ""
-                      } bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group`}
+                      to={`/news/${item.slug}`}
+                      className={`${index === 0 ? "md:col-span-2" : ""} bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block`}
                     >
                       <div className="relative overflow-hidden">
                         <img
                           src={item.image}
                           alt={item.title}
-                          className={`w-full object-cover group-hover:scale-105 transition-transform duration-300 ${
-                            index === 0 ? "h-64 md:h-80" : "h-48"
-                          }`}
+                          className={`w-full object-cover group-hover:scale-105 group-hover:grayscale transition-transform duration-300 ${index === 0 ? "h-64 md:h-80" : "h-48"}`}
                         />
                         <div className="absolute top-4 left-4">
-                          <span
-                            className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(item.category)}`}
-                          >
+                          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(item.category)}`}>
                             {item.category}
                           </span>
                         </div>
@@ -326,47 +321,37 @@ export default function NewsPage() {
                           {new Date(item.date).toLocaleDateString("ru-RU")}
                         </div>
 
-                        <h2
-                          className={`font-bold text-gaming-text mb-3 group-hover:text-gaming-accent transition-colors ${
-                            index === 0 ? "text-xl md:text-2xl" : "text-lg"
-                          }`}
-                        >
-                          <Link to={`/news/${item.slug}`}>{item.title}</Link>
+                        <h2 className={`font-bold text-gaming-text mb-3 group-hover:text-gaming-accent transition-colors ${index === 0 ? "text-xl md:text-2xl" : "text-lg"}`}>
+                          {item.title}
                         </h2>
 
-                        <p className="text-gaming-text-muted mb-4 line-clamp-3">
-                          {item.excerpt}
-                        </p>
+                        <p className="text-gaming-text-muted mb-4 line-clamp-3">{item.excerpt}</p>
 
-                        <Link
-                          to={`/news/${item.slug}`}
-                          className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium transition-colors"
-                        >
+                        <span className="inline-flex items-center text-gaming-accent font-medium transition-colors">
                           Читать далее
                           <ArrowRight className="w-4 h-4 ml-1" />
-                        </Link>
+                        </span>
                       </div>
-                    </article>
+                    </Link>
                   ))}
                 </div>
 
                 {/* Regular News */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {regularNews.map((item) => (
-                    <article
+                    <Link
                       key={item.id}
-                      className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
+                      to={`/news/${item.slug}`}
+                      className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block"
                     >
                       <div className="relative overflow-hidden">
                         <img
                           src={item.image}
                           alt={item.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-48 object-cover group-hover:scale-105 group-hover:grayscale transition-transform duration-300"
                         />
                         <div className="absolute top-4 left-4">
-                          <span
-                            className={`px-2 py-1 text-xs font-semibold rounded-md ${getCategoryColor(item.category)}`}
-                          >
+                          <span className={`px-2 py-1 text-xs font-semibold rounded-md ${getCategoryColor(item.category)}`}>
                             {item.category}
                           </span>
                         </div>
@@ -378,23 +363,13 @@ export default function NewsPage() {
                           {new Date(item.date).toLocaleDateString("ru-RU")}
                         </div>
 
-                        <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
-                          <Link to={`/news/${item.slug}`}>{item.title}</Link>
-                        </h3>
+                        <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">{item.title}</h3>
 
-                        <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
-                          {item.excerpt}
-                        </p>
+                        <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">{item.excerpt}</p>
 
-                        <Link
-                          to={`/news/${item.slug}`}
-                          className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
-                        >
-                          Читать далее
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </Link>
+                        <span className="inline-flex items-center text-gaming-accent font-medium text-sm transition-colors">Читать далее<ArrowRight className="w-4 h-4 ml-1" /></span>
                       </div>
-                    </article>
+                    </Link>
                   ))}
                 </div>
 
