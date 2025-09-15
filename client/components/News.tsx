@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight, Youtube, Tv } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -18,7 +18,7 @@ interface NewsItem {
 const fallbackNewsItems: NewsItem[] = [
   {
     id: 1,
-    title: "Новости загружаются...",
+    title: "Н��вости загружаются...",
     content: "Пожалуйста, подождите, пока мы загружаем последние новости.",
     date: new Date().toISOString(),
     author: "System",
@@ -208,7 +208,7 @@ export default function News() {
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="text-left min-w-0">
-                <h4 className="text-base font-semibold text-gaming-text">Не пропускайте важные новости</h4>
+                <h4 className="text-base font-semibold text-gaming-text">Не про��ускайте важные новости</h4>
                 <p className="text-gaming-text-muted text-sm">Присоединяйтесь к нашему Discord, чтобы первыми узнавать об обновлениях и событиях.</p>
               </div>
             </div>
