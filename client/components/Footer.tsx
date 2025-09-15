@@ -81,8 +81,12 @@ export default function Footer() {
                   <span className="transition-opacity duration-150 group-hover:opacity-60">
                     Недельная статистика
                   </span>
-                  <span className="ml-2 hidden group-hover:inline-flex group-focus:inline-flex items-center text-sm bg-gaming-card border border-gaming-border text-gaming-text-muted rounded px-2 py-1">
-                    Недоступно
+
+                  {/* Absolute badge to avoid layout shift */}
+                  <span className="pointer-events-none absolute left-0 top-full mt-2 opacity-0 scale-95 transform transition-all duration-150 group-hover:opacity-100 group-hover:scale-100 group-focus:opacity-100 z-20">
+                    <span className="inline-flex items-center text-xs bg-gaming-card border border-gaming-border text-gaming-text-muted rounded px-2 py-1 shadow-sm">
+                      Недоступно
+                    </span>
                   </span>
                 </button>
               </li>
