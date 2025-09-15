@@ -76,7 +76,9 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
       <div className={`flex flex-col items-center gap-2 mb-4`}>
         {React.isValidElement(icon)
-          ? React.cloneElement(icon, { className: `w-8 h-8 object-contain ${icon.props.className ?? ""}` })
+          ? React.cloneElement(icon, {
+              className: `w-8 h-8 object-contain ${icon.props.className ?? ""}`,
+            })
           : icon}
         <h3 className={`text-center font-bold ${colorClass}`}>{title}</h3>
       </div>
@@ -91,20 +93,34 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
               className="flex items-center justify-between py-1.5 px-2 rounded transition-colors group hover:bg-gaming-card-hover"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className={`${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text-muted"} text-sm w-4`}>{player.rank}.</span>
+                <span
+                  className={`${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text-muted"} text-sm w-4`}
+                >
+                  {player.rank}.
+                </span>
                 <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}>{player.name}</div>
+                  <div
+                    className={`text-sm truncate ${player.rank <= 3 ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}
+                  >
+                    {player.name}
+                  </div>
                   {showHours && (
-                    <div className="text-xs text-gaming-text-muted mt-0.5">{hours} ч {mins} мин</div>
+                    <div className="text-xs text-gaming-text-muted mt-0.5">
+                      {hours} ч {mins} мин
+                    </div>
                   )}
                 </div>
               </div>
 
               {!showHours && (
-                <div className={`${player.rank <= 3 ? "text-white font-bold" : colorClass + " font-semibold"} text-sm group-hover:text-white`}>{player.value}</div>
+                <div
+                  className={`${player.rank <= 3 ? "text-white font-bold" : colorClass + " font-semibold"} text-sm group-hover:text-white`}
+                >
+                  {player.value}
+                </div>
               )}
             </div>
           );
@@ -121,13 +137,14 @@ interface StatListProps {
 }
 
 function StatList({ title, data, colorClass }: StatListProps) {
-  const showTopHighlight = title === "Количество убийств" || title === "П��днятий" || title === "Лучший экипаж";
+  const showTopHighlight =
+    title === "Количество убийств" ||
+    title === "П��днятий" ||
+    title === "Лучший экипаж";
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 min-h-[220px]">
-      <h3 className={`text-center font-bold mb-4 ${colorClass}`}>
-        {title}
-      </h3>
+      <h3 className={`text-center font-bold mb-4 ${colorClass}`}>{title}</h3>
 
       <div>
         {data.slice(0, 5).map((player) => {
@@ -138,20 +155,38 @@ function StatList({ title, data, colorClass }: StatListProps) {
               className={`flex items-center justify-between py-1.5 px-2 transition-colors group hover:bg-gaming-card-hover ${isTop ? "bg-gaming-bg/10" : ""}`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className={`${isTop ? "text-white font-bold" : "text-gaming-text-muted font-semibold"} text-sm w-4`}>{player.rank}.</span>
+                <span
+                  className={`${isTop ? "text-white font-bold" : "text-gaming-text-muted font-semibold"} text-sm w-4`}
+                >
+                  {player.rank}.
+                </span>
                 <div className="w-6 h-6 bg-gaming-border rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs text-gaming-text">👤</span>
                 </div>
                 <div className="min-w-0">
-                  <div className={`text-sm truncate ${isTop ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}>{player.name}</div>
+                  <div
+                    className={`text-sm truncate ${isTop ? "text-white font-bold" : "text-gaming-text font-semibold"} group-hover:text-white`}
+                  >
+                    {player.name}
+                  </div>
                   {/* If this list uses hours, show unit under name */}
-                  {(title === "CMD" || title === "Сквадные" || title === "Медики" || title === "Стрелки" || title === "Пулеметчики") && (
-                    <div className="text-xs text-gaming-text-muted mt-0.5">ч.</div>
+                  {(title === "CMD" ||
+                    title === "Сквадные" ||
+                    title === "Медики" ||
+                    title === "Стрелки" ||
+                    title === "Пулеметчики") && (
+                    <div className="text-xs text-gaming-text-muted mt-0.5">
+                      ч.
+                    </div>
                   )}
                 </div>
               </div>
 
-              <div className={`${isTop ? "text-white font-bold" : colorClass + " font-semibold"} text-sm group-hover:text-white`}>{player.value}</div>
+              <div
+                className={`${isTop ? "text-white font-bold" : colorClass + " font-semibold"} text-sm group-hover:text-white`}
+              >
+                {player.value}
+              </div>
             </div>
           );
         })}
@@ -182,35 +217,65 @@ export default function Statistics() {
               <StatCard
                 title="CMD"
                 data={mockData.commanders}
-                icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F78f286839e4a4b8a825bcd5fe8ba1b0a?format=webp&width=800" alt="CMD" className="w-8 h-8 object-contain" />}
+                icon={
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F78f286839e4a4b8a825bcd5fe8ba1b0a?format=webp&width=800"
+                    alt="CMD"
+                    className="w-8 h-8 object-contain"
+                  />
+                }
                 colorClass="text-yellow-400"
               />
 
               <StatCard
                 title="Сквадные"
                 data={mockData.snipers}
-                icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9dd369e9884547debcad079c9dd2ad0b?format=webp&width=800" alt="Squad" className="w-8 h-8 object-contain" />}
+                icon={
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9dd369e9884547debcad079c9dd2ad0b?format=webp&width=800"
+                    alt="Squad"
+                    className="w-8 h-8 object-contain"
+                  />
+                }
                 colorClass="text-yellow-400"
               />
 
               <StatCard
                 title="Медики"
                 data={mockData.medics}
-                icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F4a0730d5b5bd49569e5d41f8609368e3?format=webp&width=800" alt="Medic" className="w-8 h-8 object-contain" />}
+                icon={
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F4a0730d5b5bd49569e5d41f8609368e3?format=webp&width=800"
+                    alt="Medic"
+                    className="w-8 h-8 object-contain"
+                  />
+                }
                 colorClass="text-yellow-400"
               />
 
               <StatCard
                 title="Стрелки"
                 data={mockData.soldiers}
-                icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F83747ccc5e1f42bbb02bb6f0ca41b92c?format=webp&width=800" alt="Rifleman" className="w-8 h-8 object-contain" />}
+                icon={
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F83747ccc5e1f42bbb02bb6f0ca41b92c?format=webp&width=800"
+                    alt="Rifleman"
+                    className="w-8 h-8 object-contain"
+                  />
+                }
                 colorClass="text-yellow-400"
               />
 
               <StatCard
                 title="Пулеметчики"
                 data={mockData.gunners}
-                icon={<img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800" alt="Machinegunner" className="w-8 h-8 object-contain" />}
+                icon={
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800"
+                    alt="Machinegunner"
+                    className="w-8 h-8 object-contain"
+                  />
+                }
                 colorClass="text-yellow-400"
               />
             </div>
@@ -244,9 +309,12 @@ export default function Statistics() {
                 <Trophy className="w-6 h-6" />
               </div>
 
-              <h3 className="text-xl font-bold text-gaming-text mb-2">В разработке</h3>
+              <h3 className="text-xl font-bold text-gaming-text mb-2">
+                В разработке
+              </h3>
               <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
-                Система статистик находится на стадии разработки. Скоро вы сможете видеть подробную статистику игроков.
+                Система статистик находится на стадии разработки. Скоро вы
+                сможете видеть подробную статистику игроков.
               </p>
 
               <div className="flex items-center justify-center space-x-2 text-gaming-accent">
@@ -256,9 +324,7 @@ export default function Statistics() {
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );

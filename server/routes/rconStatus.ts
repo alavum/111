@@ -93,15 +93,20 @@ async function querySquadRconServer(
       rcon.send("ShowCurrentMap"),
     ]);
 
-    const listPlayersResponse = results[0].status === "fulfilled" ? results[0].value : "";
-    const mapResponse = results[1].status === "fulfilled" ? results[1].value : "";
+    const listPlayersResponse =
+      results[0].status === "fulfilled" ? results[0].value : "";
+    const mapResponse =
+      results[1].status === "fulfilled" ? results[1].value : "";
     const serverInfoResponse = ""; // Not requested to avoid unsupported command errors
 
     // Log any failed commands (only for the commands we requested)
     results.forEach((result, index) => {
       if (result.status === "rejected") {
         const commands = ["ListPlayers", "ShowCurrentMap"];
-        console.warn(`${commands[index]} command failed:`, result.reason?.message);
+        console.warn(
+          `${commands[index]} command failed:`,
+          result.reason?.message,
+        );
       }
     });
 
@@ -109,9 +114,17 @@ async function querySquadRconServer(
 
     // Debug logging (safely handle empty responses)
     console.log("RCON Responses:");
-    if (listPlayersResponse) console.log("ListPlayers:", String(listPlayersResponse).substring(0, 200) + "...");
+    if (listPlayersResponse)
+      console.log(
+        "ListPlayers:",
+        String(listPlayersResponse).substring(0, 200) + "...",
+      );
     if (mapResponse) console.log("ShowCurrentMap:", mapResponse);
-    if (serverInfoResponse) console.log("ServerInfo:", String(serverInfoResponse).substring(0, 200) + "...");
+    if (serverInfoResponse)
+      console.log(
+        "ServerInfo:",
+        String(serverInfoResponse).substring(0, 200) + "...",
+      );
 
     // Parse Squad responses
     const playerCount = parseSquadPlayerCount(listPlayersResponse);

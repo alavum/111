@@ -397,7 +397,8 @@ export default function ServerStatus() {
 
           return {
             id: rconServer.serverId,
-            name: existingServer?.name || `RUBEZH Server ${rconServer.serverId}`,
+            name:
+              existingServer?.name || `RUBEZH Server ${rconServer.serverId}`,
             players,
             maxPlayers: totalSlots,
             queue,
@@ -741,13 +742,17 @@ export default function ServerStatus() {
                   </h3>
 
                   {/* Seed indicator: show emoji 🌱 and a redesigned info card on hover */}
-                  {String(server.gameMode || "").toLowerCase().includes("seed") && (
+                  {String(server.gameMode || "")
+                    .toLowerCase()
+                    .includes("seed") && (
                     <div className="relative inline-flex items-center">
                       <Badge
                         variant="outline"
                         className="peer text-gaming-accent border-gaming-border bg-transparent uppercase tracking-wider transition duration-150 ease-in-out hover:bg-gaming-accent/10 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gaming-accent/30"
                       >
-                        <span aria-hidden className="mr-1">🌱</span>
+                        <span aria-hidden className="mr-1">
+                          🌱
+                        </span>
                         <span className="text-xs">SEED</span>
                       </Badge>
 
@@ -757,11 +762,13 @@ export default function ServerStatus() {
                           <div className="flex items-start gap-3">
                             <div className="text-2xl">🌱</div>
                             <div className="flex-1">
-                              <div className="font-semibold text-gaming-text">Seed режим активен</div>
+                              <div className="font-semibold text-gaming-text">
+                                Seed режим активен
+                              </div>
                               <p className="text-xs text-gaming-text-muted mt-1">
                                 На этом сервере включён Seed режим — количество
-                                бонусов увеличено. Заходите и зарабатывайте быстрее
-                                на VIP-статус.
+                                бонусов увеличено. Заходите и зарабатывайте
+                                быстрее на VIP-статус.
                               </p>
                             </div>
                           </div>

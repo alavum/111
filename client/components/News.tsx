@@ -208,21 +208,62 @@ export default function News() {
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="text-left min-w-0">
-                <h4 className="text-base font-semibold text-gaming-text">Следите за обновлениями RUBEZH</h4>
-                <p className="text-gaming-text-muted text-sm">Подписывайтесь на наши каналы — важные объявления, турниры и акции появляются там первыми.</p>
+                <h4 className="text-base font-semibold text-gaming-text">
+                  Следите за обновлениями RUBEZH
+                </h4>
+                <p className="text-gaming-text-muted text-sm">
+                  Подписывайтесь на наши каналы — важные объявления, турниры и
+                  акции появляются там первыми.
+                </p>
               </div>
             </div>
 
             <div className="flex-shrink-0 self-center sm:self-auto">
               <div className="flex items-center gap-2">
-                <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="self-center">
-                  <Button className="bg-[#5865F2] hover:bg-[#4a54d6] text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F602a64afa3dd45a5a0dec35f4a4887ac?format=webp&width=800" alt="Discord" className="w-5 h-5 object-contain"/>Discord</Button>
+                <a
+                  href="https://discord.gg/HXne8JVJ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-center"
+                >
+                  <Button className="bg-[#5865F2] hover:bg-[#4a54d6] text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F602a64afa3dd45a5a0dec35f4a4887ac?format=webp&width=800"
+                      alt="Discord"
+                      className="w-5 h-5 object-contain"
+                    />
+                    Discord
+                  </Button>
                 </a>
-                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="self-center">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9ff06eb01ab24841b18cb9c984941e9d?format=webp&width=800" alt="YouTube" className="w-5 h-5 object-contain"/>YouTube</Button>
+                <a
+                  href="https://www.youtube.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-center"
+                >
+                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9ff06eb01ab24841b18cb9c984941e9d?format=webp&width=800"
+                      alt="YouTube"
+                      className="w-5 h-5 object-contain"
+                    />
+                    YouTube
+                  </Button>
                 </a>
-                <a href="https://www.twitch.tv" target="_blank" rel="noopener noreferrer" className="self-center">
-                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2Fd4acfa52478b4dc8a079d6059355298d?format=webp&width=800" alt="Twitch" className="w-5 h-5 object-contain"/>Twitch</Button>
+                <a
+                  href="https://www.twitch.tv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-center"
+                >
+                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold min-h-[40px] py-2 px-6 min-w-[120px] flex items-center justify-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2Fd4acfa52478b4dc8a079d6059355298d?format=webp&width=800"
+                      alt="Twitch"
+                      className="w-5 h-5 object-contain"
+                    />
+                    Twitch
+                  </Button>
                 </a>
               </div>
             </div>
