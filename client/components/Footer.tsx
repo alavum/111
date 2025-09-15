@@ -177,13 +177,13 @@ export default function Footer() {
             </div>
 
             <div className="mt-4 md:mt-0 md:ml-8">
-              <div className="bg-gaming-card border border-gaming-border rounded-md p-2 text-sm">
-                <p className="text-gaming-text-muted text-xs mb-1">
+              <div className="bg-gaming-card border border-gaming-border rounded-md p-1 text-sm w-[220px]">
+                <p className="text-gaming-text-muted text-[11px] mb-0.5">
                   Услуги предоставляет
                 </p>
-                <p className="text-gaming-text-muted text-xs mb-1">Самозанятый</p>
-                <p className="text-gaming-text font-medium">Лебидко Кирилл Алексеевич</p>
-                <p className="text-gaming-text-muted text-xs mt-1">
+                <p className="text-gaming-text-muted text-[12px] mb-0.5">Самозанятый</p>
+                <p className="text-gaming-text text-sm font-medium leading-tight">Лебидко Кирилл Алексееви��</p>
+                <p className="text-gaming-text-muted text-[11px] mt-1">
                   ИНН: 862203594392
                 </p>
               </div>
