@@ -215,14 +215,14 @@ export default function News() {
 
             <div className="flex-shrink-0 self-center sm:self-auto">
               <div className="flex items-center gap-2">
-                <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold py-2 px-6 min-w-[110px]">Discord</Button>
+                <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="self-center">
+                  <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold h-10 px-6 min-w-[120px]">Discord</Button>
                 </a>
-                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 min-w-[110px] flex items-center justify-center gap-2"><Youtube className="w-4 h-4"/>YouTube</Button>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="self-center">
+                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold h-10 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="/icons/youtube.svg" alt="YouTube" className="w-4 h-4"/>YouTube</Button>
                 </a>
-                <a href="https://www.twitch.tv" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold py-2 px-6 min-w-[110px] flex items-center justify-center gap-2"><Tv className="w-4 h-4"/>Twitch</Button>
+                <a href="https://www.twitch.tv" target="_blank" rel="noopener noreferrer" className="self-center">
+                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold h-10 px-6 min-w-[120px] flex items-center justify-center gap-2"><img src="/icons/twitch.svg" alt="Twitch" className="w-4 h-4"/>Twitch</Button>
                 </a>
               </div>
             </div>
