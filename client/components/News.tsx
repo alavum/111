@@ -201,23 +201,17 @@ export default function News() {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-12 text-center">
-          <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gaming-text mb-4">
-              Не пропускайте важные новости!
-            </h3>
-            <p className="text-gaming-text-muted mb-6">
-              Присоединяйтесь к нашему Discord-серверу, чтобы первыми ��знавать
-              о новых обновлениях, турнирах и событиях в сообществе RSGS.
-            </p>
-            <a
-              href="https://discord.gg/HXne8JVJ"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">
-                Присоединиться к Discord
-              </Button>
+        <div className="mt-10 text-center">
+          <div className="bg-gaming-card border border-gaming-border rounded-lg p-4 inline-flex items-center gap-4">
+            <div className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-gaming-accent/20 text-gaming-accent">
+              <Calendar className="w-5 h-5" />
+            </div>
+            <div className="text-left">
+              <h4 className="text-lg font-semibold text-gaming-text">Не пропускайте важные новости</h4>
+              <p className="text-gaming-text-muted text-sm">Присоединяйтесь к нашему Discord, чтобы первыми узнавать об обновлениях и событиях.</p>
+            </div>
+            <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer" className="ml-4">
+              <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold py-2 px-3">Discord</Button>
             </a>
           </div>
         </div>
