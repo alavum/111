@@ -18,7 +18,7 @@ interface NewsItem {
 const fallbackNewsItems: NewsItem[] = [
   {
     id: 1,
-    title: "Н��вости загружаются...",
+    title: "Новости загружаются...",
     content: "Пожалуйста, подождите, пока мы загружаем последние новости.",
     date: new Date().toISOString(),
     author: "System",
@@ -208,15 +208,23 @@ export default function News() {
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="text-left min-w-0">
-                <h4 className="text-base font-semibold text-gaming-text">Не про��ускайте важные новости</h4>
-                <p className="text-gaming-text-muted text-sm">Присоединяйтесь к нашему Discord, чтобы первыми узнавать об обновлениях и событиях.</p>
+                <h4 className="text-base font-semibold text-gaming-text">Следите за обновлениями RUBEZH</h4>
+                <p className="text-gaming-text-muted text-sm">Подписывайтесь на наши каналы — важные объявления, турниры и акции появляются там первыми.</p>
               </div>
             </div>
 
             <div className="flex-shrink-0 self-center sm:self-auto">
-              <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer">
-                <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold py-2 px-3">Discord</Button>
-              </a>
+              <div className="flex items-center gap-2">
+                <a href="https://discord.gg/HXne8JVJ" target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold py-2 px-6 min-w-[110px]">Discord</Button>
+                </a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 min-w-[110px] flex items-center justify-center gap-2"><Youtube className="w-4 h-4"/>YouTube</Button>
+                </a>
+                <a href="https://www.twitch.tv" target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold py-2 px-6 min-w-[110px] flex items-center justify-center gap-2"><Tv className="w-4 h-4"/>Twitch</Button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
