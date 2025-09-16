@@ -90,7 +90,7 @@ let newsArticles = safeLoadJson(newsDataFile, [
   {
     id: 2,
     title: "Обновление серверных правил",
-    content: "О��новлены правила поведения на серверах...",
+    content: "О��новлены правила п��ведения на серверах...",
     author: "Moderator",
     date: new Date(Date.now() - 86400000).toISOString(),
     published: true,
@@ -192,8 +192,8 @@ const newsCreateSchema = z.object({
 
 // News endpoints
 export const getNews: RequestHandler = (req, res) => {
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const rows = sqlite.getNewsRows() || [];
     // map published numeric to boolean (already filtered)
     res.json(rows.map((r: any) => ({ ...r, published: Boolean(r.published) })));
@@ -205,8 +205,8 @@ export const getNews: RequestHandler = (req, res) => {
 
 // Admin: get all news (published and drafts)
 export const getAllNews: RequestHandler = (_req, res) => {
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const rows = sqlite.getAllNewsRows() || [];
     res.json(rows.map((r: any) => ({ ...r, published: Boolean(r.published) })));
     return;
@@ -216,8 +216,8 @@ export const getAllNews: RequestHandler = (_req, res) => {
 
 export const getNewsById: RequestHandler = (req, res) => {
   const param = req.params.id;
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const row = sqlite.getNewsByIdOrSlug(param);
     if (!row) return res.status(404).json({ error: "Новость не найдена" });
     return res.json({ ...row, published: Boolean(row.published) });
@@ -270,8 +270,8 @@ export const createNews: RequestHandler = (req, res) => {
       slug: `${slugBase}-${Date.now()}`,
     };
 
-    if (require("../sqlite").sqliteAvailable) {
-      const sqlite = require("../sqlite");
+    if (sqlite.sqliteAvailable) {
+      const sqlite = sqlite;
       const created = sqlite.createNewsRow(newArticle);
       res.status(201).json({ ...created, published: Boolean(created.published) });
       return;
@@ -297,8 +297,8 @@ export const updateNews: RequestHandler = (req, res) => {
     const { title, content, published, excerpt, category } = req.body as any;
     const image = (req as any).file;
 
-    if (require("../sqlite").sqliteAvailable) {
-      const sqlite = require("../sqlite");
+    if (sqlite.sqliteAvailable) {
+      const sqlite = sqlite;
       const existing = sqlite.getAllNewsRows().find((n: any) => n.id === id);
       if (!existing) return res.status(404).json({ error: "Новость не найдена" });
 
@@ -382,8 +382,8 @@ export const updateNews: RequestHandler = (req, res) => {
 
 export const deleteNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const success = sqlite.deleteNewsRow(id);
     if (!success) return res.status(404).json({ error: "Новость не найдена" });
     return res.json({ message: "Новость удалена" });
@@ -402,8 +402,8 @@ export const deleteNews: RequestHandler = (req, res) => {
 
 // Rules endpoints
 export const getRules: RequestHandler = (req, res) => {
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const row = sqlite.getRulesRow();
     if (row) return res.json(row);
   }
@@ -413,8 +413,8 @@ export const getRules: RequestHandler = (req, res) => {
 export const updateRules: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
 
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const updated = sqlite.updateRulesRow({ title, content });
     return res.json(updated);
   }
@@ -429,8 +429,8 @@ export const updateRules: RequestHandler = (req, res) => {
 
 // Privacy policy endpoints
 export const getPrivacyPolicy: RequestHandler = (req, res) => {
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const row = sqlite.getPrivacyRow();
     if (row) return res.json(row);
   }
@@ -440,8 +440,8 @@ export const getPrivacyPolicy: RequestHandler = (req, res) => {
 export const updatePrivacyPolicy: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
 
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const updated = sqlite.updatePrivacyRow({ title, content });
     return res.json(updated);
   }
@@ -456,8 +456,8 @@ export const updatePrivacyPolicy: RequestHandler = (req, res) => {
 
 // Terms endpoints
 export const getTerms: RequestHandler = (req, res) => {
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const row = sqlite.getTermsRow();
     if (row) return res.json(row);
   }
@@ -467,8 +467,8 @@ export const getTerms: RequestHandler = (req, res) => {
 export const updateTerms: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
 
-  if (require("../sqlite").sqliteAvailable) {
-    const sqlite = require("../sqlite");
+  if (sqlite.sqliteAvailable) {
+    const sqlite = sqlite;
     const updated = sqlite.updateTermsRow({ title, content });
     return res.json(updated);
   }
