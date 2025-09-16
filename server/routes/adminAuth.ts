@@ -15,40 +15,40 @@ export const adminLogin: RequestHandler = (req, res) => {
 
   if (!password) {
     return res.status(400).json({
-      error: "Пароль обязателен"
+      error: "Пароль обязателен",
     });
   }
 
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({
-      error: "Неверный пароль"
+      error: "Неверный пароль",
     });
   }
 
   // Generate JWT token
   const token = jwt.sign(
-    { 
-      role: 'admin',
-      timestamp: Date.now()
+    {
+      role: "admin",
+      timestamp: Date.now(),
     },
     JWT_SECRET,
-    { expiresIn: '24h' }
+    { expiresIn: "24h" },
   );
 
   res.json({
     success: true,
     token,
-    message: "Успешный вход в админ панель"
+    message: "Успешный вход в админ панель",
   });
 };
 
 // Verify admin token
 export const verifyAdmin: RequestHandler = (req, res) => {
   const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
-      error: "Токен авторизации не предоставлен"
+      error: "Токен авторизации не предоставлен",
     });
   }
 
@@ -58,11 +58,11 @@ export const verifyAdmin: RequestHandler = (req, res) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     res.json({
       success: true,
-      user: decoded
+      user: decoded,
     });
   } catch (error) {
     res.status(401).json({
-      error: "Недействительный токен"
+      error: "Недействительный токен",
     });
   }
 };
@@ -70,10 +70,10 @@ export const verifyAdmin: RequestHandler = (req, res) => {
 // Middleware to protect admin routes
 export const requireAdmin: RequestHandler = (req: any, res, next) => {
   const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
-      error: "Доступ запрещен. Требуется авторизация админа."
+      error: "Доступ запрещен. Требуется авторизация админа.",
     });
   }
 
@@ -85,7 +85,7 @@ export const requireAdmin: RequestHandler = (req: any, res, next) => {
     next();
   } catch (error) {
     res.status(401).json({
-      error: "Недействительный токен авториз��ции"
+      error: "Недействительный токен авториз��ции",
     });
   }
 };
@@ -94,6 +94,6 @@ export const requireAdmin: RequestHandler = (req: any, res, next) => {
 export const getAdminInfo: RequestHandler = (req: any, res) => {
   res.json({
     user: req.user,
-    permissions: ['content_management', 'user_management', 'server_management']
+    permissions: ["content_management", "user_management", "server_management"],
   });
 };
