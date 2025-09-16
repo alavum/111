@@ -273,11 +273,15 @@ export const createNews: RequestHandler = (req, res) => {
     if (sqlite.sqliteAvailable) {
       const sqlite = sqlite;
       const created = sqlite.createNewsRow(newArticle);
-      res.status(201).json({ ...created, published: Boolean(created.published) });
+      res
+        .status(201)
+        .json({ ...created, published: Boolean(created.published) });
       return;
     }
 
-    const id = newsArticles.length ? Math.max(...newsArticles.map((a) => a.id)) + 1 : 1;
+    const id = newsArticles.length
+      ? Math.max(...newsArticles.map((a) => a.id)) + 1
+      : 1;
     const articleWithId = { id, ...newArticle } as any;
     newsArticles.push(articleWithId);
     saveNewsArticles();
@@ -300,7 +304,8 @@ export const updateNews: RequestHandler = (req, res) => {
     if (sqlite.sqliteAvailable) {
       const sqlite = sqlite;
       const existing = sqlite.getAllNewsRows().find((n: any) => n.id === id);
-      if (!existing) return res.status(404).json({ error: "Новость не найдена" });
+      if (!existing)
+        return res.status(404).json({ error: "Новость не найдена" });
 
       const updateData: any = {};
       if (title) {
@@ -313,13 +318,18 @@ export const updateNews: RequestHandler = (req, res) => {
         updateData.slug = `${slug}-${id}`;
       }
       if (content) updateData.content = content;
-      if (typeof published !== "undefined") updateData.published = published === "true" || Boolean(published);
+      if (typeof published !== "undefined")
+        updateData.published = published === "true" || Boolean(published);
       if (excerpt) updateData.excerpt = excerpt;
       if (category) updateData.category = category;
 
       if (image) {
         const oldImage = existing.image;
-        if (oldImage && !oldImage.includes("placeholder") && oldImage.startsWith("/uploads/")) {
+        if (
+          oldImage &&
+          !oldImage.includes("placeholder") &&
+          oldImage.startsWith("/uploads/")
+        ) {
           const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
           if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
         }
