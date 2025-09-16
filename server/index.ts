@@ -40,6 +40,13 @@ import {
 export function createServer() {
   const app = express();
 
+  // Initialize optional SQLite storage (if better-sqlite3 is installed)
+  try {
+    initSqlite();
+  } catch (err) {
+    console.warn("SQLite init failed:", err);
+  }
+
   // Middleware
   app.use(cors());
   app.use(express.json({ limit: "50mb" }));
