@@ -41,7 +41,15 @@ export function createServer() {
   const app = express();
 
   // Sanitize route registration: convert absolute URLs used accidentally as paths
-  const _wrapMethods = ["use", "get", "post", "put", "delete", "patch", "all"] as const;
+  const _wrapMethods = [
+    "use",
+    "get",
+    "post",
+    "put",
+    "delete",
+    "patch",
+    "all",
+  ] as const;
   for (const m of _wrapMethods) {
     const orig = (app as any)[m];
     (app as any)[m] = function (...args: any[]) {
