@@ -46,7 +46,9 @@ export function createServer() {
     if (String(process.env.ENABLE_SQLITE || "").toLowerCase() === "true") {
       initSqlite();
     } else {
-      console.log("SQLite disabled via ENABLE_SQLITE env; using JSON file storage");
+      console.log(
+        "SQLite disabled via ENABLE_SQLITE env; using JSON file storage",
+      );
     }
   } catch (err) {
     console.warn("SQLite init failed:", err);
