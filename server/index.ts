@@ -40,9 +40,14 @@ import {
 export function createServer() {
   const app = express();
 
-  // Initialize optional SQLite storage (if better-sqlite3 is installed)
+  // Initialize optional SQLite storage only when explicitly enabled via env
+  // This avoids attempting to load native modules in environments where they are not wanted.
   try {
-    initSqlite();
+    if (String(process.env.ENABLE_SQLITE || "").toLowerCase() === "true") {
+      initSqlite();
+    } else {
+      console.log("SQLite disabled via ENABLE_SQLITE env; using JSON file storage");
+    }
   } catch (err) {
     console.warn("SQLite init failed:", err);
   }
