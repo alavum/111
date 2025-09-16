@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { z } from "zod";
+import * as sqlite from "../sqlite";
 
 // Setup multer for news image uploads
 const newsImageStorage = multer.diskStorage({
@@ -89,7 +90,7 @@ let newsArticles = safeLoadJson(newsDataFile, [
   {
     id: 2,
     title: "Обновление серверных правил",
-    content: "Обновлены правила поведения на серверах...",
+    content: "О��новлены правила поведения на серверах...",
     author: "Moderator",
     date: new Date(Date.now() - 86400000).toISOString(),
     published: true,
@@ -157,7 +158,7 @@ const defaultTerms = {
 ## 1. Предмет соглашения
 Настоящее соглашение регулирует отношения между администрацией RSGS и пользователями серверов.
 
-## 2. Права и обязанности пользователей
+## 2. Права и обязаннос��и пользователей
 - Соблюдение правил сервера
 - Уважительное отношение к другим игрокам
 - Запрет на использование читов и модификаций
