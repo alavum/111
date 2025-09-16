@@ -141,7 +141,7 @@ const defaultPrivacy = {
 Данные используются для:
 - Обеспечения функционирования серверов
 - Модерации и поддержания порядка
-- Улучшения игрового опыта
+- Улучше��ия игрового опыта
 
 ## Защита данных
 Мы принимаем меры для защиты ваших данных...
@@ -191,17 +191,37 @@ const newsCreateSchema = z.object({
 
 // News endpoints
 export const getNews: RequestHandler = (req, res) => {
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const rows = sqlite.getNewsRows() || [];
+    // map published numeric to boolean (already filtered)
+    res.json(rows.map((r: any) => ({ ...r, published: Boolean(r.published) })));
+    return;
+  }
   const published = newsArticles.filter((article) => article.published);
   res.json(published);
 };
 
 // Admin: get all news (published and drafts)
 export const getAllNews: RequestHandler = (_req, res) => {
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const rows = sqlite.getAllNewsRows() || [];
+    res.json(rows.map((r: any) => ({ ...r, published: Boolean(r.published) })));
+    return;
+  }
   res.json(newsArticles);
 };
 
 export const getNewsById: RequestHandler = (req, res) => {
   const param = req.params.id;
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const row = sqlite.getNewsByIdOrSlug(param);
+    if (!row) return res.status(404).json({ error: "Новость не найдена" });
+    return res.json({ ...row, published: Boolean(row.published) });
+  }
+
   const numericId = parseInt(param);
   let article;
 
@@ -238,9 +258,6 @@ export const createNews: RequestHandler = (req, res) => {
       : "/api/placeholder/600/350";
 
     const newArticle = {
-      id: newsArticles.length
-        ? Math.max(...newsArticles.map((a) => a.id)) + 1
-        : 1,
       title,
       content,
       author: author || "Admin",
@@ -252,9 +269,18 @@ export const createNews: RequestHandler = (req, res) => {
       slug: `${slugBase}-${Date.now()}`,
     };
 
-    newsArticles.push(newArticle);
+    if (require("../sqlite").sqliteAvailable) {
+      const sqlite = require("../sqlite");
+      const created = sqlite.createNewsRow(newArticle);
+      res.status(201).json({ ...created, published: Boolean(created.published) });
+      return;
+    }
+
+    const id = newsArticles.length ? Math.max(...newsArticles.map((a) => a.id)) + 1 : 1;
+    const articleWithId = { id, ...newArticle } as any;
+    newsArticles.push(articleWithId);
     saveNewsArticles();
-    res.status(201).json(newArticle);
+    res.status(201).json(articleWithId);
   } catch (err) {
     console.error("createNews validation error", err);
     return res.status(400).json({ error: "Некорректные данные новости" });
@@ -269,6 +295,39 @@ export const updateNews: RequestHandler = (req, res) => {
     const id = parseInt(req.params.id);
     const { title, content, published, excerpt, category } = req.body as any;
     const image = (req as any).file;
+
+    if (require("../sqlite").sqliteAvailable) {
+      const sqlite = require("../sqlite");
+      const existing = sqlite.getAllNewsRows().find((n: any) => n.id === id);
+      if (!existing) return res.status(404).json({ error: "Новость не найдена" });
+
+      const updateData: any = {};
+      if (title) {
+        updateData.title = title;
+        const slug = title
+          .toLowerCase()
+          .replace(/[^а-яa-z0-9\s]/g, "")
+          .replace(/\s+/g, "-")
+          .substring(0, 50);
+        updateData.slug = `${slug}-${id}`;
+      }
+      if (content) updateData.content = content;
+      if (typeof published !== "undefined") updateData.published = published === "true" || Boolean(published);
+      if (excerpt) updateData.excerpt = excerpt;
+      if (category) updateData.category = category;
+
+      if (image) {
+        const oldImage = existing.image;
+        if (oldImage && !oldImage.includes("placeholder") && oldImage.startsWith("/uploads/")) {
+          const oldImagePath = `uploads${oldImage.substring("/uploads".length)}`;
+          if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
+        }
+        updateData.image = `/uploads/news-images/${image.filename}`;
+      }
+
+      const updated = sqlite.updateNewsRow(id, updateData);
+      return res.json({ ...updated, published: Boolean(updated.published) });
+    }
 
     const articleIndex = newsArticles.findIndex((a) => a.id === id);
     if (articleIndex === -1) {
@@ -322,6 +381,13 @@ export const updateNews: RequestHandler = (req, res) => {
 
 export const deleteNews: RequestHandler = (req, res) => {
   const id = parseInt(req.params.id);
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const success = sqlite.deleteNewsRow(id);
+    if (!success) return res.status(404).json({ error: "Новость не найдена" });
+    return res.json({ message: "Новость удалена" });
+  }
+
   const articleIndex = newsArticles.findIndex((a) => a.id === id);
 
   if (articleIndex === -1) {
@@ -335,11 +401,22 @@ export const deleteNews: RequestHandler = (req, res) => {
 
 // Rules endpoints
 export const getRules: RequestHandler = (req, res) => {
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const row = sqlite.getRulesRow();
+    if (row) return res.json(row);
+  }
   res.json(rules);
 };
 
 export const updateRules: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
+
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const updated = sqlite.updateRulesRow({ title, content });
+    return res.json(updated);
+  }
 
   if (title) rules.title = String(title).substring(0, 5000);
   if (content) rules.content = String(content).substring(0, 100000);
@@ -351,11 +428,22 @@ export const updateRules: RequestHandler = (req, res) => {
 
 // Privacy policy endpoints
 export const getPrivacyPolicy: RequestHandler = (req, res) => {
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const row = sqlite.getPrivacyRow();
+    if (row) return res.json(row);
+  }
   res.json(privacyPolicy);
 };
 
 export const updatePrivacyPolicy: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
+
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const updated = sqlite.updatePrivacyRow({ title, content });
+    return res.json(updated);
+  }
 
   if (title) privacyPolicy.title = String(title).substring(0, 5000);
   if (content) privacyPolicy.content = String(content).substring(0, 200000);
@@ -367,11 +455,22 @@ export const updatePrivacyPolicy: RequestHandler = (req, res) => {
 
 // Terms endpoints
 export const getTerms: RequestHandler = (req, res) => {
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const row = sqlite.getTermsRow();
+    if (row) return res.json(row);
+  }
   res.json(terms);
 };
 
 export const updateTerms: RequestHandler = (req, res) => {
   const { title, content } = req.body as any;
+
+  if (require("../sqlite").sqliteAvailable) {
+    const sqlite = require("../sqlite");
+    const updated = sqlite.updateTermsRow({ title, content });
+    return res.json(updated);
+  }
 
   if (title) terms.title = String(title).substring(0, 5000);
   if (content) terms.content = String(content).substring(0, 200000);
