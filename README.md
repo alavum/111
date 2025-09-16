@@ -1,77 +1,170 @@
-# Project
+# RUBEZH — Инструкция по запуску и деплою
 
-This repository contains a Vite + React SPA with an Express server used for API routes and content management. The project supports two content storage modes:
+Этот репозиторий содержит фронтенд (Vite + React/Tailwind) и простой бэкенд (Express) для API. Контент (новости, правила, политика, офферта и пр.) по умолчанию хранится в каталоге `data/` (JSON). Загрузка изображений сохраняется в папку `uploads/`.
 
-- JSON file storage (default) — data kept under `data/*.json`.
-- SQLite storage (optional) — if `better-sqlite3` is installed, the server will create `data/app.db` and automatically migrate existing JSON content into the database.
+Внимание: текущая реализация поддерживает два режима хранения данных:
 
-Prerequisites
+- Файловое хранилище (по умолчанию): `data/*.json` и `uploads/`.
+- SQLite (опционально): если установить нативный драйвер `better-sqlite3`, сервер создаст `data/app.db` и попытка миграции существующих JSON-файлов в БД выполнится автоматически (только если таблицы пусты).
 
-- Node.js 18+ and a package manager (pnpm, npm, or yarn). The project uses pnpm in package.json but you can use npm or yarn.
+Требования
 
-Quickstart (development)
+- Node.js 18+ (рекомендуется LTS)
+- pnpm / npm / yarn (в репозитории указан pnpm в packageManager)
 
-1. Install dependencies: pnpm install (or npm install)
-2. Run dev server (client + server): pnpm run dev
+Быстрый старт (локально)
 
-Build & run (production-like, no Docker required)
+1. Установите зависимости:
+   - pnpm: `pnpm install`
+   - npm: `npm install`
+   - yarn: `yarn install`
+2. Запустить в режиме разработки (включает Vite dev сервер и API):
+   - `pnpm run dev` (или `npm run dev` / `yarn dev`)
+3. Откройте браузер: адрес, указанный в выводе Vite (обычно http://localhost:5173)
 
-1. Install production deps: pnpm install --production
-2. Build client and server bundles: pnpm run build
-3. Start server: pnpm start
+Сборка и запуск в продакшене (без Docker)
 
-Notes about SQLite and storage
+1. Установите зависимости для продакшена (опционально): `pnpm install --production`
+2. Соберите клиент и сервер:
+   - `pnpm run build` (в package.json это выполняет `build:client` и `build:server`)
+3. Запустите собранный сервер:
+   - `pnpm start`  (это запускает `node dist/server/node-build.mjs`)
 
-- SQLite support is optional. If you want the server to use SQLite for news/rules/privacy/terms, install the native driver:
+Примечания по окружению
+
+- Файлы `.env` читаются через dotenv. Рекомендуемые переменные:
+  - JWT_SECRET — секрет для JWT (обязательно в продакшене)
+  - ADMIN_PASSWORD — пароль администратора (лучше не хранить в коде)
+  - PORT — порт для запуска Node-сервера
+  - BASE_URL — базовый публичный URL (используется в webhooks)
+  - PING_MESSAGE — сообщение для /api/ping
+
+Пример `.env` (не коммитьте в репо):
+
+JWT_SECRET="replace_this_with_a_strong_secret"
+ADMIN_PASSWORD="very_strong_admin_password"
+PORT=3000
+BASE_URL="https://example.com"
+
+SQLite (опционально)
+
+- Чтобы включить работу через SQLite установите нативный драйвер:
 
   pnpm add better-sqlite3
-
-  or
-
+  или
   npm install better-sqlite3
 
-- When the server starts and `better-sqlite3` is available, it will create `data/app.db` and migrate existing JSON files from `data/*.json` into the database (only if the DB tables are empty). No manual migration step is required.
+- Если при старте сервера обнаружен установленный `better-sqlite3`, он создаст `data/app.db`, создаст таблицы и попытается автоматически импортировать существующие JSON-файлы (news, rules, privacy, terms) в БД — это происходит только если таблицы пустые.
+- Если `better-sqlite3` не установлен, сервер продолжит использовать JSON-файлы (backwards compatible).
+- Чтобы форсировать миграцию: установите `better-sqlite3`, удалите `data/app.db` (если он есть) и перезапустите сервер.
 
-- If `better-sqlite3` is not installed, the server will continue using JSON files (backwards compatible).
+API — содержимое и маршруты
 
-API / Content
+Публичные роуты:
+- GET /api/news — список опубликованных новостей
+- GET /api/news/:id — получить новость по id или slug
+- GET /api/rules — получить правила
+- GET /api/privacy — получить политику конфиденциальности
+- GET /api/terms — получить пользовательское соглашение
 
-- Public endpoints:
-  - GET /api/news — list published news
-  - GET /api/news/:id — get news by id or slug
-  - GET /api/rules — rules document
-  - GET /api/privacy — privacy policy
-  - GET /api/terms — terms
+Админские роуты (защищены middleware):
+- GET /api/admin/news — список всех новостей (включая черновики)
+- POST /api/news — создать новость (multipart/form-data для картинки)
+- PUT /api/news/:id — обновить
+- DELETE /api/news/:id — удалить
+- PUT /api/rules — обновить правила
+- PUT /api/privacy — обновить политику
+- PUT /api/terms — обновить офферту
 
-- Admin endpoints (protected by simple admin middleware):
-  - GET /api/admin/news — list all (drafts + published)
-  - POST /api/news — create (multipart/form-data for image)
-  - PUT /api/news/:id — update
-  - DELETE /api/news/:id — delete
-  - PUT /api/rules — update rules
-  - PUT /api/privacy — update privacy
-  - PUT /api/terms — update terms
+Загрузка файлов
 
-Uploads
+- Загруженные изображения сохраняются в `uploads/` и доступны через статический маршрут `/uploads`.
 
-- Uploaded images are stored in `uploads/` and served statically at `/uploads`.
+Персистентность и рекомен��уемые варианты продакшена
 
-Environment
+- Локальное файловое хранилище подходит для VPS/VPS-подобных сред, Docker-контейнеров с примонтированными volume и т.п.
+- На бессерверных платформах (Netlify Functions, Vercel Functions и т.п.) запись в локальную FS не является перманентной и НЕ рекомендуется для хранения данных: данные могут быть потеряны между вызовами функций.
 
-- The app reads environment variables via dotenv. You can set:
-  - BASE_URL — base URL used for externally visible asset URLs (used by webhook code)
-  - PING_MESSAGE — custom /api/ping response
+Рекомендованные варианты для продакшена:
+- Использовать реляционную базу: Neon / Postgres / Supabase
+- Хранить медиа в объектном хранилище: S3 / Backblaze / Cloudflare R2
+- Использовать CMS: Builder CMS (через MCP) для управления новостями и контентом
 
-Working without MCP/Netlify/Docker
+Доступные и рекомендуемые MCP-интеграции (можно подключить через Builder.io MCP popover)
 
-- This project can be run and built locally without Netlify/Vercel or Docker. The README steps above show how to build a production bundle and start the server with `pnpm start`.
-- If you want a managed deployment later, you can connect to MCP providers (Netlify / Vercel) using Builder.io UI.
+- Neon — серверная СУБД Postgres (подойдет для хранения новостей/правил вместо JSON)
+- Netlify — деплой фронтенда + ��ункции (есть netlify.toml) — учтите ограничения на запись в локальную FS
+- Zapier — автоматизация и интеграции с внешними сервисами
+- Figma — плагин для импорта дизайнов (используйте Builder.io Figma plugin для конвертации дизайна в код)
+- Supabase — БД + аутентификация; удобно для замены файлового хранилища
+- Builder CMS — управление контентом (новости/правила) через UI
+- Linear — управление задачами и трекинг задач проекта
+- Notion — документация и знаниевая база
+- Sentry — мониторинг ошибок и производительности
+- Context7 — документация библиотек/фреймворков
+- Semgrep — статический анализ на уязвимости
+- Prisma Postgres — ORM/инструменты для работы с Postgres
 
-Troubleshooting
+Чтобы подключить любую MCP-интеграцию откройте MCP поповер в Builder.io ([Open MCP popover](#open-mcp-popover)) и выберите нужный сервис (Neon/Netlify/Supabase/Builder CMS и т.д.).
 
-- If you get errors related to missing native bindings for better-sqlite3, either install the package (see above) or remove it and rely on JSON files.
-- To force migration to SQLite: install better-sqlite3, delete `data/app.db` (if exists) and restart the server — the server will import JSON files into the new DB.
+Конфигурация проекта — где править что
 
-Contact
+- Фронтенд:
+  - client/components/Footer.tsx — ссылки, логотип, блок «Услуги предоставляет»
+  - client/components/Hero.tsx — слайды, CTA, ссылки
+  - client/components/News.tsx и client/pages/NewsPage.tsx — отображение новостей и CTA
+- Сервер:
+  - server/routes/rconStatus.ts — конфигурация игровых серверов и RCON
+  - server/routes/adminAuth.ts — админские пароли и JWT; перенесите секреты в env
+  - netlify/functions/api.ts — точка входа для Netlify Functions (если используете)
+- Данные:
+  - data/news-articles.json
+  - data/rules.json
+  - data/privacy.json
+  - data/terms.json
+  - data/vip-applications.json
+  - uploads/ — загруженные изображения
 
-- For help, use the project UI or open an issue in the repo.
+Полезные команды
+
+- Разработка: `npm run dev` (или `pnpm run dev` / `yarn dev`)
+- Сборка (клиент + сервер): `npm run build`
+- Сборка клиента: `npm run build:client`
+- Сборка сервера: `npm run build:server`
+- Запуск собранного сервера: `npm start`
+- Те��ты: `npm run test`
+- Форматирование: `npm run format.fix`
+- Проверка типов: `npm run typecheck`
+
+Размещение на Netlify / Vercel / VPS
+
+- Netlify:
+  - В проекте есть `netlify.toml`. Для деплоя укажите:
+    - Build command: `npm run build:client`
+    - Publish directory: `dist/spa`
+    - Functions directory: `netlify/functions`
+  - Важно: Netlify Functions — бессерверные, запись в `data/` и `uploads/` не гарантируется.
+  - Для постоянного хранения используйте удалённую БД/хранилище или Builder CMS.
+
+- Vercel:
+  - Можно развернуть как статический фронтенд (`dist/spa`) либо как Node.js приложение (если нужен сервер). Учитывайте ограничения бессерверных функций.
+
+- VPS / VM:
+  - Скопируйте проект на сервер, установите зависимости, создайте `.env`, выполните `npm run build` и `npm start`. Убедитесь, что `data/` и `uploads/` находятся на персистентном диске.
+
+Отладка и распространённые проблемы
+
+- Ошибка с better-sqlite3 (недоступны нативные биндинги): либо установите пакет на целевой системе, либо используйте файловое хранилище.
+- Проблемы записи в `uploads/` или `data/`: проверьте права доступа к директориям и наличие дискового пространства.
+- Для безопасного хранения секретов используйте секреты хостинга (Netlify/Vercel) или менеджер секретов на VPS.
+
+Если нужна помощь
+
+Если хотите, я могу:
+- Перенести хранение новостей/правил в Neon/Supabase (подготовить схему и пример миграции).
+- Подготовить пример развёртывания на VPS с systemd unit и инструкцией по backup для `data/` и `uploads/`.
+- Подготовить миграцию из JSON → Postgres и пример использования Prisma.
+
+---
+
+README написан с учётом текущей структуры проекта и команд в package.json. Если нужно изменить формат инструкций (например, д��бавить раздел на английском), напишите — внесу правки.
