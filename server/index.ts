@@ -17,6 +17,7 @@ import {
   updateTerms,
   uploadNewsImage,
 } from "./routes/content";
+import { initSqlite } from "./sqlite";
 import { checkServerStatus, checkMultipleServers } from "./routes/serverStatus";
 import {
   checkRconServerStatus,
