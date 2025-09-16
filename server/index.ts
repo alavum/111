@@ -40,6 +40,22 @@ import {
 export function createServer() {
   const app = express();
 
+  // Sanitize route registration: convert absolute URLs used accidentally as paths
+  const _wrapMethods = ["use", "get", "post", "put", "delete", "patch", "all"] as const;
+  for (const m of _wrapMethods) {
+    const orig = (app as any)[m];
+    (app as any)[m] = function (...args: any[]) {
+      if (typeof args[0] === "string" && /^https?:\/\//.test(args[0])) {
+        try {
+          args[0] = new URL(args[0]).pathname || "/";
+        } catch (e) {
+          args[0] = args[0].replace(/^https?:\/\/[^/]+/, "") || "/";
+        }
+      }
+      return orig.apply(this, args);
+    } as any;
+  }
+
   // Initialize optional SQLite storage only when explicitly enabled via env
   // This avoids attempting to load native modules in environments where they are not wanted.
   try {
