@@ -33,7 +33,6 @@ export default function CookieConsent() {
           <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold" onClick={() => setAccepted(true)}>
             Принять
           </Button>
-          <a href="/privacy" className="text-gaming-text-muted text-sm hover:text-gaming-accent">Настроить</a>
         </div>
       </div>
     </div>
