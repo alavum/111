@@ -856,11 +856,11 @@ export default function ServerStatus() {
               <button
                 onClick={() => handleConnect(server)}
                 disabled={
-                  !isConnectionAvailable(server) &&
-                  server.status === "online" &&
-                  connectionStatuses[server.id]?.ok === false
+                  (!isConnectionAvailable(server) &&
+                    server.status === "online" &&
+                    connectionStatuses[server.id]?.ok === false) || isLoadingRcon || manualCooldown
                 }
-                className={`hidden md:block w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
+                className={`w-full mt-4 py-2 px-4 rounded-md font-medium transition-colors ${
                   isConnectionAvailable(server)
                     ? "bg-gaming-accent hover:bg-gaming-accent-hover text-black cursor-pointer"
                     : server.status === "online" &&
