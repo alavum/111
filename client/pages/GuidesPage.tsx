@@ -19,7 +19,7 @@ export default function GuidesPage() {
               Обучающие материалы для игры на серверах RSGS
             </p>
 
-            <div className="bg-gaming-bg border border-gaming-border rounded-lg p-6">
+            <div className="border border-gaming-border rounded-lg p-6 bg-transparent">
               <div className="w-16 h-16 mx-auto mb-6 bg-gaming-accent/20 rounded-full flex items-center justify-center">
                 <Book className="w-8 h-8 text-gaming-accent" />
               </div>
