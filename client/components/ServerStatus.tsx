@@ -678,6 +678,7 @@ export default function ServerStatus() {
           connectionStatus.error ||
           "Сервер временно недоступен для подключения",
         variant: "destructive",
+        duration: 5000,
       });
     }
   };
@@ -688,7 +689,7 @@ export default function ServerStatus() {
       const remaining = Math.max(0, Math.ceil((lastManualRefresh + MANUAL_COOLDOWN_MS - now) / 1000));
       toast({
         title: "Подождите",
-        description: `Повторное обновление дос��упно через ${remaining} сек.`,
+        description: `Повторное обновление доступно через ${remaining} сек.`,
         duration: 3000,
       });
       return;
