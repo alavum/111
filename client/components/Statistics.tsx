@@ -266,18 +266,20 @@ export default function Statistics() {
                 colorClass="text-yellow-400"
               />
 
-              <StatCard
-                title="Пулеметчики"
-                data={mockData.gunners}
-                icon={
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800"
-                    alt="Machinegunner"
-                    className="w-8 h-8 object-contain"
-                  />
-                }
-                colorClass="text-yellow-400"
-              />
+              <div className="hidden sm:block">
+                <StatCard
+                  title="Пулеметчики"
+                  data={mockData.gunners}
+                  icon={
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800"
+                      alt="Machinegunner"
+                      className="w-8 h-8 object-contain"
+                    />
+                  }
+                  colorClass="text-yellow-400"
+                />
+              </div>
             </div>
 
             {/* Performance Statistics */}
