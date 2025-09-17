@@ -681,10 +681,20 @@ export default function ServerStatus() {
   };
 
   const handleManualRefresh = () => {
-    if (manualCooldown) return;
+    const now = Date.now();
+    if (manualCooldown) {
+      const remaining = Math.max(0, Math.ceil((lastManualRefresh + MANUAL_COOLDOWN_MS - now) / 1000));
+      toast({
+        title: "Подождите",
+        description: `Повторное обновление доступно через ${remaining} сек.`,
+        duration: 3000,
+      });
+      return;
+    }
     fetchRconData(true, true);
     checkServerConnections(true);
     setManualCooldown(true);
+    setLastManualRefresh(now);
     setTimeout(() => setManualCooldown(false), MANUAL_COOLDOWN_MS);
   };
 
