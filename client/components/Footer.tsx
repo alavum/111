@@ -193,6 +193,9 @@ export default function Footer() {
                 <div className="text-gaming-text-muted text-[11px] mt-1">
                   ИНН: 862203594392
                 </div>
+                <div className="text-gaming-text-muted text-[11px] mt-1">
+                  Почта: <a href="mailto:root@rgs-squad.ru" className="text-gaming-accent underline">root@rgs-squad.ru</a>
+                </div>
               </div>
             </div>
 
