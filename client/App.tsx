@@ -11,6 +11,7 @@ import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import VipPage from "./pages/VipPage";
 import GuidesPage from "./pages/GuidesPage";
+import CookieConsent from "./components/CookieConsent";
 import RulesPage from "./pages/RulesPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
