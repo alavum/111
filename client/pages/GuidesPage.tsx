@@ -19,29 +19,34 @@ export default function GuidesPage() {
               Обучающие материалы для игры на серверах RSGS
             </p>
 
-            <div className="bg-gaming-bg border border-gaming-border rounded-lg p-12">
+            <div className="bg-gaming-bg border border-gaming-border rounded-lg p-6">
               <div className="w-16 h-16 mx-auto mb-6 bg-gaming-accent/20 rounded-full flex items-center justify-center">
                 <Book className="w-8 h-8 text-gaming-accent" />
               </div>
 
               <h2 className="text-2xl font-bold text-gaming-text mb-4">
-                <span className="text-gaming-accent">Совсем скоро</span>
+                Гайды
               </h2>
 
-              <p className="text-gaming-text-muted mb-8 max-w-md mx-auto">
-                Мы работаем над созданием качественных гайдов. Следите за
-                обновлениями!
+              <p className="text-gaming-text-muted mb-6 max-w-md mx-auto text-center">
+                Здесь вы найдете обучающие материалы по ролям и механикам игры.
               </p>
 
-              <a
-                href="https://discord.gg/HXne8JVJ"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold">
-                  Присоединиться �� Discord
-                </Button>
-              </a>
+              {/* Guides list */}
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <a href="/guides/mechvod" className="block bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors">
+                  <div className="w-full h-40 overflow-hidden">
+                    <img src="/images/guides/mechvod-cover.svg" alt="Механик-водитель" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-gaming-text mb-2">Механик-водитель (мехвод)</h3>
+                    <p className="text-gaming-text-muted text-sm mb-3">Короткое описание роли мехвода и его обязанностей</p>
+                    <div className="text-right">
+                      <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black">Открыть</Button>
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </section>
