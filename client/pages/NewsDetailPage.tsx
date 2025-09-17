@@ -22,12 +22,33 @@ export default function NewsDetailPage() {
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [relatedNews, setRelatedNews] = useState<NewsArticle[]>([]);
 
   useEffect(() => {
     if (slug) {
       fetchArticle(slug);
     }
   }, [slug]);
+
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (!article) return;
+      try {
+        const res = await fetch("/api/news");
+        if (!res.ok) return;
+        const all = await res.json();
+        const related = all
+          .filter((n: NewsArticle) => n.id !== article.id && n.published !== false)
+          .sort((a: NewsArticle, b: NewsArticle) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 6);
+        setRelatedNews(related);
+      } catch (e) {
+        console.error("Error fetching related news:", e);
+      }
+    };
+
+    fetchRelated();
+  }, [article]);
 
   const fetchArticle = async (slug: string) => {
     try {
