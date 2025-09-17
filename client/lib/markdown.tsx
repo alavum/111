@@ -147,7 +147,7 @@ function renderInline(text: string) {
   let remaining = text;
   let index = 0;
 
-  const mdPattern = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
+  const mdPattern = /(\*\*([\s\S]+?)\*\*)|(\*([\s\S]+?)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
   const urlPattern = /(https?:\/\/[^\s)]+)/i;
 
   let safety = 0;
