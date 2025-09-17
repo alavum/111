@@ -114,6 +114,7 @@ export default function ServerStatus() {
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   // Manual refresh cooldown state to prevent spamming
   const [manualCooldown, setManualCooldown] = useState(false);
+  const [lastManualRefresh, setLastManualRefresh] = useState<number>(0);
   const MANUAL_COOLDOWN_MS = 8000;
   // Track consecutive invalid map responses per server to avoid overreacting to single transient failures
   const invalidCountsRef = useRef<Record<number, number>>({});
