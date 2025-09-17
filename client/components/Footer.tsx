@@ -13,7 +13,7 @@ const footerSections = [
     ],
   },
   {
-    title: "Новичкам",
+    title: "Нович��ам",
     links: [{ label: "Гайды", href: "/guides" }],
   },
   {
@@ -110,7 +110,7 @@ export default function Footer() {
 
           {/* Column 3: Инструменты + Новичкам */}
           <div className="flex flex-col">
-            <h4 className="font-semibold text-gaming-text mb-3">Инструменты</h4>
+            <h4 className="font-semibold text-gaming-text mb-3">Инструмент��</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a
@@ -149,7 +149,7 @@ export default function Footer() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gaming-text-muted hover:text-gaming-accent transition-colors flex items-center gap-2"
+                    className="inline-flex items-center gap-2 text-gaming-text-muted hover:text-gaming-accent transition-colors"
                   >
                     <span className="sr-only">{s.name}</span>
                     <span className="inline-block">{s.name}</span>
@@ -178,7 +178,7 @@ export default function Footer() {
             <div className="mt-4 md:mt-0 md:ml-8">
               <div className="bg-gaming-card border border-gaming-border rounded-md p-2 text-sm w-full md:w-[360px]">
                 <div className="text-gaming-text-muted text-[11px]">
-                  Услуги предоставляет
+                  Услуги пр��доставляет
                 </div>
                 <div className="flex items-baseline gap-2 mt-1">
                   <div className="text-gaming-text-muted text-[12px]">
