@@ -84,7 +84,7 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
       </div>
 
       <div>
-        {data.slice(0, 5).map((player) => {
+        {data.slice(0, 10).map((player) => {
           const hours = Math.floor(player.value / 60);
           const mins = player.value % 60;
           return (
@@ -147,7 +147,7 @@ function StatList({ title, data, colorClass }: StatListProps) {
       <h3 className={`text-center font-bold mb-4 ${colorClass}`}>{title}</h3>
 
       <div>
-        {data.slice(0, 5).map((player) => {
+        {data.slice(0, 10).map((player) => {
           const isTop = player.rank <= 3 && showTopHighlight;
           return (
             <div
