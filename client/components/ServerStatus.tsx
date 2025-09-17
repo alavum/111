@@ -646,10 +646,11 @@ export default function ServerStatus() {
   const handleConnect = async (server: Server) => {
     if (server.status !== "online") {
       toast({
-        title: "С��рвер недоступен",
+        title: "Сервер недоступен",
         description:
-          "Сервер находится в оффлайне или на техническом обслуживан��и",
+          "Сервер находится в оффлайне или на техническом обслуживании",
         variant: "destructive",
+        duration: 5000,
       });
       return;
     }
