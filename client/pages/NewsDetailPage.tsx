@@ -207,15 +207,35 @@ export default function NewsDetailPage() {
 
           {/* Related News Section */}
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gaming-text mb-6">
-              Другие новости
-            </h2>
-            <div className="text-center">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gaming-text">Другие новости</h2>
               <Link to="/news">
-                <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black">
+                <Button variant="outline" className="border-gaming-border text-gaming-text hover:bg-gaming-bg">
                   Посмотреть все новости
                 </Button>
               </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedNews.length === 0 ? (
+                <div className="col-span-1 sm:col-span-2 lg:col-span-3 text-gaming-text-muted">Похожие новости отсутствуют</div>
+              ) : (
+                relatedNews.map((item) => (
+                  <Link key={item.id} to={`/news/${item.slug}`} className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block">
+                    <div className="relative overflow-hidden">
+                      <img src={item.image} alt={item.title} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center text-gaming-text-muted text-sm mb-2">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        {new Date(item.date).toLocaleDateString("ru-RU")}
+                      </div>
+                      <h3 className="font-bold text-gaming-text mb-2 line-clamp-2">{item.title}</h3>
+                      <p className="text-gaming-text-muted text-sm line-clamp-3">{item.excerpt || item.content.substring(0,120)}</p>
+                    </div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>

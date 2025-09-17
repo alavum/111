@@ -74,13 +74,13 @@ function StatCard({ title, data, icon, colorClass }: StatCardProps) {
 
   return (
     <div className="bg-gaming-card border border-gaming-border rounded-lg p-4">
-      <div className={`flex flex-col items-center gap-2 mb-4`}>
+      <div className={`flex flex-row sm:flex-col items-start sm:items-center gap-3 mb-4`}>
         {React.isValidElement(icon)
           ? React.cloneElement(icon, {
               className: `w-8 h-8 object-contain ${icon.props.className ?? ""}`,
             })
           : icon}
-        <h3 className={`text-center font-bold ${colorClass}`}>{title}</h3>
+        <h3 className={`text-left sm:text-center font-bold ${colorClass}`}>{title}</h3>
       </div>
 
       <div>
@@ -283,7 +283,7 @@ export default function Statistics() {
             {/* Performance Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <StatList
-                title="Количество убийств"
+                title="К��личество убийств"
                 data={mockData.kills}
                 colorClass="text-yellow-400"
               />
@@ -313,7 +313,7 @@ export default function Statistics() {
                 В разработке
               </h3>
               <p className="text-gaming-text-muted mb-4 max-w-sm text-sm">
-                Система статистик находится на стадии разработки. Скоро вы
+                Система статистик находится на стадии разраб��тки. Скоро вы
                 сможете видеть подробную статистику игроков.
               </p>
 
