@@ -160,7 +160,10 @@ function toast({ ...props }: Toast) {
 
   // Schedule automatic removal using optional duration prop if provided (ms)
   // @ts-ignore allow custom duration field on toast props
-  const duration = typeof (props as any).duration === "number" ? (props as any).duration : TOAST_REMOVE_DELAY;
+  const duration =
+    typeof (props as any).duration === "number"
+      ? (props as any).duration
+      : TOAST_REMOVE_DELAY;
   addToRemoveQueue(id, duration);
 
   return {

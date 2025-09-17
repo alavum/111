@@ -686,7 +686,10 @@ export default function ServerStatus() {
   const handleManualRefresh = () => {
     const now = Date.now();
     if (manualCooldown) {
-      const remaining = Math.max(0, Math.ceil((lastManualRefresh + MANUAL_COOLDOWN_MS - now) / 1000));
+      const remaining = Math.max(
+        0,
+        Math.ceil((lastManualRefresh + MANUAL_COOLDOWN_MS - now) / 1000),
+      );
       toast({
         title: "Подождите",
         description: `Повторное обновление доступно через ${remaining} сек.`,

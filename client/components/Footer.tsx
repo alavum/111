@@ -110,7 +110,9 @@ export default function Footer() {
 
           {/* Column 3: Инструменты + Новичкам */}
           <div className="flex flex-col">
-            <h4 className="font-semibold text-gaming-text mb-3">Инструмент��</h4>
+            <h4 className="font-semibold text-gaming-text mb-3">
+              Инструмент��
+            </h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a
