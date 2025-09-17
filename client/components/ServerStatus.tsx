@@ -112,6 +112,9 @@ export default function ServerStatus() {
   >({});
   const [isLoadingRcon, setIsLoadingRcon] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
+  // Manual refresh cooldown state to prevent spamming
+  const [manualCooldown, setManualCooldown] = useState(false);
+  const MANUAL_COOLDOWN_MS = 8000;
   // Track consecutive invalid map responses per server to avoid overreacting to single transient failures
   const invalidCountsRef = useRef<Record<number, number>>({});
 
@@ -642,7 +645,7 @@ export default function ServerStatus() {
   const handleConnect = async (server: Server) => {
     if (server.status !== "online") {
       toast({
-        title: "С��рвер недоступен",
+        title: "С���рвер недоступен",
         description:
           "Сервер находится в оффлайне или на техническом обслуживан��и",
         variant: "destructive",
