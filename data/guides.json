@@ -1,0 +1,10 @@
+[
+  {
+    "id": "mechvod",
+    "title": "Механик-водитель (мехвод)",
+    "excerpt": "Короткое описание роли мехвода и его обязанностей",
+    "image": "/images/guides/mechvod-cover.svg",
+    "slug": "mechvod",
+    "published": true
+  }
+]
