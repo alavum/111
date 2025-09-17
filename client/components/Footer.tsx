@@ -46,7 +46,7 @@ const socialLinks = [
 
 const bottomLinks = [
   { label: "Игровые правила", href: "/rules" },
-  { label: "Политика конфиденциальности", href: "/privacy" },
+  { label: "Политика кон��иденциальности", href: "/privacy" },
   { label: "Офферта", href: "/terms" },
 ];
 
@@ -141,7 +141,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Ссылки */}
+          {/* Column 4: Ссыл��и */}
           <div className="flex flex-col">
             <h4 className="font-semibold text-gaming-text mb-3">Ссылки</h4>
             <ul className="space-y-2 text-sm">
@@ -190,11 +190,9 @@ export default function Footer() {
                     Лебидко Кирилл Алексеевич
                   </div>
                 </div>
-                <div className="text-gaming-text-muted text-[11px] mt-1">
-                  ИНН: 862203594392
-                </div>
-                <div className="text-gaming-text-muted text-[11px] mt-1">
-                  Почта: <a href="mailto:root@rgs-squad.ru" className="text-gaming-accent underline">root@rgs-squad.ru</a>
+                <div className="flex items-center gap-4 mt-1 text-gaming-text-muted text-[11px]">
+                  <div>ИНН: 862203594392</div>
+                  <div>Почта: <a href="mailto:root@rgs-squad.ru" className="text-gaming-accent underline">root@rgs-squad.ru</a></div>
                 </div>
               </div>
             </div>
