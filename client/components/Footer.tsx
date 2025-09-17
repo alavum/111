@@ -192,7 +192,15 @@ export default function Footer() {
                 </div>
                 <div className="flex items-center gap-4 mt-1 text-gaming-text-muted text-[11px]">
                   <div>ИНН: 862203594392</div>
-                  <div>Почта: <a href="mailto:root@rgs-squad.ru" className="text-gaming-accent underline">root@rgs-squad.ru</a></div>
+                  <div>
+                    Почта:{" "}
+                    <a
+                      href="mailto:root@rgs-squad.ru"
+                      className="text-gaming-accent underline"
+                    >
+                      root@rgs-squad.ru
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

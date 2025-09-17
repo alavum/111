@@ -34,15 +34,28 @@ export default function GuidesPage() {
 
               {/* Guides list */}
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <a href="/guides/mechvod" className="block bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors">
+                <a
+                  href="/guides/mechvod"
+                  className="block bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors"
+                >
                   <div className="w-full h-40 overflow-hidden">
-                    <img src="/images/guides/mechvod-cover.svg" alt="Механик-водитель" className="w-full h-full object-cover" />
+                    <img
+                      src="/images/guides/mechvod-cover.svg"
+                      alt="Механик-водитель"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-bold text-gaming-text mb-2">Механик-водитель (мехвод)</h3>
-                    <p className="text-gaming-text-muted text-sm mb-3">Короткое описание роли мехвода и его обязанностей</p>
+                    <h3 className="font-bold text-gaming-text mb-2">
+                      Механик-водитель (мехвод)
+                    </h3>
+                    <p className="text-gaming-text-muted text-sm mb-3">
+                      Короткое описание роли мехвода и его обязанностей
+                    </p>
                     <div className="text-right">
-                      <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black">Открыть</Button>
+                      <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black">
+                        Открыть
+                      </Button>
                     </div>
                   </div>
                 </a>

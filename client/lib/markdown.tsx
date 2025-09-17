@@ -147,7 +147,8 @@ function renderInline(text: string) {
   let remaining = text;
   let index = 0;
 
-  const mdPattern = /(\*\*([\s\S]+?)\*\*)|(\*([\s\S]+?)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
+  const mdPattern =
+    /(\*\*([\s\S]+?)\*\*)|(\*([\s\S]+?)\*)|(\[([^\]]+)\]\(([^)]+)\))/;
   const urlPattern = /(https?:\/\/[^\s)]+)/i;
 
   let safety = 0;
@@ -195,7 +196,11 @@ function renderInline(text: string) {
           </strong>,
         );
       } else if (mdMatch[3]) {
-        elements.push(<em key={index++} className="italic">{mdMatch[4]}</em>);
+        elements.push(
+          <em key={index++} className="italic">
+            {mdMatch[4]}
+          </em>,
+        );
       } else if (mdMatch[5]) {
         elements.push(
           <a
