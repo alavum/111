@@ -48,7 +48,6 @@ const bottomLinks = [
   { label: "Игровые правила", href: "/rules" },
   { label: "Политика конфиденциальности", href: "/privacy" },
   { label: "Офферта", href: "/terms" },
-  { label: "Сотрудничество", href: "/partnership" },
 ];
 
 export default function Footer() {
