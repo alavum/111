@@ -231,7 +231,7 @@ export default function NewsDetailPage() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gaming-text">Другие новости</h2>
               <Link to="/news">
-                <Button variant="outline" className="border-gaming-border text-gaming-text hover:bg-gaming-bg">
+                <Button variant="outline" className="border-gaming-border text-gaming-text transition-transform duration-150 hover:-translate-y-1 hover:shadow hover:bg-gaming-accent/10">
                   Посмотреть все новости
                 </Button>
               </Link>
