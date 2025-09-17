@@ -803,25 +803,14 @@ export default function ServerStatus() {
                     <span>Игроки</span>
                   </div>
                   <span className="text-gaming-text font-semibold">
-                    {server.reserved && server.reserved > 0 ? (
-                      <>
-                        {Math.max(
-                          server.maxPlayers -
-                            server.players -
-                            (server.reserved || 0),
-                          0,
-                        )}
-                        <span className="text-yellow-400 ml-1">
-                          (+{server.reserved})
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {server.players}/{server.maxPlayers}
-                      </>
+                    {server.players}/{server.maxPlayers}
+                    {server.reserved && server.reserved > 0 && (
+                      <span className="text-yellow-400 ml-2 text-sm">
+                        (резерв: +{server.reserved})
+                      </span>
                     )}
                     {server.queue > 0 && (
-                      <span className="text-yellow-400 ml-1">
+                      <span className="text-yellow-400 ml-2">
                         (+{server.queue})
                       </span>
                     )}
