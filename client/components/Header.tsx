@@ -32,7 +32,7 @@ export default function Header() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center h-16">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F55af46d0d2db4b599e3e6ac417b987b8?format=webp&width=800"
+                src="/images/logo.svg"
                 alt="РУБЕЖ"
                 className="block h-5 md:h-6 w-auto object-contain translate-y-1 md:translate-y-1"
               />
@@ -216,7 +216,7 @@ export default function Header() {
                     setMobileOpen(false);
                     toast({
                       title: "В разработке",
-                      description: "Функция авторизации находится в разработке",
+                      description: "Функция авторизации находится в р��зработке",
                     });
                   }}
                 >

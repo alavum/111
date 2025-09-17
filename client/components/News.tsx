@@ -28,7 +28,7 @@ const fallbackNewsItems: NewsItem[] = [
 
 function getCategoryColor(category: string) {
   switch (category) {
-    case "Собы��ия":
+    case "Собы����ия":
       return "text-green-400";
     case "Акции":
       return "text-gaming-accent";
@@ -228,7 +228,7 @@ export default function News() {
                 >
                   <Button className="bg-[#5865F2] hover:bg-[#4a54d6] text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
                     <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F602a64afa3dd45a5a0dec35f4a4887ac?format=webp&width=800"
+                      src="/images/icon-discord.svg"
                       alt="Discord"
                       className="w-5 h-5 object-contain"
                     />
@@ -243,7 +243,7 @@ export default function News() {
                 >
                   <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
                     <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9ff06eb01ab24841b18cb9c984941e9d?format=webp&width=800"
+                      src="/images/icon-youtube.svg"
                       alt="YouTube"
                       className="w-5 h-5 object-contain"
                     />
@@ -258,7 +258,7 @@ export default function News() {
                 >
                   <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
                     <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2Fd4acfa52478b4dc8a079d6059355298d?format=webp&width=800"
+                      src="/images/icon-twitch.svg"
                       alt="Twitch"
                       className="w-5 h-5 object-contain"
                     />

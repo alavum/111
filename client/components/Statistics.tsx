@@ -219,7 +219,7 @@ export default function Statistics() {
                 data={mockData.commanders}
                 icon={
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F78f286839e4a4b8a825bcd5fe8ba1b0a?format=webp&width=800"
+                    src="/images/icon-cmd.svg"
                     alt="CMD"
                     className="w-8 h-8 object-contain"
                   />
@@ -232,7 +232,7 @@ export default function Statistics() {
                 data={mockData.snipers}
                 icon={
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F9dd369e9884547debcad079c9dd2ad0b?format=webp&width=800"
+                    src="/images/icon-squad.svg"
                     alt="Squad"
                     className="w-8 h-8 object-contain"
                   />
@@ -245,7 +245,7 @@ export default function Statistics() {
                 data={mockData.medics}
                 icon={
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F4a0730d5b5bd49569e5d41f8609368e3?format=webp&width=800"
+                    src="/images/icon-medic.svg"
                     alt="Medic"
                     className="w-8 h-8 object-contain"
                   />
@@ -258,7 +258,7 @@ export default function Statistics() {
                 data={mockData.soldiers}
                 icon={
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F83747ccc5e1f42bbb02bb6f0ca41b92c?format=webp&width=800"
+                    src="/images/icon-rifleman.svg"
                     alt="Rifleman"
                     className="w-8 h-8 object-contain"
                   />
@@ -272,7 +272,7 @@ export default function Statistics() {
                   data={mockData.gunners}
                   icon={
                     <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F0999fde6023346ee8a3f11a00a7b75ec?format=webp&width=800"
+                      src="/images/icon-gunner.svg"
                       alt="Machinegunner"
                       className="w-8 h-8 object-contain"
                     />

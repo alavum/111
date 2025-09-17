@@ -11,7 +11,7 @@ const heroSlides = [
     description: "Получите доступ к эксклюзивным возможностям и преимуществам",
     background: "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900",
     backgroundImage:
-      "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2Ff64625e0db6c45739b3d2e8425431fd9?format=webp&width=800",
+      "/images/hero-1.svg",
     primaryText: "Получить VIP",
     primaryLink: "/vip",
   },
@@ -22,7 +22,7 @@ const heroSlides = [
     description: "Подробные руководства по игре: механики, стратегии и прокачка",
     background: "bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900",
     backgroundImage:
-      "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2F6390ed05dfb544d4bd8202f17235a24e?format=webp&width=800",
+      "/images/hero-2.svg",
     primaryText: "Читать гайды",
     primaryLink: "/guides",
   },
@@ -34,7 +34,7 @@ const heroSlides = [
       "Свежие анонсы, апдейты и важные события нашего проекта",
     background: "bg-gradient-to-r from-green-900 via-green-800 to-green-900",
     backgroundImage:
-      "https://cdn.builder.io/api/v1/image/assets%2F9371a00d52894c5d9ce9e006bf6e8168%2Fa87aeff2b2084864bb13e2d2853abd7a?format=webp&width=800",
+      "/images/hero-3.svg",
     primaryText: "Читать новости",
     primaryLink: "/news",
   },
