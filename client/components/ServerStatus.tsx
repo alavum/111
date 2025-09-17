@@ -645,7 +645,7 @@ export default function ServerStatus() {
   const handleConnect = async (server: Server) => {
     if (server.status !== "online") {
       toast({
-        title: "С���рвер недоступен",
+        title: "С��рвер недоступен",
         description:
           "Сервер находится в оффлайне или на техническом обслуживан��и",
         variant: "destructive",
@@ -680,8 +680,11 @@ export default function ServerStatus() {
   };
 
   const handleManualRefresh = () => {
+    if (manualCooldown) return;
     fetchRconData(true, true);
-    checkServerConnections();
+    checkServerConnections(true);
+    setManualCooldown(true);
+    setTimeout(() => setManualCooldown(false), MANUAL_COOLDOWN_MS);
   };
 
   const isConnectionAvailable = (server: Server) => {
