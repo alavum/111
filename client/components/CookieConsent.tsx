@@ -26,14 +26,14 @@ export default function CookieConsent() {
       <div className="max-w-3xl mx-auto bg-gaming-card border border-gaming-border rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 shadow-lg">
         <div className="flex-1 text-sm text-gaming-text-muted">
           Мы используем cookies для улучшен��я работы сайта. Продовольняя
-          персонализация и аналитика. Подробнее в <Link to="/privacy" className="text-gaming-accent underline">политике конфиденциальности</Link>.
+          персонализация и аналитика. Подробнее в <a href="/privacy" className="text-gaming-accent underline">политике конфиденциальности</a>.
         </div>
 
         <div className="flex-shrink-0 flex items-center gap-2">
           <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold" onClick={() => setAccepted(true)}>
             Принять
           </Button>
-          <Link to="/privacy" className="text-gaming-text-muted text-sm hover:text-gaming-accent">Настроить</Link>
+          <a href="/privacy" className="text-gaming-text-muted text-sm hover:text-gaming-accent">Настроить</a>
         </div>
       </div>
     </div>
