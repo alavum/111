@@ -664,6 +664,7 @@ export default function ServerStatus() {
         description:
           "Информация о возможности подключения ещё не загружена. Пожалуйста, обновите страницу или подождите несколько секунд при загрузке сайта.",
         variant: "destructive",
+        duration: 5000,
       });
       return;
     }
@@ -687,7 +688,7 @@ export default function ServerStatus() {
       const remaining = Math.max(0, Math.ceil((lastManualRefresh + MANUAL_COOLDOWN_MS - now) / 1000));
       toast({
         title: "Подождите",
-        description: `Повторное обновление доступно через ${remaining} сек.`,
+        description: `Повторное обновление дос��упно через ${remaining} сек.`,
         duration: 3000,
       });
       return;
