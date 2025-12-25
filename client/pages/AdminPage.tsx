@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import {
   Settings,
   FileText,
@@ -18,6 +19,7 @@ import {
   Trash2,
   Server,
 } from "lucide-react";
+import AdminRichEditor from "@/components/AdminRichEditor";
 import { toast } from "@/hooks/use-toast";
 
 interface NewsArticle {
@@ -27,6 +29,10 @@ interface NewsArticle {
   author: string;
   date: string;
   published: boolean;
+  excerpt?: string;
+  category?: string;
+  image?: string;
+  slug?: string;
 }
 
 interface ContentItem {
@@ -34,6 +40,23 @@ interface ContentItem {
   title: string;
   content: string;
   lastUpdated: string;
+}
+
+function PublishedSwitch({
+  editingNews,
+  setEditingNews,
+}: {
+  editingNews: any;
+  setEditingNews: any;
+}) {
+  return (
+    <Switch
+      checked={!!editingNews.published}
+      onCheckedChange={(checked) =>
+        setEditingNews({ ...editingNews, published: checked })
+      }
+    />
+  );
 }
 
 export default function AdminPage() {
@@ -47,7 +70,86 @@ export default function AdminPage() {
     title: "",
     content: "",
     author: "Admin",
+    excerpt: "",
+    category: "Общее",
+    image: null as File | null,
   });
+
+  const compressImage = (file: File): Promise<File> => {
+    const MAX_BYTES = 2 * 1024 * 1024; // 2MB target
+    const steps = [
+      { maxWidth: 1400, quality: 0.8 },
+      { maxWidth: 1200, quality: 0.7 },
+      { maxWidth: 1000, quality: 0.65 },
+      { maxWidth: 900, quality: 0.6 },
+      { maxWidth: 780, quality: 0.55 },
+    ];
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          let bestBlob: Blob | null = null;
+          let bestType = "image/jpeg";
+          for (const s of steps) {
+            const scale = Math.min(1, s.maxWidth / img.width);
+            const width = Math.max(1, Math.round(img.width * scale));
+            const height = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) throw new Error("Canvas not supported");
+            ctx.drawImage(img, 0, 0, width, height);
+            const jpeg: Blob | null = await new Promise((res) =>
+              canvas.toBlob(res, "image/jpeg", s.quality),
+            );
+            const webp: Blob | null = await new Promise((res) =>
+              canvas.toBlob(res, "image/webp", s.quality),
+            );
+            const candidate =
+              webp && (!jpeg || webp.size < jpeg.size)
+                ? { blob: webp, type: "image/webp" }
+                : { blob: jpeg, type: "image/jpeg" };
+            if (candidate.blob) {
+              if (!bestBlob || candidate.blob.size < bestBlob.size) {
+                bestBlob = candidate.blob;
+                bestType = candidate.type;
+              }
+              if (candidate.blob.size <= MAX_BYTES) {
+                return resolve(
+                  new File(
+                    [candidate.blob],
+                    file.name.replace(
+                      /\.[^.]+$/,
+                      bestType === "image/webp" ? ".webp" : ".jpg",
+                    ),
+                    { type: bestType },
+                  ),
+                );
+              }
+            }
+          }
+          if (bestBlob) {
+            return resolve(
+              new File(
+                [bestBlob],
+                file.name.replace(
+                  /\.[^.]+$/,
+                  bestType === "image/webp" ? ".webp" : ".jpg",
+                ),
+                { type: bestType },
+              ),
+            );
+          }
+          reject(new Error("Compression failed"));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  };
 
   // Helper function to get auth headers
   const getAuthHeaders = () => {
@@ -69,7 +171,7 @@ export default function AdminPage() {
 
       // Fetch all content
       const [newsRes, rulesRes, privacyRes, termsRes] = await Promise.all([
-        fetch("/api/news"),
+        fetch("/api/admin/news", { headers: getAuthHeaders() }),
         fetch("/api/rules"),
         fetch("/api/privacy"),
         fetch("/api/terms"),
@@ -102,16 +204,38 @@ export default function AdminPage() {
     }
 
     try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("title", newNews.title);
+      formData.append("content", newNews.content);
+      formData.append("author", newNews.author);
+      formData.append("excerpt", newNews.excerpt);
+      formData.append("category", newNews.category);
+
+      if (newNews.image) {
+        formData.append("image", newNews.image);
+      }
+
+      const token = localStorage.getItem("admin_auth");
       const response = await fetch("/api/news", {
         method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(newNews),
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
       });
 
       if (response.ok) {
         const article = await response.json();
         setNews((prev) => [article, ...prev]);
-        setNewNews({ title: "", content: "", author: "Admin" });
+        setNewNews({
+          title: "",
+          content: "",
+          author: "Admin",
+          excerpt: "",
+          category: "Общее",
+          image: null,
+        });
         toast({
           title: "Новость создана",
           description: "Новость успешно добавлена",
@@ -119,19 +243,36 @@ export default function AdminPage() {
       }
     } catch (error) {
       toast({
-        title: "Ошибка создания",
+        title: "Ошибка ��оздания",
         description: "Не удалось создать новость",
         variant: "destructive",
       });
     }
   };
 
-  const handleUpdateNews = async (article: NewsArticle) => {
+  const handleUpdateNews = async (
+    article: NewsArticle & { newImage?: File },
+  ) => {
     try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("title", article.title);
+      formData.append("content", article.content);
+      formData.append("published", article.published.toString());
+      formData.append("excerpt", article.excerpt || "");
+      formData.append("category", article.category || "Общее");
+
+      if (article.newImage) {
+        formData.append("image", article.newImage);
+      }
+
+      const token = localStorage.getItem("admin_auth");
       const response = await fetch(`/api/news/${article.id}`, {
         method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(article),
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
       });
 
       if (response.ok) {
@@ -146,7 +287,7 @@ export default function AdminPage() {
     } catch (error) {
       toast({
         title: "Ошибка обновления",
-        description: "Не удалось обновить новость",
+        description: "Не удалось об��овить новость",
         variant: "destructive",
       });
     }
@@ -292,18 +433,88 @@ export default function AdminPage() {
                     <Label htmlFor="newsContent" className="text-gaming-text">
                       Содержимое
                     </Label>
-                    <Textarea
+                    <AdminRichEditor
                       id="newsContent"
                       value={newNews.content}
+                      onChange={(val) =>
+                        setNewNews((prev) => ({ ...prev, content: val }))
+                      }
+                      className="min-h-[120px]"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="newsExcerpt" className="text-gaming-text">
+                      Краткое описание
+                    </Label>
+                    <Input
+                      id="newsExcerpt"
+                      value={newNews.excerpt}
                       onChange={(e) =>
                         setNewNews((prev) => ({
                           ...prev,
-                          content: e.target.value,
+                          excerpt: e.target.value,
                         }))
                       }
-                      className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
-                      placeholder="Введите содержимое новости"
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                      placeholder="Краткое описание новости"
                     />
+                  </div>
+                  <div>
+                    <Label htmlFor="newsCategory" className="text-gaming-text">
+                      Категория
+                    </Label>
+                    <Input
+                      id="newsCategory"
+                      value={newNews.category}
+                      onChange={(e) =>
+                        setNewNews((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                      placeholder="Категория новости"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="newsImage" className="text-gaming-text">
+                      Изображение
+                    </Label>
+                    <Input
+                      id="newsImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0] || null;
+                        if (!file) {
+                          setNewNews((prev) => ({ ...prev, image: null }));
+                          return;
+                        }
+                        try {
+                          const compressed = await compressImage(file);
+                          if (compressed.size > 9 * 1024 * 1024) {
+                            toast({
+                              title: "Файл слишком большой",
+                              description: "Сократите изображение до < 9MB",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setNewNews((prev) => ({
+                            ...prev,
+                            image: compressed,
+                          }));
+                        } catch (err) {
+                          setNewNews((prev) => ({ ...prev, image: file }));
+                        }
+                      }}
+                      className="bg-gaming-bg border-gaming-border text-gaming-text"
+                    />
+                    {newNews.image && (
+                      <p className="text-green-400 text-sm mt-1">
+                        ✓ Файл выбран: {newNews.image.name}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="newsAuthor" className="text-gaming-text">
@@ -379,6 +590,7 @@ export default function AdminPage() {
                     {editingNews?.id === article.id ? (
                       <CardContent className="space-y-4">
                         <Input
+                          placeholder="Заголовок"
                           value={editingNews.title}
                           onChange={(e) =>
                             setEditingNews({
@@ -388,7 +600,70 @@ export default function AdminPage() {
                           }
                           className="bg-gaming-bg border-gaming-border text-gaming-text"
                         />
+                        <Input
+                          placeholder="Краткое описание"
+                          value={editingNews.excerpt || ""}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              excerpt: e.target.value,
+                            })
+                          }
+                          className="bg-gaming-bg border-gaming-border text-gaming-text"
+                        />
+                        <Input
+                          placeholder="Категория"
+                          value={editingNews.category || ""}
+                          onChange={(e) =>
+                            setEditingNews({
+                              ...editingNews,
+                              category: e.target.value,
+                            })
+                          }
+                          className="bg-gaming-bg border-gaming-border text-gaming-text"
+                        />
+                        <div>
+                          <Label className="text-gaming-text text-sm">
+                            Новое изображение
+                          </Label>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0] || null;
+                              if (!file) return;
+                              try {
+                                const compressed = await compressImage(file);
+                                if (compressed.size > 9 * 1024 * 1024) {
+                                  toast({
+                                    title: "Файл слишком большой",
+                                    description:
+                                      "Сократите изображение до < 9MB",
+                                    variant: "destructive",
+                                  });
+                                  return;
+                                }
+                                setEditingNews({
+                                  ...(editingNews as any),
+                                  newImage: compressed,
+                                } as any);
+                              } catch (err) {
+                                setEditingNews({
+                                  ...(editingNews as any),
+                                  newImage: file,
+                                } as any);
+                              }
+                            }}
+                            className="bg-gaming-bg border-gaming-border text-gaming-text"
+                          />
+                          {editingNews.image && (
+                            <p className="text-gaming-text-muted text-xs mt-1">
+                              Текущее: {editingNews.image}
+                            </p>
+                          )}
+                        </div>
                         <Textarea
+                          placeholder="Содержимое"
                           value={editingNews.content}
                           onChange={(e) =>
                             setEditingNews({
@@ -398,21 +673,34 @@ export default function AdminPage() {
                           }
                           className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[120px]"
                         />
-                        <div className="flex space-x-2">
-                          <Button
-                            onClick={() => handleUpdateNews(editingNews)}
-                            className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
-                          >
-                            <Save className="w-4 h-4 mr-2" />
-                            Сохранить
-                          </Button>
-                          <Button
-                            onClick={() => setEditingNews(null)}
-                            variant="outline"
-                            className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
-                          >
-                            Отмена
-                          </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Label className="text-gaming-text text-sm">
+                              Опубликовано
+                            </Label>
+                            <PublishedSwitch
+                              editingNews={editingNews}
+                              setEditingNews={setEditingNews}
+                            />
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              onClick={() =>
+                                handleUpdateNews(editingNews as any)
+                              }
+                              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
+                            >
+                              <Save className="w-4 h-4 mr-2" />
+                              Сохранить
+                            </Button>
+                            <Button
+                              onClick={() => setEditingNews(null)}
+                              variant="outline"
+                              className="border-gaming-border text-gaming-text hover:bg-gaming-bg"
+                            >
+                              Отмена
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     ) : (
@@ -458,13 +746,11 @@ export default function AdminPage() {
                       >
                         Содержимое
                       </Label>
-                      <Textarea
+                      <AdminRichEditor
                         id="rulesContent"
                         value={rules.content}
-                        onChange={(e) =>
-                          setRules({ ...rules, content: e.target.value })
-                        }
-                        className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
+                        onChange={(val) => setRules({ ...rules, content: val })}
+                        className="min-h-[300px]"
                       />
                     </div>
                     <Button
@@ -472,7 +758,7 @@ export default function AdminPage() {
                       className="bg-gaming-accent hover:bg-gaming-accent-hover text-black"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Сохранить правила
+                      Сохранить прав��ла
                     </Button>
                   </CardContent>
                 </Card>
@@ -513,13 +799,13 @@ export default function AdminPage() {
                       >
                         Содержимое
                       </Label>
-                      <Textarea
+                      <AdminRichEditor
                         id="privacyContent"
                         value={privacy.content}
-                        onChange={(e) =>
-                          setPrivacy({ ...privacy, content: e.target.value })
+                        onChange={(val) =>
+                          setPrivacy({ ...privacy, content: val })
                         }
-                        className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
+                        className="min-h-[300px]"
                       />
                     </div>
                     <Button
@@ -565,13 +851,11 @@ export default function AdminPage() {
                       >
                         Содержимое
                       </Label>
-                      <Textarea
+                      <AdminRichEditor
                         id="termsContent"
                         value={terms.content}
-                        onChange={(e) =>
-                          setTerms({ ...terms, content: e.target.value })
-                        }
-                        className="bg-gaming-bg border-gaming-border text-gaming-text min-h-[300px]"
+                        onChange={(val) => setTerms({ ...terms, content: val })}
+                        className="min-h-[300px]"
                       />
                     </div>
                     <Button

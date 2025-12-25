@@ -3,7 +3,7 @@ import * as React from "react";
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_REMOVE_DELAY = 8000; // default 8s
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -52,7 +52,7 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-const addToRemoveQueue = (toastId: string) => {
+const addToRemoveQueue = (toastId: string, duration = TOAST_REMOVE_DELAY) => {
   if (toastTimeouts.has(toastId)) {
     return;
   }
@@ -63,7 +63,7 @@ const addToRemoveQueue = (toastId: string) => {
       type: "REMOVE_TOAST",
       toastId: toastId,
     });
-  }, TOAST_REMOVE_DELAY);
+  }, duration);
 
   toastTimeouts.set(toastId, timeout);
 };
@@ -157,6 +157,14 @@ function toast({ ...props }: Toast) {
       },
     },
   });
+
+  // Schedule automatic removal using optional duration prop if provided (ms)
+  // @ts-ignore allow custom duration field on toast props
+  const duration =
+    typeof (props as any).duration === "number"
+      ? (props as any).duration
+      : TOAST_REMOVE_DELAY;
+  addToRemoveQueue(id, duration);
 
   return {
     id: id,

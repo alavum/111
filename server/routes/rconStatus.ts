@@ -6,7 +6,6 @@ export interface RconServerInfo {
   ip: string;
   port: number;
   rconPort: number;
-  rconPassword: string;
   status: "online" | "offline" | "error";
   players?: number;
   maxPlayers?: number;
@@ -31,7 +30,7 @@ const servers: Record<number, Omit<RconServerInfo, "serverId" | "status">> = {
     rconPassword: "offline",
   },
   3: {
-    ip: "server3.rgs-squad.ru", 
+    ip: "server3.rgs-squad.ru",
     port: 7787,
     rconPort: 21116,
     rconPassword: "offline",
@@ -44,12 +43,29 @@ const servers: Record<number, Omit<RconServerInfo, "serverId" | "status">> = {
   },
 };
 
-// Cache for RCON responses (5 second cache)
+// Cache for RCON responses (15 second cache for better performance)
 const rconCache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5000; // 5 seconds
+const CACHE_DURATION = 15000; // 15 seconds
+
+// Helper function to safely extract server info without password
+function getSafeServerInfo(
+  serverId: number,
+  serverConfig: Omit<RconServerInfo, "serverId" | "status">,
+): Pick<RconServerInfo, "serverId" | "ip" | "port" | "rconPort"> {
+  return {
+    serverId,
+    ip: serverConfig.ip,
+    port: serverConfig.port,
+    rconPort: serverConfig.rconPort,
+  };
+}
 
 // Real RCON query function for Squad
-async function querySquadRconServer(ip: string, port: number, password: string): Promise<any> {
+async function querySquadRconServer(
+  ip: string,
+  port: number,
+  password: string,
+): Promise<any> {
   // Check cache first
   const cacheKey = `${ip}:${port}`;
   const cached = rconCache.get(cacheKey);
@@ -65,37 +81,50 @@ async function querySquadRconServer(ip: string, port: number, password: string):
       host: ip,
       port: port,
       password: password,
-      timeout: 8000, // Reduced from 15000 to 8000ms
+      timeout: 8000, // Increased timeout to handle slower responses
     });
-    
+
     await rcon.connect();
 
     // Squad-specific RCON commands - use allSettled for better error handling
+    // Note: ServerInfo is not always supported on some server builds; only request commonly supported commands.
     const results = await Promise.allSettled([
-      rcon.send('ListPlayers'),
-      rcon.send('ShowCurrentMap'),
-      rcon.send('ServerInfo'),
+      rcon.send("ListPlayers"),
+      rcon.send("ShowCurrentMap"),
     ]);
 
-    const listPlayersResponse = results[0].status === 'fulfilled' ? results[0].value : '';
-    const mapResponse = results[1].status === 'fulfilled' ? results[1].value : '';
-    const serverInfoResponse = results[2].status === 'fulfilled' ? results[2].value : '';
+    const listPlayersResponse =
+      results[0].status === "fulfilled" ? results[0].value : "";
+    const mapResponse =
+      results[1].status === "fulfilled" ? results[1].value : "";
+    const serverInfoResponse = ""; // Not requested to avoid unsupported command errors
 
-    // Log any failed commands
+    // Log any failed commands (only for the commands we requested)
     results.forEach((result, index) => {
-      if (result.status === 'rejected') {
-        const commands = ['ListPlayers', 'ShowCurrentMap', 'ServerInfo'];
-        console.error(`${commands[index]} command failed:`, result.reason?.message);
+      if (result.status === "rejected") {
+        const commands = ["ListPlayers", "ShowCurrentMap"];
+        console.warn(
+          `${commands[index]} command failed:`,
+          result.reason?.message,
+        );
       }
     });
 
     await rcon.disconnect();
 
-    // Debug logging
-    console.log('RCON Responses:');
-    console.log('ListPlayers:', listPlayersResponse.substring(0, 200) + '...');
-    console.log('ShowCurrentMap:', mapResponse);
-    console.log('ServerInfo:', serverInfoResponse.substring(0, 200) + '...');
+    // Debug logging (safely handle empty responses)
+    console.log("RCON Responses:");
+    if (listPlayersResponse)
+      console.log(
+        "ListPlayers:",
+        String(listPlayersResponse).substring(0, 200) + "...",
+      );
+    if (mapResponse) console.log("ShowCurrentMap:", mapResponse);
+    if (serverInfoResponse)
+      console.log(
+        "ServerInfo:",
+        String(serverInfoResponse).substring(0, 200) + "...",
+      );
 
     // Parse Squad responses
     const playerCount = parseSquadPlayerCount(listPlayersResponse);
@@ -113,17 +142,16 @@ async function querySquadRconServer(ip: string, port: number, password: string):
     // Cache the result
     rconCache.set(cacheKey, {
       data: resultData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return resultData;
-    
   } catch (error) {
     if (rcon) {
       try {
         await rcon.disconnect();
       } catch (disconnectError) {
-        console.error('Error disconnecting RCON:', disconnectError);
+        console.error("Error disconnecting RCON:", disconnectError);
       }
     }
     throw error;
@@ -138,25 +166,34 @@ function parseSquadPlayerCount(response: string): number {
   // or sometimes just shows total player count at top
 
   // Try to get total from summary line first
-  const summaryMatch = response.match(/(\d+) players online/i) ||
-                       response.match(/Total: (\d+)/i) ||
-                       response.match(/Players: (\d+)/i);
+  const summaryMatch =
+    response.match(/(\d+) players online/i) ||
+    response.match(/Total: (\d+)/i) ||
+    response.match(/Players: (\d+)/i);
 
   if (summaryMatch) {
     return parseInt(summaryMatch[1]);
   }
 
   // Fallback: count individual player lines
-  const playerLines = response.split('\n').filter(line =>
-    (line.includes('SteamID:') && line.includes('Name:')) ||
-    (line.includes('ID:') && line.includes('Name:') && line.includes('Team'))
-  );
+  const playerLines = response
+    .split("\n")
+    .filter(
+      (line) =>
+        (line.includes("SteamID:") && line.includes("Name:")) ||
+        (line.includes("ID:") &&
+          line.includes("Name:") &&
+          line.includes("Team")),
+    );
 
   return playerLines.length;
 }
 
 // Parse Squad map info
-function parseSquadMapInfo(response: string): { map: string; gameMode: string } {
+function parseSquadMapInfo(response: string): {
+  map: string;
+  gameMode: string;
+} {
   if (!response) return { map: "Unknown", gameMode: "Unknown" };
 
   // Squad ShowCurrentMap format: "Current level is GE | Tallil, layer is GE_Tallil_SEED_CAS_LOACH_ONLY, factions GE_Blufor GE_Opfor"
@@ -170,31 +207,32 @@ function parseSquadMapInfo(response: string): { map: string; gameMode: string } 
 
     // Extract game mode from layer name
     const layerName = map.toUpperCase();
-    if (layerName.includes('_RAAS_')) gameMode = 'RAAS';
-    else if (layerName.includes('_AAS_')) gameMode = 'AAS';
-    else if (layerName.includes('_INVASION_')) gameMode = 'Invasion';
-    else if (layerName.includes('_TC_')) gameMode = 'Territory Control';
-    else if (layerName.includes('_SKIRMISH_')) gameMode = 'Skirmish';
-    else if (layerName.includes('_SEED_')) gameMode = 'SEED';
-    else if (layerName.includes('RAAS')) gameMode = 'RAAS';
-    else if (layerName.includes('AAS')) gameMode = 'AAS';
-    else if (layerName.includes('INVASION')) gameMode = 'Invasion';
-    else if (layerName.includes('SKIRMISH')) gameMode = 'Skirmish';
-    else if (layerName.includes('SEED')) gameMode = 'SEED';
-    else gameMode = 'Squad';
+    if (layerName.includes("_RAAS_")) gameMode = "RAAS";
+    else if (layerName.includes("_AAS_")) gameMode = "AAS";
+    else if (layerName.includes("_INVASION_")) gameMode = "Invasion";
+    else if (layerName.includes("_TC_")) gameMode = "Territory Control";
+    else if (layerName.includes("_SKIRMISH_")) gameMode = "Skirmish";
+    else if (layerName.includes("_SEED_")) gameMode = "SEED";
+    else if (layerName.includes("RAAS")) gameMode = "RAAS";
+    else if (layerName.includes("AAS")) gameMode = "AAS";
+    else if (layerName.includes("INVASION")) gameMode = "Invasion";
+    else if (layerName.includes("SKIRMISH")) gameMode = "Skirmish";
+    else if (layerName.includes("SEED")) gameMode = "SEED";
+    else gameMode = "Squad";
   } else {
     // Fallback: try to extract from "Current level is" or other formats
-    const mapMatch = response.match(/Current level is (.+?)(?:,|$)/i) ||
-                     response.match(/Map: (.+?)(?:,|$)/i);
+    const mapMatch =
+      response.match(/Current level is (.+?)(?:,|$)/i) ||
+      response.match(/Map: (.+?)(?:,|$)/i);
 
     if (mapMatch && mapMatch[1]) {
       map = mapMatch[1].trim();
       // Try to extract gamemode from map name
-      if (map.includes('RAAS')) gameMode = 'RAAS';
-      else if (map.includes('AAS')) gameMode = 'AAS';
-      else if (map.includes('Invasion')) gameMode = 'Invasion';
-      else if (map.includes('SEED')) gameMode = 'SEED';
-      else gameMode = 'Squad';
+      if (map.includes("RAAS")) gameMode = "RAAS";
+      else if (map.includes("AAS")) gameMode = "AAS";
+      else if (map.includes("Invasion")) gameMode = "Invasion";
+      else if (map.includes("SEED")) gameMode = "SEED";
+      else gameMode = "Squad";
     }
   }
 
@@ -204,34 +242,37 @@ function parseSquadMapInfo(response: string): { map: string; gameMode: string } 
 // Parse Squad server info
 function parseSquadServerInfo(response: string): { maxPlayers?: number } {
   if (!response) return {};
-  
+
   // Try to extract max players from server info
-  const maxPlayersMatch = response.match(/Max Players: (\d+)/i) ||
-                          response.match(/MaxPlayers=(\d+)/i);
-  
+  const maxPlayersMatch =
+    response.match(/Max Players: (\d+)/i) ||
+    response.match(/MaxPlayers=(\d+)/i);
+
   return {
-    maxPlayers: maxPlayersMatch ? parseInt(maxPlayersMatch[1]) : 80
+    maxPlayers: maxPlayersMatch ? parseInt(maxPlayersMatch[1]) : 100,
   };
 }
 
 // Parse Squad player list
 function parseSquadPlayerList(response: string): string[] {
   if (!response) return [];
-  
-  const playerLines = response.split('\n').filter(line => 
-    line.includes('SteamID:') && line.includes('Name:')
-  );
-  
-  return playerLines.map(line => {
-    const nameMatch = line.match(/Name: ([^|]+)/);
-    return nameMatch ? nameMatch[1].trim() : '';
-  }).filter(name => name.length > 0);
+
+  const playerLines = response
+    .split("\n")
+    .filter((line) => line.includes("SteamID:") && line.includes("Name:"));
+
+  return playerLines
+    .map((line) => {
+      const nameMatch = line.match(/Name: ([^|]+)/);
+      return nameMatch ? nameMatch[1].trim() : "";
+    })
+    .filter((name) => name.length > 0);
 }
 
 // Check single server status
 export const checkRconServerStatus: RequestHandler = async (req, res) => {
   const serverId = parseInt(req.params.serverId);
-  
+
   if (!serverId || !servers[serverId]) {
     return res.status(404).json({
       error: "Server not found",
@@ -240,53 +281,49 @@ export const checkRconServerStatus: RequestHandler = async (req, res) => {
   }
 
   const serverConfig = servers[serverId];
-  
+
   // Only server 1 has real RCON, others are offline
   if (serverId !== 1) {
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "offline",
       players: 0,
-      maxPlayers: 80,
+      maxPlayers: 100,
       map: "Offline",
       gameMode: "Offline",
       error: "Server is offline",
     };
-    
+
     return res.json(response);
   }
-  
+
   try {
     const serverInfo = await querySquadRconServer(
       serverConfig.ip,
       serverConfig.rconPort,
-      serverConfig.rconPassword
+      serverConfig.rconPassword,
     );
-    
+
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "online",
       ...serverInfo,
     };
-    
+
     res.json(response);
-    
   } catch (error) {
     console.error(`RCON query failed for server ${serverId}:`, error);
-    
+
     const response: RconServerInfo = {
-      serverId,
-      ...serverConfig,
+      ...getSafeServerInfo(serverId, serverConfig),
       status: "offline",
       players: 0,
-      maxPlayers: 80,
+      maxPlayers: 100,
       map: "Connection failed",
       gameMode: "Offline",
       error: error instanceof Error ? error.message : "Unknown error",
     };
-    
+
     res.json(response);
   }
 };
@@ -303,11 +340,10 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
       // Only check server 1 via RCON, others are offline
       if (serverId !== 1) {
         return {
-          serverId,
-          ...serverConfig,
+          ...getSafeServerInfo(serverId, serverConfig),
           status: "offline" as const,
           players: 0,
-          maxPlayers: 80,
+          maxPlayers: 100,
           map: "Offline",
           gameMode: "Offline",
           error: "Server is offline",
@@ -318,22 +354,20 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
         const serverInfo = await querySquadRconServer(
           serverConfig.ip,
           serverConfig.rconPort,
-          serverConfig.rconPassword
+          serverConfig.rconPassword,
         );
 
         return {
-          serverId,
-          ...serverConfig,
+          ...getSafeServerInfo(serverId, serverConfig),
           status: "online" as const,
           ...serverInfo,
         };
       } catch (error) {
         return {
-          serverId,
-          ...serverConfig,
+          ...getSafeServerInfo(serverId, serverConfig),
           status: "offline" as const,
           players: 0,
-          maxPlayers: 80,
+          maxPlayers: 100,
           map: "Connection failed",
           gameMode: "Offline",
           error: error instanceof Error ? error.message : "Unknown error",
@@ -342,18 +376,19 @@ export const checkAllRconServers: RequestHandler = async (req, res) => {
     });
 
     const results = await Promise.allSettled(statusPromises);
-    const finalResults = results.map(result =>
-      result.status === 'fulfilled' ? result.value : {
-        status: 'error',
-        error: 'Failed to check server'
-      }
+    const finalResults = results.map((result) =>
+      result.status === "fulfilled"
+        ? result.value
+        : {
+            status: "error",
+            error: "Failed to check server",
+          },
     );
     res.json(finalResults);
-    
   } catch (error) {
     console.error("Failed to check all servers:", error);
-    res.status(500).json({ 
-      error: "Failed to check server statuses" 
+    res.status(500).json({
+      error: "Failed to check server statuses",
     });
   }
 };
@@ -367,6 +402,6 @@ export const getServerList: RequestHandler = (req, res) => {
     port: config.port,
     status: parseInt(id) === 1 ? "checking" : "offline",
   }));
-  
+
   res.json(serverList);
 };

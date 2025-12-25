@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import {
   getNews,
+  getAllNews,
   getNewsById,
   createNews,
   updateNews,
@@ -14,11 +15,10 @@ import {
   updatePrivacyPolicy,
   getTerms,
   updateTerms,
+  uploadNewsImage,
 } from "./routes/content";
-import {
-  checkServerStatus,
-  checkMultipleServers,
-} from "./routes/serverStatus";
+import { initSqlite } from "./sqlite";
+import { checkServerStatus, checkMultipleServers } from "./routes/serverStatus";
 import {
   checkRconServerStatus,
   checkAllRconServers,
@@ -40,13 +40,51 @@ import {
 export function createServer() {
   const app = express();
 
+  // Sanitize route registration: convert absolute URLs used accidentally as paths
+  const _wrapMethods = [
+    "use",
+    "get",
+    "post",
+    "put",
+    "delete",
+    "patch",
+    "all",
+  ] as const;
+  for (const m of _wrapMethods) {
+    const orig = (app as any)[m];
+    (app as any)[m] = function (...args: any[]) {
+      if (typeof args[0] === "string" && /^https?:\/\//.test(args[0])) {
+        try {
+          args[0] = new URL(args[0]).pathname || "/";
+        } catch (e) {
+          args[0] = args[0].replace(/^https?:\/\/[^/]+/, "") || "/";
+        }
+      }
+      return orig.apply(this, args);
+    } as any;
+  }
+
+  // Initialize optional SQLite storage only when explicitly enabled via env
+  // This avoids attempting to load native modules in environments where they are not wanted.
+  try {
+    if (String(process.env.ENABLE_SQLITE || "").toLowerCase() === "true") {
+      initSqlite();
+    } else {
+      console.log(
+        "SQLite disabled via ENABLE_SQLITE env; using JSON file storage",
+      );
+    }
+  } catch (err) {
+    console.warn("SQLite init failed:", err);
+  }
+
   // Middleware
   app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: "50mb" }));
+  app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
   // Serve uploaded files
-  app.use('/uploads', express.static('uploads'));
+  app.use("/uploads", express.static("uploads"));
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
@@ -60,8 +98,9 @@ export function createServer() {
   // News routes (public read, admin write)
   app.get("/api/news", getNews);
   app.get("/api/news/:id", getNewsById);
-  app.post("/api/news", requireAdmin, createNews);
-  app.put("/api/news/:id", requireAdmin, updateNews);
+  app.get("/api/admin/news", requireAdmin, getAllNews);
+  app.post("/api/news", requireAdmin, uploadNewsImage, createNews);
+  app.put("/api/news/:id", requireAdmin, uploadNewsImage, updateNews);
   app.delete("/api/news/:id", requireAdmin, deleteNews);
 
   // Rules routes (public read, admin write)
@@ -88,7 +127,11 @@ export function createServer() {
   // VIP applications routes
   app.post("/api/vip-applications", uploadMiddleware, handleVipApplication);
   app.get("/api/vip-applications", requireAdmin, getVipApplications);
-  app.put("/api/vip-applications/:applicationId", requireAdmin, updateVipApplicationStatus);
+  app.put(
+    "/api/vip-applications/:applicationId",
+    requireAdmin,
+    updateVipApplicationStatus,
+  );
 
   // Admin authentication routes
   app.post("/api/admin/login", adminLogin);

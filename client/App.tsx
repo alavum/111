@@ -11,6 +11,8 @@ import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import VipPage from "./pages/VipPage";
 import GuidesPage from "./pages/GuidesPage";
+import CookieConsent from "./components/CookieConsent";
+import GuideDetailPage from "./pages/GuideDetailPage";
 import RulesPage from "./pages/RulesPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
@@ -24,6 +26,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <CookieConsent />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -31,6 +34,7 @@ const App = () => (
           <Route path="/news/:slug" element={<NewsDetailPage />} />
           <Route path="/vip" element={<VipPage />} />
           <Route path="/guides" element={<GuidesPage />} />
+          <Route path="/guides/:slug" element={<GuideDetailPage />} />
           <Route path="/rules" element={<RulesPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
@@ -43,4 +47,13 @@ const App = () => (
   </QueryClientProvider>
 );
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Ensure createRoot is called only once to avoid duplicate root warnings during HMR
+const rootElement = document.getElementById("root")!;
+const anyWindow = window as any;
+if (anyWindow.__REACT_ROOT__) {
+  anyWindow.__REACT_ROOT__.render(<App />);
+} else {
+  const root = createRoot(rootElement);
+  anyWindow.__REACT_ROOT__ = root;
+  root.render(<App />);
+}

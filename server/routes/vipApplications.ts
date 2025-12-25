@@ -47,7 +47,20 @@ async function sendDiscordWebhook(applicationData: any) {
       ? `${baseUrl}/uploads/vip-screenshots/${applicationData.screenshot.filename}`
       : null;
 
-    console.log("Sending Discord webhook with screenshot URL:", screenshotUrl);
+    console.log("Sending Discord webhook...");
+    console.log("Screenshot data:", applicationData.screenshot);
+    console.log("Screenshot URL:", screenshotUrl);
+
+    // Check if screenshot file actually exists
+    if (
+      applicationData.screenshot &&
+      !fs.existsSync(applicationData.screenshot.path)
+    ) {
+      console.error(
+        "Screenshot file not found at path:",
+        applicationData.screenshot.path,
+      );
+    }
 
     const embed = {
       title: "🎯 Новая заявка на VIP статус",
@@ -55,7 +68,7 @@ async function sendDiscordWebhook(applicationData: any) {
       fields: [
         {
           name: "📋 План VIP",
-          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.price}\n⏰ ${applicationData.plan.duration}`,
+          value: `**${applicationData.plan.name}**\n💰 ${applicationData.plan.totalPrice || applicationData.plan.price || applicationData.plan.basePrice} ₽\n⏰ ${applicationData.plan.months ? `${applicationData.plan.months} мес.` : applicationData.plan.duration || "Не указано"}\n${applicationData.plan.discount ? `🎁 ${applicationData.plan.discount}` : ""}`,
           inline: true,
         },
         {
@@ -115,11 +128,19 @@ async function sendDiscordWebhook(applicationData: any) {
       try {
         const form = new FormData();
 
+        // Update embed to indicate file attachment
+        const embedWithAttachment = {
+          ...embed,
+          image: {
+            url: `attachment://${applicationData.screenshot.filename}`,
+          },
+        };
+
         form.append(
           "payload_json",
           JSON.stringify({
             content: "👋 @here Новая заявка на VIP!",
-            embeds: [embed],
+            embeds: [embedWithAttachment],
           }),
         );
 
@@ -128,7 +149,7 @@ async function sendDiscordWebhook(applicationData: any) {
           fs.createReadStream(applicationData.screenshot.path),
           {
             filename: applicationData.screenshot.filename,
-            contentType: "image/png",
+            contentType: applicationData.screenshot.mimetype || "image/png",
           },
         );
 
@@ -139,10 +160,12 @@ async function sendDiscordWebhook(applicationData: any) {
         });
 
         if (!response.ok) {
+          const errorText = await response.text();
           console.error(
             "Discord webhook with file failed:",
             response.status,
             response.statusText,
+            errorText,
           );
           throw new Error("File upload failed");
         } else {
@@ -157,10 +180,17 @@ async function sendDiscordWebhook(applicationData: any) {
       }
     }
 
-    // Fallback to regular webhook without file
+    // Fallback to regular webhook with image URL if available
+    let fallbackEmbed = { ...embed };
+    if (screenshotUrl) {
+      fallbackEmbed.image = {
+        url: screenshotUrl,
+      };
+    }
+
     webhookPayload = {
       content: "👋 @here Новая заявка на VIP!",
-      embeds: [embed],
+      embeds: [fallbackEmbed],
     };
 
     const response = await fetch(DISCORD_WEBHOOK_URL, {
@@ -220,6 +250,7 @@ export const handleVipApplication: RequestHandler = async (req, res) => {
         originalname: screenshot.originalname,
         path: screenshot.path,
         size: screenshot.size,
+        mimetype: screenshot.mimetype,
       },
       status: "pending",
       createdAt: new Date().toISOString(),

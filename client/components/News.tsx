@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight, Youtube, Tv } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -28,7 +28,7 @@ const fallbackNewsItems: NewsItem[] = [
 
 function getCategoryColor(category: string) {
   switch (category) {
-    case "События":
+    case "Собы����ия":
       return "text-green-400";
     case "Акции":
       return "text-gaming-accent";
@@ -56,7 +56,7 @@ function getCategory(content: string): string {
 }
 
 export default function News() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNewsItems);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,10 +68,14 @@ export default function News() {
           const apiNews = await response.json();
           console.log("Received news data:", apiNews);
 
-          // Filter only published news and limit to 6 items
+          // Filter only published news, sort by date (newest first), and limit to 6 items
           const publishedNews = apiNews
             .filter((news: NewsItem) => news.published !== false)
-            .slice(0, 6);
+            .sort(
+              (a: NewsItem, b: NewsItem) =>
+                new Date(b.date).getTime() - new Date(a.date).getTime(),
+            )
+            .slice(0, 3);
 
           console.log("Filtered published news:", publishedNews);
 
@@ -80,15 +84,15 @@ export default function News() {
             console.log("Set news items to:", publishedNews);
           } else {
             console.log("No published news found, using fallback");
-            setNewsItems(fallbackNewsItems);
+            setNewsItems([]);
           }
         } else {
           console.error("Failed to fetch news:", response.status);
-          setNewsItems(fallbackNewsItems);
+          setNewsItems([]);
         }
       } catch (error) {
         console.error("Error fetching news:", error);
-        setNewsItems(fallbackNewsItems);
+        setNewsItems([]);
       } finally {
         setLoading(false);
       }
@@ -116,100 +120,153 @@ export default function News() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading
-            ? // Loading skeleton
-              Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden animate-pulse"
-                >
-                  <div className="w-full h-48 bg-gaming-bg"></div>
-                  <div className="p-6 space-y-3">
-                    <div className="h-4 bg-gaming-bg rounded w-3/4"></div>
-                    <div className="h-4 bg-gaming-bg rounded w-1/2"></div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-gaming-bg rounded"></div>
-                      <div className="h-3 bg-gaming-bg rounded"></div>
-                    </div>
+          {loading ? (
+            // Loading skeleton
+            Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden animate-pulse"
+              >
+                <div className="w-full h-48 bg-gaming-bg"></div>
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-gaming-bg rounded w-3/4"></div>
+                  <div className="h-4 bg-gaming-bg rounded w-1/2"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gaming-bg rounded"></div>
+                    <div className="h-3 bg-gaming-bg rounded"></div>
                   </div>
                 </div>
-              ))
-            : newsItems.map((item) => (
-                <article
-                  key={item.id}
-                  className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group"
-                >
-                  {/* Image */}
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={item.image || "/api/placeholder/400/250"}
-                      alt={item.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-md bg-black/50 ${getCategoryColor(getCategory(item.content))}`}
-                      >
-                        {getCategory(item.content)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-center text-gaming-text-muted text-sm mb-3">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(item.date).toLocaleDateString("ru-RU", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </div>
-
-                    <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
-                      <Link to={`/news/${item.id}`}>{item.title}</Link>
-                    </h3>
-
-                    <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
-                      {item.content.substring(0, 150)}
-                      {item.content.length > 150 ? "..." : ""}
-                    </p>
-
-                    <Link
-                      to={`/news/${item.id}`}
-                      className="inline-flex items-center text-gaming-accent hover:text-gaming-accent-hover font-medium text-sm transition-colors"
+              </div>
+            ))
+          ) : newsItems.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-gaming-card border border-gaming-border rounded-lg p-8 text-center">
+              <h3 className="text-xl font-bold text-gaming-text mb-2">
+                Новостей пока нет
+              </h3>
+              <p className="text-gaming-text-muted">
+                Загляните позже — мы обязательно поделимся обновлениями.
+              </p>
+            </div>
+          ) : (
+            newsItems.map((item) => (
+              <Link
+                key={item.id}
+                to={`/news/${item.id}`}
+                className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block"
+              >
+                {/* Image */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={item.image || "/api/placeholder/400/250"}
+                    alt={item.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 group-hover:grayscale transition-transform duration-300"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-md bg-black/50 ${getCategoryColor(getCategory(item.content))}`}
                     >
-                      Читать далее
-                      <ArrowRight className="w-4 h-4 ml-1" />
-                    </Link>
+                      {getCategory(item.content)}
+                    </span>
                   </div>
-                </article>
-              ))}
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center text-gaming-text-muted text-sm mb-3">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    {new Date(item.date).toLocaleDateString("ru-RU", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </div>
+
+                  <h3 className="font-bold text-gaming-text mb-3 line-clamp-2 group-hover:text-gaming-accent transition-colors">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-gaming-text-muted text-sm line-clamp-3 mb-4">
+                    {item.content.substring(0, 150)}
+                    {item.content.length > 150 ? "..." : ""}
+                  </p>
+
+                  <span className="inline-flex items-center text-gaming-accent font-medium text-sm transition-colors">
+                    Читать далее
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </span>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
 
         {/* Call to Action */}
-        <div className="mt-12 text-center">
-          <div className="bg-gaming-card border border-gaming-border rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gaming-text mb-4">
-              Не пропускайте важные новости!
-            </h3>
-            <p className="text-gaming-text-muted mb-6">
-              Подпишитесь на наши уведомления, чтобы первыми узнавать о новых
-              обновлениях, турнирах и событиях в сообществе RSGS.
-            </p>
-            <Button
-              className="bg-gaming-accent hover:bg-gaming-accent-hover text-black font-semibold"
-              onClick={() =>
-                toast({
-                  title: "В разработке",
-                  description:
-                    "Функция подписки на новости скоро будет доступна",
-                  duration: 3000,
-                })
-              }
-            >
-              Подписаться на новости
-            </Button>
+        <div className="mt-8">
+          <div className="bg-gaming-card border border-gaming-border rounded-lg p-3 w-full flex flex-col sm:flex-row items-center sm:items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0 sm:max-w-3xl">
+              <div className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gaming-accent/20 text-gaming-accent">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div className="text-left min-w-0">
+                <h4 className="text-base font-semibold text-gaming-text">
+                  Следите за обновлениями RUBEZH
+                </h4>
+                <p className="text-gaming-text-muted text-sm">
+                  Подписывайтесь на наши каналы — важные объявления, турниры и
+                  акции появляются там первыми.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex-shrink-0 self-center sm:self-auto w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
+                <a
+                  href="https://discord.gg/HXne8JVJ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
+                >
+                  <Button className="bg-[#5865F2] hover:bg-[#4a54d6] text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
+                    <img
+                      src="/images/icon-discord.svg"
+                      alt="Discord"
+                      className="w-5 h-5 object-contain"
+                    />
+                    Discord
+                  </Button>
+                </a>
+                <a
+                  href="https://www.youtube.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
+                >
+                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
+                    <img
+                      src="/images/icon-youtube.svg"
+                      alt="YouTube"
+                      className="w-5 h-5 object-contain"
+                    />
+                    YouTube
+                  </Button>
+                </a>
+                <a
+                  href="https://www.twitch.tv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
+                >
+                  <Button className="bg-[#6441a5] hover:bg-[#57328f] text-white font-semibold min-h-[40px] py-2 px-6 w-full sm:w-auto flex items-center justify-center gap-2">
+                    <img
+                      src="/images/icon-twitch.svg"
+                      alt="Twitch"
+                      className="w-5 h-5 object-contain"
+                    />
+                    Twitch
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

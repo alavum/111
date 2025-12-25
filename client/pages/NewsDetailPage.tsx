@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { renderRichText } from "@/lib/markdown";
 
 interface NewsArticle {
   id: number;
@@ -21,6 +22,7 @@ export default function NewsDetailPage() {
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [relatedNews, setRelatedNews] = useState<NewsArticle[]>([]);
 
   useEffect(() => {
     if (slug) {
@@ -28,25 +30,51 @@ export default function NewsDetailPage() {
     }
   }, [slug]);
 
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (!article) return;
+      try {
+        const res = await fetch("/api/news");
+        if (!res.ok) return;
+        const all = await res.json();
+        const related = all
+          .filter(
+            (n: NewsArticle) => n.id !== article.id && n.published !== false,
+          )
+          .sort(
+            (a: NewsArticle, b: NewsArticle) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime(),
+          )
+          .slice(0, 6);
+        setRelatedNews(related);
+      } catch (e) {
+        console.error("Error fetching related news:", e);
+      }
+    };
+
+    fetchRelated();
+  }, [article]);
+
   const fetchArticle = async (slug: string) => {
     try {
       setLoading(true);
-      
+
       // Try to get article by slug or ID
       const response = await fetch(`/api/news/${slug}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setArticle(data);
       } else if (response.status === 404) {
         // If not found by slug, try to get all news and find by slug
-        const allNewsResponse = await fetch('/api/news');
+        const allNewsResponse = await fetch("/api/news");
         if (allNewsResponse.ok) {
           const allNews = await allNewsResponse.json();
-          const foundArticle = allNews.find((news: NewsArticle) => 
-            generateSlug(news.title) === slug || news.id.toString() === slug
+          const foundArticle = allNews.find(
+            (news: NewsArticle) =>
+              generateSlug(news.title) === slug || news.id.toString() === slug,
           );
-          
+
           if (foundArticle) {
             setArticle(foundArticle);
           } else {
@@ -59,7 +87,7 @@ export default function NewsDetailPage() {
         setError("Ошибка загрузки новости");
       }
     } catch (error) {
-      console.error('Error fetching article:', error);
+      console.error("Error fetching article:", error);
       setError("Ошибка загрузки новости");
     } finally {
       setLoading(false);
@@ -69,22 +97,13 @@ export default function NewsDetailPage() {
   const generateSlug = (title: string): string => {
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9а-я]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[^a-z0-9а-я]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   };
 
   const formatContent = (content: string) => {
-    return content.split('\n').map((paragraph, index) => {
-      if (paragraph.trim()) {
-        return (
-          <p key={index} className="text-gaming-text mb-4 leading-relaxed">
-            {paragraph}
-          </p>
-        );
-      }
-      return <br key={index} />;
-    });
+    return renderRichText(content);
   };
 
   const getCategoryColor = (category: string) => {
@@ -147,8 +166,8 @@ export default function NewsDetailPage() {
           {/* Back Button */}
           <div className="mb-8">
             <Link to="/news">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-gaming-border text-gaming-text hover:bg-gaming-card"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -175,20 +194,22 @@ export default function NewsDetailPage() {
               {/* Meta Information */}
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 {article.category && (
-                  <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}`}>
+                  <span
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}`}
+                  >
                     <Tag className="w-3 h-3 mr-1 inline" />
                     {article.category}
                   </span>
                 )}
-                
+
                 <div className="flex items-center text-gaming-text-muted text-sm">
                   <Calendar className="w-4 h-4 mr-2" />
-                  {new Date(article.date).toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                  {new Date(article.date).toLocaleDateString("ru-RU", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </div>
 
@@ -212,15 +233,54 @@ export default function NewsDetailPage() {
 
           {/* Related News Section */}
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gaming-text mb-6">
-              Другие новости
-            </h2>
-            <div className="text-center">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gaming-text">
+                Другие новости
+              </h2>
               <Link to="/news">
-                <Button className="bg-gaming-accent hover:bg-gaming-accent-hover text-black">
+                <Button
+                  variant="outline"
+                  className="border-gaming-border text-gaming-text transition-transform duration-150 hover:-translate-y-1 hover:shadow hover:bg-gaming-accent/10"
+                >
                   Посмотреть все новости
                 </Button>
               </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedNews.length === 0 ? (
+                <div className="col-span-1 sm:col-span-2 lg:col-span-3 text-gaming-text-muted">
+                  Похожие новости отсутствуют
+                </div>
+              ) : (
+                relatedNews.map((item) => (
+                  <Link
+                    key={item.id}
+                    to={`/news/${item.slug}`}
+                    className="bg-gaming-card border border-gaming-border rounded-lg overflow-hidden hover:bg-gaming-card-hover transition-colors group block"
+                  >
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center text-gaming-text-muted text-sm mb-2">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        {new Date(item.date).toLocaleDateString("ru-RU")}
+                      </div>
+                      <h3 className="font-bold text-gaming-text mb-2 line-clamp-2">
+                        {item.title}
+                      </h3>
+                      <p className="text-gaming-text-muted text-sm line-clamp-3">
+                        {item.excerpt || item.content.substring(0, 120)}
+                      </p>
+                    </div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>
